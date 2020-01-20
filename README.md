@@ -1,2 +1,2 @@
 # JAMU
-JAMU - Java Matrix Utilities built on top of Intel's MKL (Math Kernel Library)
+JAMU - Java Matrix Utilities built on top of the [dedekind-MKL](https://github.com/stefan-zobel/dedekind-MKL) MKL wrapper
