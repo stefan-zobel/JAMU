@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -162,8 +163,29 @@ public final class Matrices {
      *         distributed random numbers
      */
     public static MatrixD randomUniformD(int rows, int cols) {
+        return randomUniformD(rows, cols, null);
+    }
+
+    /**
+     * Create a MatrixD of dimension {@code (rows, cols)} filled with uniformly
+     * distributed random numbers drawn from the range {@code [0.0, 1.0)}.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} MatrixD filled with {@code ~U[0, 1]}
+     *         distributed random numbers
+     */
+    public static MatrixD randomUniformD(int rows, int cols, long seed) {
+        return randomUniformD(rows, cols, new Random(seed));
+    }
+
+    private static MatrixD randomUniformD(int rows, int cols, Random rng) {
         SimpleMatrixD m = new SimpleMatrixD(rows, cols);
-        ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         double[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
             _a[i] = rnd.nextDouble();
@@ -183,8 +205,29 @@ public final class Matrices {
      *         distributed random numbers
      */
     public static MatrixF randomUniformF(int rows, int cols) {
+        return randomUniformF(rows, cols, null);
+    }
+
+    /**
+     * Create a MatrixF of dimension {@code (rows, cols)} filled with uniformly
+     * distributed random numbers drawn from the range {@code [0.0f, 1.0f)}.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} MatrixF filled with {@code ~U[0, 1]}
+     *         distributed random numbers
+     */
+    public static MatrixF randomUniformF(int rows, int cols, long seed) {
+        return randomUniformF(rows, cols, new Random(seed));
+    }
+
+    private static MatrixF randomUniformF(int rows, int cols, Random rng) {
         SimpleMatrixF m = new SimpleMatrixF(rows, cols);
-        ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         float[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
             _a[i] = rnd.nextFloat();
@@ -205,8 +248,30 @@ public final class Matrices {
      *         distributed random numbers (standard normal distribution)
      */
     public static MatrixD randomNormalD(int rows, int cols) {
+        return randomNormalD(rows, cols, null);
+    }
+
+    /**
+     * Create a MatrixD of dimension {@code (rows, cols)} filled with normally
+     * distributed (i.e., standard gausssian) random numbers with expectation
+     * {@code 0.0} and variance {@code 1.0}.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} MatrixD filled with {@code ~N[0, 1]}
+     *         distributed random numbers (standard normal distribution)
+     */
+    public static MatrixD randomNormalD(int rows, int cols, long seed) {
+        return randomNormalD(rows, cols, new Random(seed));
+    }
+
+    private static MatrixD randomNormalD(int rows, int cols, Random rng) {
         SimpleMatrixD m = new SimpleMatrixD(rows, cols);
-        ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         double[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
             _a[i] = rnd.nextGaussian();
@@ -227,8 +292,30 @@ public final class Matrices {
      *         distributed random numbers (standard normal distribution)
      */
     public static MatrixF randomNormalF(int rows, int cols) {
+        return randomNormalF(rows, cols, null);
+    }
+
+    /**
+     * Create a MatrixF of dimension {@code (rows, cols)} filled with normally
+     * distributed (i.e., standard gausssian) random numbers with expectation
+     * {@code 0.0f} and variance {@code 1.0f}.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} MatrixF filled with {@code ~N[0, 1]}
+     *         distributed random numbers (standard normal distribution)
+     */
+    public static MatrixF randomNormalF(int rows, int cols, long seed) {
+        return randomNormalF(rows, cols, new Random(seed));
+    }
+
+    private static MatrixF randomNormalF(int rows, int cols, Random rng) {
         SimpleMatrixF m = new SimpleMatrixF(rows, cols);
-        ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         float[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
             _a[i] = (float) rnd.nextGaussian();
