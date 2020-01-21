@@ -60,7 +60,7 @@ public class SvdF {
      * The right singular vectors (row-wise) or {@code null} if the singular
      * vectors haven't been computed.
      * <p>
-     * Note that the algorithm return <code>V<sup>T</sup></code>, not {@code V}.
+     * Note that the algorithm returns <code>V<sup>T</sup></code>, not {@code V}.
      * 
      * @return n-by-n orthogonal matrix
      */
