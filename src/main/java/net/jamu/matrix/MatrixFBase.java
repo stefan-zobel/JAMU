@@ -517,18 +517,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("(").append(rows).append(" x ").append(cols).append(")").append(System.lineSeparator());
-        for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < cols; ++col) {
-                buf.append(String.format("%.8E", getUnsafe(row, col)));
-                if (col < cols - 1) {
-                    buf.append(", ");
-                }
-            }
-            buf.append(System.lineSeparator());
-        }
-        return buf.toString();
+        return Matrices.toString(this);
     }
 
     // FMatrixBasicOps

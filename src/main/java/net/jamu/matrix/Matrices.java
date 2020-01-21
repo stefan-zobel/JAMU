@@ -534,10 +534,72 @@ public final class Matrices {
         return md;
     }
 
+    /* package */ static String toString(Dimensions dim) {
+        StringBuilder buf = new StringBuilder();
+        buf.append("(").append(dim.numRows()).append(" x ").append(dim.numColumns()).append(")")
+                .append(System.lineSeparator());
+        int _cols = dim.numColumns() <= 6 ? dim.numColumns() : 5;
+        int _rows = dim.numRows() <= 6 ? dim.numRows() : 5;
+        int row;
+        for (row = 0; row < _rows; ++row) {
+            if (dim instanceof MatrixD) {
+                printRowD(row, _cols, (MatrixD) dim, buf);
+            } else if (dim instanceof MatrixF) {
+                printRowF(row, _cols, (MatrixF) dim, buf);
+            }
+        }
+        if (row == 5 && _rows < dim.numRows()) {
+            int empty = _cols < dim.numColumns() ? 6 : dim.numColumns();
+            for (int i = 0; i < empty; ++i) {
+                buf.append("......");
+                if (i != empty - 1) {
+                    buf.append(", ");
+                }
+            }
+            buf.append(System.lineSeparator());
+            if (dim instanceof MatrixD) {
+                printRowD(dim.numRows() - 1, _cols, (MatrixD) dim, buf);
+            } else if (dim instanceof MatrixF) {
+                printRowF(dim.numRows() - 1, _cols, (MatrixF) dim, buf);
+            }
+        }
+        return buf.toString();
+    }
+
     private static void checkBigendian(boolean isBigendian) throws IOException {
         if (!isBigendian) {
             throw new IOException("Unexpected little endian storage format");
         }
+    }
+
+    private static void printRowD(int row, int _cols, MatrixD m, StringBuilder buf) {
+        int col;
+        for (col = 0; col < _cols; ++col) {
+            buf.append(String.format("%.12E", m.getUnsafe(row, col)));
+            if (col < _cols - 1) {
+                buf.append(", ");
+            }
+        }
+        if (col == 5 && _cols < m.numColumns()) {
+            buf.append(", ......, ");
+            buf.append(String.format("%.12E", m.getUnsafe(row, m.numColumns() - 1)));
+        }
+        buf.append(System.lineSeparator());
+    }
+
+    private static void printRowF(int row, int _cols, MatrixF m, StringBuilder buf) {
+        int col;
+        for (col = 0; col < _cols; ++col) {
+            buf.append(String.format("%.8E", m.getUnsafe(row, col)));
+            if (col < _cols - 1) {
+                buf.append(", ");
+            }
+        }
+        if (col == 5 && _cols < m.numColumns()) {
+            buf.append(", ......, ");
+            buf.append(String.format("%.8E", m.getUnsafe(row, m.numColumns() - 1)));
+        }
+        buf.append(System.lineSeparator());
     }
 
     // 256k
