@@ -366,8 +366,8 @@ public final class Matrices {
     /**
      * Writes the matrix {@code mf} into the provided output stream {@code os}
      * and returns the number of bytes written. Everything related to (pre-)
-     * positioning, flushing and closing the output stream must be done by the
-     * caller.
+     * positioning, flushing and closing of the output stream must be done by
+     * the caller.
      * 
      * @param mf
      *            the float matrix that needs to be serialized
@@ -415,8 +415,8 @@ public final class Matrices {
     /**
      * Writes the matrix {@code md} into the provided output stream {@code os}
      * and returns the number of bytes written. Everything related to (pre-)
-     * positioning, flushing and closing the output stream must be done by the
-     * caller.
+     * positioning, flushing and closing of the output stream must be done by
+     * the caller.
      * 
      * @param md
      *            the double matrix that needs to be serialized
