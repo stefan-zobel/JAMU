@@ -538,8 +538,8 @@ public final class Matrices {
         StringBuilder buf = new StringBuilder();
         buf.append("(").append(dim.numRows()).append(" x ").append(dim.numColumns()).append(")")
                 .append(System.lineSeparator());
-        int _cols = dim.numColumns() <= 6 ? dim.numColumns() : 5;
-        int _rows = dim.numRows() <= 6 ? dim.numRows() : 5;
+        int _cols = dim.numColumns() <= MAX_ROWCOL ? dim.numColumns() : LAST_IDX;
+        int _rows = dim.numRows() <= MAX_ROWCOL ? dim.numRows() : LAST_IDX;
         int row;
         for (row = 0; row < _rows; ++row) {
             if (dim instanceof MatrixD) {
@@ -548,8 +548,8 @@ public final class Matrices {
                 printRowF(row, _cols, (MatrixF) dim, buf);
             }
         }
-        if (row == 5 && _rows < dim.numRows()) {
-            int empty = _cols < dim.numColumns() ? 6 : dim.numColumns();
+        if (row == LAST_IDX && _rows < dim.numRows()) {
+            int empty = _cols < dim.numColumns() ? MAX_ROWCOL : dim.numColumns();
             for (int i = 0; i < empty; ++i) {
                 buf.append("......");
                 if (i != empty - 1) {
@@ -575,14 +575,14 @@ public final class Matrices {
     private static void printRowD(int row, int _cols, MatrixD m, StringBuilder buf) {
         int col;
         for (col = 0; col < _cols; ++col) {
-            buf.append(String.format("%.12E", m.getUnsafe(row, col)));
+            buf.append(String.format(FORMAT_D, m.getUnsafe(row, col)));
             if (col < _cols - 1) {
                 buf.append(", ");
             }
         }
-        if (col == 5 && _cols < m.numColumns()) {
+        if (col == LAST_IDX && _cols < m.numColumns()) {
             buf.append(", ......, ");
-            buf.append(String.format("%.12E", m.getUnsafe(row, m.numColumns() - 1)));
+            buf.append(String.format(FORMAT_D, m.getUnsafe(row, m.numColumns() - 1)));
         }
         buf.append(System.lineSeparator());
     }
@@ -590,20 +590,24 @@ public final class Matrices {
     private static void printRowF(int row, int _cols, MatrixF m, StringBuilder buf) {
         int col;
         for (col = 0; col < _cols; ++col) {
-            buf.append(String.format("%.8E", m.getUnsafe(row, col)));
+            buf.append(String.format(FORMAT_F, m.getUnsafe(row, col)));
             if (col < _cols - 1) {
                 buf.append(", ");
             }
         }
-        if (col == 5 && _cols < m.numColumns()) {
+        if (col == LAST_IDX && _cols < m.numColumns()) {
             buf.append(", ......, ");
-            buf.append(String.format("%.8E", m.getUnsafe(row, m.numColumns() - 1)));
+            buf.append(String.format(FORMAT_F, m.getUnsafe(row, m.numColumns() - 1)));
         }
         buf.append(System.lineSeparator());
     }
 
     // 256k
     private static final int BUF_SIZE = 1 << 18;
+    private static final int MAX_ROWCOL = 6;
+    private static final int LAST_IDX = MAX_ROWCOL - 1;
+    private static final String FORMAT_F = "%.8E";
+    private static final String FORMAT_D = "%.12E";
 
     private Matrices() {
         throw new AssertionError();
