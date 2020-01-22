@@ -623,8 +623,7 @@ public final class Matrices {
 
     /* package */ static String toString(Dimensions dim) {
         StringBuilder buf = new StringBuilder();
-        buf.append("(").append(dim.numRows()).append(" x ").append(dim.numColumns()).append(")")
-                .append(System.lineSeparator());
+        buf.append(dim.asString()).append(System.lineSeparator());
         int _cols = dim.numColumns() <= MAX_ROWCOL ? dim.numColumns() : LAST_IDX;
         int _rows = dim.numRows() <= MAX_ROWCOL ? dim.numRows() : LAST_IDX;
         int row;

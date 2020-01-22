@@ -125,6 +125,13 @@ public abstract class DimensionsBase implements Dimensions {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String asString() {
+        return new StringBuilder("(").append(rows).append(" x ").append(cols).append(")").toString();
+    }
+
     protected int idx(int row, int col) {
         return col * rows + row;
     }

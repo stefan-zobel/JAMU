@@ -94,4 +94,11 @@ public interface Dimensions {
      *            {@code >= rTo}
      */
     void checkSubmatrixIndexes(int rFrom, int cFrom, int rTo, int cTo);
+
+    /**
+     * Returns a string representation of this {@code Dimensions} instance.
+     * 
+     * @return a string representation of the matrix dimensions
+     */
+    String asString();
 }
