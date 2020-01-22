@@ -515,6 +515,14 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         return t;
     }
 
+    /**
+     * Returns a string representation of this matrix. If the matrix has more
+     * than 6 rows and/or more than 6 columns only the first 5 contiguous rows
+     * and/or columns are displayed followed by a {@code "......"} marker and
+     * then the last row and/or column is displayed as the 6th row / column.
+     * 
+     * @return a (possibly truncated) string representation of this matrix
+     */
     @Override
     public String toString() {
         return Matrices.toString(this);
