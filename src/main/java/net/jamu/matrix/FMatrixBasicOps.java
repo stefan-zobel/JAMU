@@ -70,6 +70,18 @@ public interface FMatrixBasicOps {
     MatrixF plus(MatrixF B);
 
     /**
+     * {@code A * B + C} convenience multiplication plus addition. None of the
+     * operands is mutated.
+     * 
+     * @param B
+     *            second multiplicand
+     * @param C
+     *            the addend
+     * @return the result of the two operations
+     */
+    MatrixF timesPlus(MatrixF B, MatrixF C);
+
+    /**
      * {@code A - B} convenience subtraction. None of the operands is mutated.
      * 
      * @param B

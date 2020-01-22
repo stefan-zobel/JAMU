@@ -70,6 +70,18 @@ public interface DMatrixBasicOps {
     MatrixD plus(MatrixD B);
 
     /**
+     * {@code A * B + C} convenience multiplication plus addition. None of the
+     * operands is mutated.
+     * 
+     * @param B
+     *            second multiplicand
+     * @param C
+     *            the addend
+     * @return the result of the two operations
+     */
+    MatrixD timesPlus(MatrixD B, MatrixD C);
+
+    /**
      * {@code A - B} convenience subtraction. None of the operands is mutated.
      * 
      * @param B
