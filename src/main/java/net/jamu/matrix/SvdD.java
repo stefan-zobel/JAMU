@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Stefan Zobel
+ * Copyright 2019, 2020 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,11 +40,11 @@ import net.frobenius.lapack.PlainLapack;
 public class SvdD {
 
     // either "A" or "N"
-    private final TSvdJob jobType;
+    protected final TSvdJob jobType;
 
-    private final SimpleMatrixD U;
-    private final SimpleMatrixD Vt;
-    private final double[] S;
+    protected final SimpleMatrixD U;
+    protected final SimpleMatrixD Vt;
+    protected final double[] S;
 
     /**
      * The left singular vectors (column-wise) or {@code null} if the singular
@@ -60,7 +60,8 @@ public class SvdD {
      * The right singular vectors (row-wise) or {@code null} if the singular
      * vectors haven't been computed.
      * <p>
-     * Note that the algorithm returns <code>V<sup>T</sup></code>, not {@code V}.
+     * Note that the algorithm returns <code>V<sup>T</sup></code>, not
+     * {@code V}.
      * 
      * @return n-by-n orthogonal matrix
      */
@@ -102,6 +103,13 @@ public class SvdD {
             Vt = null;
         }
         computeSvdInplace(A);
+    }
+
+    /* package */ SvdD(TSvdJob jobType, SimpleMatrixD U, SimpleMatrixD Vt, double[] S) {
+        this.jobType = jobType;
+        this.U = U;
+        this.Vt = Vt;
+        this.S = S;
     }
 
     private void computeSvdInplace(MatrixD A) {
