@@ -160,6 +160,14 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public SvdEconomyD svdEcon() {
+        return new SvdEconomyD(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public EvdD evd(boolean full) {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("EVD only works for square matrices");

@@ -160,6 +160,14 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public SvdEconomyF svdEcon() {
+        return new SvdEconomyF(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public EvdF evd(boolean full) {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("EVD only works for square matrices");
