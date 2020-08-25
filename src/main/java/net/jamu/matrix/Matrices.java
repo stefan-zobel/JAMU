@@ -621,6 +621,40 @@ public final class Matrices {
         return md;
     }
 
+    /**
+     * Create a {@code MatrixD} copy of the {@code MatrixF} input matrix.
+     * 
+     * @param mf
+     *            {@code MatrixF} input matrix to convert
+     * @return a {@code MatrixD} copy of the input matrix
+     */
+    public static MatrixD convert(MatrixF mf) {
+        MatrixD md = createD(mf.numRows(), mf.numColumns());
+        double[] ad = md.getArrayUnsafe();
+        float[] fd = mf.getArrayUnsafe();
+        for (int i = 0; i < ad.length; ++i) {
+            ad[i] = fd[i];
+        }
+        return md;
+    }
+
+    /**
+     * Create a {@code MatrixF} copy of the {@code MatrixD} input matrix.
+     * 
+     * @param md
+     *            {@code MatrixD} input matrix to convert
+     * @return a {@code MatrixF} copy of the input matrix
+     */
+    public static MatrixF convert(MatrixD md) {
+        MatrixF mf = createF(md.numRows(), md.numColumns());
+        float[] fd = mf.getArrayUnsafe();
+        double[] ad = md.getArrayUnsafe();
+        for (int i = 0; i < fd.length; ++i) {
+            fd[i] = (float) ad[i];
+        }
+        return mf;
+    }
+
     /* package */ static String toString(Dimensions dim) {
         StringBuilder buf = new StringBuilder();
         buf.append(dim.asString()).append(System.lineSeparator());
