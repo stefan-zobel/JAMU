@@ -113,6 +113,8 @@ public class SvdD {
     }
 
     private void computeSvdInplace(MatrixD A) {
+        // Note: this wouldn't work for TSvdJob.OVERWRITE as A gets overwritten
+        // in that case
         MatrixD AA = A.copy();
         int m = AA.numRows();
         int n = AA.numColumns();
