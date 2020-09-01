@@ -18,6 +18,7 @@ package net.jamu.matrix;
 import java.util.Arrays;
 
 import net.dedekind.blas.BlasExt;
+import net.dedekind.blas.Trans;
 
 /**
  * A simple dense matrix implementation of a column-major layout double
@@ -58,6 +59,29 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         Arrays.fill(a, initialValue);
     }
 
+    /**
+     * Create a new {@code SimpleComplexMatrixD} of dimension
+     * {@code (rows, cols)} with all matrix elements set to
+     * {@code (iniValr, iniVali)}.
+     * 
+     * @param rows
+     *            number of matrix rows
+     * @param cols
+     *            number of matrix columns
+     * @param iniValr
+     *            the real part of the initial value to set
+     * @param iniVali
+     *            the imaginary part of the initial value to set
+     */
+    public SimpleComplexMatrixD(int rows, int cols, double iniValr, double iniVali) {
+        super(rows, cols, new double[Checks.checkComplexArrayLength(rows, cols)], false);
+        double[] a_ = a;
+        for (int i = 0; i < a_.length; i += 2) {
+            a_[i] = iniValr;
+            a_[i + 1] = iniVali;
+        }
+    }
+
     private SimpleComplexMatrixD(SimpleComplexMatrixD other) {
         super(other.rows, other.cols, other.a, true);
     }
@@ -84,8 +108,11 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         Checks.checkMultAdd(this, B, C);
 
         BlasExt blas = BlasExt.getInstance();
-        // TODO
-        throw new UnsupportedOperationException("not yet implemented");
+        blas.zgemm3m(Trans.N, Trans.N, C.numRows(), C.numColumns(), cols, alphar, alphai, a, Math.max(1, rows),
+                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
+                Math.max(1, C.numRows()));
+
+        return C;
     }
 
     /**
@@ -96,8 +123,11 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         Checks.checkTransABmultAdd(this, B, C);
 
         BlasExt blas = BlasExt.getInstance();
-        // TODO
-        throw new UnsupportedOperationException("not yet implemented");
+        blas.zgemm3m(Trans.C, Trans.C, C.numRows(), C.numColumns(), rows, alphar, alphai, a, Math.max(1, rows),
+                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
+                Math.max(1, C.numRows()));
+
+        return C;
     }
 
     /**
@@ -108,8 +138,11 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         Checks.checkTransAmultAdd(this, B, C);
 
         BlasExt blas = BlasExt.getInstance();
-        // TODO
-        throw new UnsupportedOperationException("not yet implemented");
+        blas.zgemm3m(Trans.C, Trans.N, C.numRows(), C.numColumns(), rows, alphar, alphai, a, Math.max(1, rows),
+                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
+                Math.max(1, C.numRows()));
+
+        return C;
     }
 
     /**
@@ -120,8 +153,11 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         Checks.checkTransBmultAdd(this, B, C);
 
         BlasExt blas = BlasExt.getInstance();
-        // TODO
-        throw new UnsupportedOperationException("not yet implemented");
+        blas.zgemm3m(Trans.N, Trans.C, C.numRows(), C.numColumns(), cols, alphar, alphai, a, Math.max(1, rows),
+                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
+                Math.max(1, C.numRows()));
+
+        return C;
     }
 
     // TODO ...
