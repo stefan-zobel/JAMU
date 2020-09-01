@@ -58,6 +58,19 @@ public final class Matrices {
     }
 
     /**
+     * Create a new {@link ComplexMatrixD} of dimension {@code (row, cols)}.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number of columns
+     * @return a {@code ComplexMatrixD} of dimension {@code (row, cols)}
+     */
+    public static ComplexMatrixD createComplexD(int rows, int cols) {
+        return new SimpleComplexMatrixD(rows, cols);
+    }
+
+    /**
      * Create a {@link MatrixD} from a {@code double[][]} array. The elements of
      * {@code data} get copied, i.e. the array is not referenced.
      * <p>
@@ -147,6 +160,21 @@ public final class Matrices {
         SimpleMatrixF m = new SimpleMatrixF(n, n);
         for (int i = 0; i < n; ++i) {
             m.set(i, i, 1.0f);
+        }
+        return m;
+    }
+
+    /**
+     * Create an ComplexMatrixD identity matrix of dimension {@code (n, n)}.
+     * 
+     * @param n
+     *            dimension of the quadratic identity matrix
+     * @return MatrixD identity matrix of dimension {@code (n, n)}
+     */
+    public static ComplexMatrixD identityComplexD(int n) {
+        ComplexMatrixD m = new SimpleComplexMatrixD(n, n);
+        for (int i = 0; i < n; ++i) {
+            m.set(i, i, 1.0, 0.0);
         }
         return m;
     }
