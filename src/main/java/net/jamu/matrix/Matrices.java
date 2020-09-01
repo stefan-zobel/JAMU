@@ -454,6 +454,18 @@ public final class Matrices {
     }
 
     /**
+     * Create a new zero matrix of same dimension as {@code cmd}.
+     * 
+     * @param cmd
+     *            {@code ComplexMatrixD} template for the dimensions to use for
+     *            the new matrix
+     * @return new zero matrix of same dimension as {@code cmd}
+     */
+    public static ComplexMatrixD sameDimComplexD(ComplexMatrixD cmd) {
+        return new SimpleComplexMatrixD(cmd.numRows(), cmd.numColumns());
+    }
+
+    /**
      * Writes the matrix {@code mf} into the provided Path {@code file} and
      * returns the number of bytes written.
      * 
