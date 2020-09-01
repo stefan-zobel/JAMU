@@ -771,6 +771,46 @@ public final class Matrices {
         return cmf;
     }
 
+    /**
+     * Create a {@code ComplexMatrixF} copy of the {@code MatrixF} input matrix
+     * where the real parts are copied from {@code mf} and the imaginary parts
+     * are set to {@code 0.0f}.
+     * 
+     * @param mf
+     *            {@code MatrixF} input matrix to copy into a
+     *            {@code ComplexMatrixF}
+     * @return a {@code ComplexMatrixF} copy of the input matrix
+     */
+    public static ComplexMatrixF convertToComplex(MatrixF mf) {
+        ComplexMatrixF cmf = createComplexF(mf.numRows(), mf.numColumns());
+        float[] to = cmf.getArrayUnsafe();
+        float[] from = mf.getArrayUnsafe();
+        for (int i = 0; i < from.length; ++i) {
+            to[2 * i] = from[i];
+        }
+        return cmf;
+    }
+
+    /**
+     * Create a {@code ComplexMatrixD} copy of the {@code MatrixD} input matrix
+     * where the real parts are copied from {@code md} and the imaginary parts
+     * are set to {@code 0.0}.
+     * 
+     * @param md
+     *            {@code MatrixD} input matrix to copy into a
+     *            {@code ComplexMatrixD}
+     * @return a {@code ComplexMatrixD} copy of the input matrix
+     */
+    public static ComplexMatrixD convertToComplex(MatrixD md) {
+        ComplexMatrixD cmd = createComplexD(md.numRows(), md.numColumns());
+        double[] to = cmd.getArrayUnsafe();
+        double[] from = md.getArrayUnsafe();
+        for (int i = 0; i < from.length; ++i) {
+            to[2 * i] = from[i];
+        }
+        return cmd;
+    }
+
     /* package */ static String toString(Dimensions dim) {
         StringBuilder buf = new StringBuilder();
         buf.append(dim.asString()).append(System.lineSeparator());
