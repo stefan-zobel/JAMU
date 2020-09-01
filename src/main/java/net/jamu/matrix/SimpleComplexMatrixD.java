@@ -1,0 +1,136 @@
+/*
+ * Copyright 2020 Stefan Zobel
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.jamu.matrix;
+
+import java.util.Arrays;
+
+import net.dedekind.blas.BlasExt;
+
+/**
+ * A simple dense matrix implementation of a column-major layout double
+ * precision complex matrix based on {@code BLAS} and {@code LAPACK} routines.
+ */
+public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexMatrixD {
+
+    private static final double BETA_R = 1.0;
+    private static final double BETA_I = 0.0;
+
+    /**
+     * Create a new {@code SimpleComplexMatrixD} of dimension
+     * {@code (rows, cols)}.
+     * 
+     * @param rows
+     *            number of matrix rows
+     * @param cols
+     *            number of matrix columns
+     */
+    public SimpleComplexMatrixD(int rows, int cols) {
+        this(rows, cols, new double[Checks.checkComplexArrayLength(rows, cols)]);
+    }
+
+    /**
+     * Create a new {@code SimpleComplexMatrixD} of dimension
+     * {@code (rows, cols)} with all matrix elements set to
+     * {@code initialValue}.
+     * 
+     * @param rows
+     *            number of matrix rows
+     * @param cols
+     *            number of matrix columns
+     * @param initialValue
+     *            the initial value to set
+     */
+    public SimpleComplexMatrixD(int rows, int cols, double initialValue) {
+        super(rows, cols, new double[Checks.checkComplexArrayLength(rows, cols)], false);
+        Arrays.fill(a, initialValue);
+    }
+
+    private SimpleComplexMatrixD(SimpleComplexMatrixD other) {
+        super(other.rows, other.cols, other.a, true);
+    }
+
+    protected SimpleComplexMatrixD(int rows, int cols, double[] data) {
+        super(rows, cols, data, false);
+    }
+
+    @Override
+    protected ComplexMatrixD create(int rows, int cols) {
+        return new SimpleComplexMatrixD(rows, cols);
+    }
+
+    @Override
+    protected ComplexMatrixD create(int rows, int cols, double[] data) {
+        return new SimpleComplexMatrixD(rows, cols, data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD multAdd(double alphar, double alphai, ComplexMatrixD B, ComplexMatrixD C) {
+        Checks.checkMultAdd(this, B, C);
+
+        BlasExt blas = BlasExt.getInstance();
+        // TODO
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD conjTransABmultAdd(double alphar, double alphai, ComplexMatrixD B, ComplexMatrixD C) {
+        Checks.checkTransABmultAdd(this, B, C);
+
+        BlasExt blas = BlasExt.getInstance();
+        // TODO
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD conjTransAmultAdd(double alphar, double alphai, ComplexMatrixD B, ComplexMatrixD C) {
+        Checks.checkTransAmultAdd(this, B, C);
+
+        BlasExt blas = BlasExt.getInstance();
+        // TODO
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD conjTransBmultAdd(double alphar, double alphai, ComplexMatrixD B, ComplexMatrixD C) {
+        Checks.checkTransBmultAdd(this, B, C);
+
+        BlasExt blas = BlasExt.getInstance();
+        // TODO
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    // TODO ...
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD copy() {
+        return new SimpleComplexMatrixD(this);
+    }
+}

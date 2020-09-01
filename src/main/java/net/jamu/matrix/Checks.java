@@ -29,6 +29,15 @@ final class Checks {
         return (int) length;
     }
 
+    static int checkComplexArrayLength(int rows, int cols) {
+        long length = 2L * ((long) checkRows(rows) * (long) checkCols(cols));
+        if (length < 0L || length > (long) Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("rows x cols (= " + length
+                    + ") exceeds the maximal possible length (= 2147483647) of a complex array");
+        }
+        return (int) length;
+    }
+
     static void checkMult(Dimensions A, Dimensions B) {
         if (A.numColumns() != B.numRows()) {
             throw new IndexOutOfBoundsException(
