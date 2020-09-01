@@ -113,7 +113,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
                 int aidx = 2 * idx(row, col);
                 int bidx = 2 * B.idx(col, row);
                 _ah[bidx] = _a[aidx];
-                _ah[bidx + 1] = -_a[aidx];
+                _ah[bidx + 1] = -_a[aidx + 1];
             }
         }
         return AH;
