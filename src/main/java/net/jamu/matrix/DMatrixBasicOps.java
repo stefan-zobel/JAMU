@@ -45,22 +45,6 @@ public interface DMatrixBasicOps {
     MatrixD timesTimes(MatrixD B, MatrixD C);
 
     /**
-     * Returns <code>A<sup>T</sup></code>. None of the operands is mutated.
-     * 
-     * @return the transposed matrix
-     */
-    MatrixD transpose();
-
-    /**
-     * Returns <code>A<sup>-1</sup></code> for quadratic matrices. None of the
-     * operands is mutated.
-     * 
-     * @return the inverse of this matrix if it is quadratic
-     * @throws IllegalArgumentException if this matrix is not quadratic
-     */
-    MatrixD inverse();
-
-    /**
      * {@code A + B} convenience addition. None of the operands is mutated.
      * 
      * @param B
@@ -97,4 +81,20 @@ public interface DMatrixBasicOps {
      * @return {@code -A}
      */
     MatrixD uminus();
+
+    /**
+     * Returns <code>A<sup>T</sup></code>. None of the operands is mutated.
+     * 
+     * @return the transposed matrix
+     */
+    MatrixD transpose();
+
+    /**
+     * Returns <code>A<sup>-1</sup></code> for quadratic matrices. None of the
+     * operands is mutated.
+     * 
+     * @return the inverse of this matrix if it is quadratic
+     * @throws IllegalArgumentException if this matrix is not quadratic
+     */
+    MatrixD inverse();
 }
