@@ -501,8 +501,8 @@ public final class Matrices {
      *            the new matrix
      * @return new zero matrix of same dimension as {@code cmf}
      */
-    public static ComplexMatrixF sameDimComplexF(ComplexMatrixF cmd) {
-        return new SimpleComplexMatrixF(cmd.numRows(), cmd.numColumns());
+    public static ComplexMatrixF sameDimComplexF(ComplexMatrixF cmf) {
+        return new SimpleComplexMatrixF(cmf.numRows(), cmf.numColumns());
     }
 
     /**
