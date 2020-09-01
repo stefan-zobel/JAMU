@@ -735,6 +735,42 @@ public final class Matrices {
         return mf;
     }
 
+    /**
+     * Create a {@code ComplexMatrixD} copy of the {@code ComplexMatrixF} input
+     * matrix.
+     * 
+     * @param cmf
+     *            {@code ComplexMatrixF} input matrix to convert
+     * @return a {@code ComlexMatrixD} copy of the input matrix
+     */
+    public static ComplexMatrixD convert(ComplexMatrixF cmf) {
+        ComplexMatrixD cmd = createComplexD(cmf.numRows(), cmf.numColumns());
+        double[] ad = cmd.getArrayUnsafe();
+        float[] fd = cmf.getArrayUnsafe();
+        for (int i = 0; i < ad.length; ++i) {
+            ad[i] = fd[i];
+        }
+        return cmd;
+    }
+
+    /**
+     * Create a {@code ComplexMatrixF} copy of the {@code ComplexMatrixD} input
+     * matrix.
+     * 
+     * @param cmd
+     *            {@code CompleyMatrixD} input matrix to convert
+     * @return a {@code ComplexMatrixF} copy of the input matrix
+     */
+    public static ComplexMatrixF convert(ComplexMatrixD cmd) {
+        ComplexMatrixF cmf = createComplexF(cmd.numRows(), cmd.numColumns());
+        float[] fd = cmf.getArrayUnsafe();
+        double[] ad = cmd.getArrayUnsafe();
+        for (int i = 0; i < fd.length; ++i) {
+            fd[i] = (float) ad[i];
+        }
+        return cmf;
+    }
+
     /* package */ static String toString(Dimensions dim) {
         StringBuilder buf = new StringBuilder();
         buf.append(dim.asString()).append(System.lineSeparator());
