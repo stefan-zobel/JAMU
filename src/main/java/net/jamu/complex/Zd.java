@@ -24,6 +24,12 @@ public interface Zd {
 
     double im();
 
+    void setRe(double re);
+
+    void setIm(double im);
+
+    void set(double re, double im);
+
     Zd add(Zd that);
 
     Zd sub(Zd that);

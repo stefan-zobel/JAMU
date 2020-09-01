@@ -24,6 +24,12 @@ public interface Zf {
 
     float im();
 
+    void setRe(float re);
+
+    void setIm(float im);
+
+    void set(float re, float im);
+
     Zf add(Zf that);
 
     Zf sub(Zf that);

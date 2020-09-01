@@ -60,6 +60,11 @@ public final class ZdImpl implements Zd {
         this.im = im;
     }
 
+    public void set(double re, double im) {
+        this.re = re;
+        this.im = im;
+    }
+
     public Zd copy() {
         return new ZdImpl(re, im);
     }

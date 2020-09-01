@@ -60,6 +60,11 @@ public final class ZfImpl implements Zf {
         this.im = im;
     }
 
+    public void set(float re, float im) {
+        this.re = re;
+        this.im = im;
+    }
+
     public Zf copy() {
         return new ZfImpl(re, im);
     }
