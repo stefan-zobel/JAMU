@@ -344,9 +344,9 @@ public interface MatrixD extends Dimensions, DMatrixBasicOps {
      * 
      * @param alpha
      *            scale factor for {@code B}
-	 * @param B
-	 *            matrix to be copied into this matrix after the scalar
-	 *            multiplication
+     * @param B
+     *            matrix to be copied into this matrix after the scalar
+     *            multiplication
      * @return {@code A}
      */
     MatrixD setInplace(double alpha, MatrixD B);

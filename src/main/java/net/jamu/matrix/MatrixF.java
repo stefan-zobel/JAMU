@@ -345,8 +345,8 @@ public interface MatrixF extends Dimensions, FMatrixBasicOps {
      * @param alpha
      *            scale factor for {@code B}
      * @param B
-	 *            matrix to be copied into this matrix after the scalar
-	 *            multiplication
+     *            matrix to be copied into this matrix after the scalar
+     *            multiplication
      * @return {@code A}
      */
     MatrixF setInplace(float alpha, MatrixF B);
