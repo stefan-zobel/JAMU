@@ -344,11 +344,12 @@ public interface MatrixD extends Dimensions, DMatrixBasicOps {
      * 
      * @param alpha
      *            scale factor for {@code B}
-     * @param other
-     *            matrix to be multiplied from the right
+	 * @param B
+	 *            matrix to be copied into this matrix after the scalar
+	 *            multiplication
      * @return {@code A}
      */
-    MatrixD setInplace(double alpha, MatrixD other);
+    MatrixD setInplace(double alpha, MatrixD B);
 
     /**
      * Get the matrix element at {@code (row, col)}.
