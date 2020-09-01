@@ -22,4 +22,63 @@ package net.jamu.matrix;
  */
 public interface DComplexMatrixBasicOps {
 
+    /**
+     * {@code A * B} convenience multiplication. None of the operands is
+     * mutated.
+     * 
+     * @param B
+     *            second multiplicand
+     * @return the result of the multiplication
+     */
+    ComplexMatrixD times(ComplexMatrixD B);
+
+    /**
+     * {@code A * B * C} convenience multiplication. None of the operands is
+     * mutated.
+     * 
+     * @param B
+     *            second multiplicand
+     * @param C
+     *            third multiplicand
+     * @return the result of the multiplication
+     */
+    ComplexMatrixD timesTimes(ComplexMatrixD B, ComplexMatrixD C);
+
+    /**
+     * {@code A + B} convenience addition. None of the operands is mutated.
+     * 
+     * @param B
+     *            the addend
+     * @return the result of the addition
+     */
+    ComplexMatrixD plus(ComplexMatrixD B);
+
+    /**
+     * {@code A * B + C} convenience multiplication plus addition. None of the
+     * operands is mutated.
+     * 
+     * @param B
+     *            second multiplicand
+     * @param C
+     *            the addend
+     * @return the result of the two operations
+     */
+    ComplexMatrixD timesPlus(ComplexMatrixD B, ComplexMatrixD C);
+
+    /**
+     * {@code A - B} convenience subtraction. None of the operands is mutated.
+     * 
+     * @param B
+     *            the subtrahend
+     * @return the result of the subtraction
+     */
+    ComplexMatrixD minus(ComplexMatrixD B);
+
+    /**
+     * Unary minus {@code -A} convenience method. None of the operands is
+     * mutated.
+     * 
+     * @return {@code -A}
+     */
+    ComplexMatrixD uminus();
 }

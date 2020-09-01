@@ -16,6 +16,10 @@
 package net.jamu.matrix;
 
 import java.util.Arrays;
+import java.util.Objects;
+
+import net.jamu.complex.Zd;
+import net.jamu.complex.ZdImpl;
 
 /**
  * A {@code ComplexMatrixDBase} is a partial implementation of a dense matrix of
@@ -38,6 +42,17 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         } else {
             a = array;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Zd toScalar() {
+        if (!isScalar()) {
+            throw new IllegalStateException("(" + rows + " x " + cols + ") matrix is not a scalar");
+        }
+        return new ZdImpl(a[0], a[1]);
     }
 
     /**
@@ -321,6 +336,57 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void get(int row, int col, Zd out) {
+        Objects.requireNonNull(out);
+        checkIndex(row, col);
+        int idx = 2 * idx(row, col);
+        out.set(a[idx], a[idx + 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Zd get(int row, int col) {
+        checkIndex(row, col);
+        int idx = 2 * idx(row, col);
+        return new ZdImpl(a[idx], a[idx + 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD set(int row, int col, double valr, double vali) {
+        checkIndex(row, col);
+        int idx = 2 * idx(row, col);
+        a[idx] = valr;
+        a[idx + 1] = vali;
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD add(int row, int col, double valr, double vali) {
+        checkIndex(row, col);
+        int idx = 2 * idx(row, col);
+        a[idx] += valr;
+        a[idx + 1] += vali;
+        return this;
+    }
+
+    protected void addUnsafe(int row, int col, double valr, double vali) {
+        int idx = 2 * idx(row, col);
+        a[idx] += valr;
+        a[idx + 1] += vali;
+    }
+
     // TODO ...
 
     /**
@@ -331,7 +397,85 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         return a;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void getUnsafe(int row, int col, Zd out) {
+        int idx = 2 * idx(row, col);
+        out.set(a[idx], a[idx + 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Zd getUnsafe(int row, int col) {
+        int idx = 2 * idx(row, col);
+        return new ZdImpl(a[idx], a[idx + 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setUnsafe(int row, int col, double valr, double vali) {
+        int idx = 2 * idx(row, col);
+        a[idx] = valr;
+        a[idx + 1] = vali;
+    }
+
     // TODO ...
+
+    // DComplexMatrixBasicOps
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD times(ComplexMatrixD B) {
+        return mult(B, create(rows, B.numColumns()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD timesTimes(ComplexMatrixD B, ComplexMatrixD C) {
+        return mult(B, create(rows, B.numColumns())).mult(C, create(rows, C.numColumns()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD plus(ComplexMatrixD B) {
+        return add(B, create(rows, cols));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD timesPlus(ComplexMatrixD B, ComplexMatrixD C) {
+        return multAdd(B, C.copy());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD minus(ComplexMatrixD B) {
+        return add(-1.0, 0.0, B, create(rows, cols));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD uminus() {
+        return scale(-1.0, 0.0, create(rows, cols));
+    }
 
     // protected methods
 

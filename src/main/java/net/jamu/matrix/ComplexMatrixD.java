@@ -15,6 +15,8 @@
  */
 package net.jamu.matrix;
 
+import net.jamu.complex.Zd;
+
 /**
  * A {@code ComplexMatrixD} is a dense matrix of double precision complex
  * numbers expressed as an array of primitive doubles with column-major storage
@@ -22,6 +24,15 @@ package net.jamu.matrix;
  * {@code NullPointerException} if any of the method arguments is {@code null}.
  */
 public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
+
+    /**
+     * Get the single element as a scalar if this matrix is 1-by-1.
+     * 
+     * @return the single element as a scalar if this matrix is 1-by-1
+     * @throws IllegalStateException
+     *             if this matrix is not 1-by-1
+     */
+    Zd toScalar();
 
     /**
      * {@code A = alpha * A}
@@ -375,6 +386,64 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
      */
     ComplexMatrixD setInplace(double alphar, double alphai, ComplexMatrixD other);
 
+    /**
+     * Copy the matrix element at {@code (row, col)} into {@code out}.
+     * 
+     * @param row
+     *            row index, zero-based
+     * @param col
+     *            column index, zero-based
+     * 
+     * @param out
+     *            receiver argument (mutated)
+     */
+    void get(int row, int col, Zd out);
+
+    /**
+     * Get the matrix element at {@code (row, col)}.
+     * 
+     * @param row
+     *            row index, zero-based
+     * @param col
+     *            column index, zero-based
+     * @return the matrix element at {@code (row, col)}
+     */
+    Zd get(int row, int col);
+
+    /**
+     * Set the matrix element at {@code (row, col)} to {@code val} mutating this
+     * matrix.
+     * 
+     * @param row
+     *            row index, zero-based
+     * @param col
+     *            column index, zero-based
+     * @param valr
+     *            the real part of the new value
+     * @param vali
+     *            the imaginary part of the new value
+     * @return this matrix (mutated)
+     */
+    ComplexMatrixD set(int row, int col, double valr, double vali);
+
+    /**
+     * Add {@code val} to the matrix element at {@code (row, col)} mutating this
+     * matrix.
+     * 
+     * @param row
+     *            row index, zero-based
+     * @param col
+     *            column index, zero-based
+     * @param valr
+     *            the real part of the value to add to the element at
+     *            {@code (row, col)}
+     * @param vali
+     *            the imaginary part of the value to add to the element at
+     *            {@code (row, col)}
+     * @return this matrix (mutated)
+     */
+    ComplexMatrixD add(int row, int col, double valr, double vali);
+
     // TODO ...
 
     /**
@@ -383,4 +452,43 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
      * @return the reference to the internal backing array
      */
     double[] getArrayUnsafe();
+
+    /**
+     * Copy the matrix element {@code (row, col)} without bounds checking into
+     * {@code out}.
+     * 
+     * @param row
+     *            row index, zero-based
+     * @param col
+     *            column index, zero-based
+     * @param out
+     *            receiver argument (mutated)
+     */
+    void getUnsafe(int row, int col, Zd out);
+
+    /**
+     * Get the matrix element {@code (row, col)} without bounds checking.
+     * 
+     * @param row
+     *            row index, zero-based
+     * @param col
+     *            column index, zero-based
+     * @return the matrix element at {@code (row, col)}
+     */
+    Zd getUnsafe(int row, int col);
+
+    /**
+     * Set the matrix element at {@code (row, col)} to {@code val} without
+     * bounds checking.
+     * 
+     * @param row
+     *            row index, zero-based
+     * @param col
+     *            column index, zero-based
+     * @param valr
+     *            real part of the new value
+     * @param vali
+     *            imaginary part of the new value
+     */
+    void setUnsafe(int row, int col, double valr, double vali);
 }
