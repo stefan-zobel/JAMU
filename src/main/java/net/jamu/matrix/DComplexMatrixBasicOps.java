@@ -81,4 +81,11 @@ public interface DComplexMatrixBasicOps {
      * @return {@code -A}
      */
     ComplexMatrixD uminus();
+
+    /**
+     * Returns <code>A<sup>*</sup></code>. None of the operands is mutated.
+     * 
+     * @return the conjugate transpose of this matrix
+     */
+    ComplexMatrixD conjugateTranspose();
 }
