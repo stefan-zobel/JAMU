@@ -18,9 +18,12 @@ package net.jamu.matrix;
 import net.dedekind.lapack.Lapack;
 import net.frobenius.TEigJob;
 import net.frobenius.lapack.PlainLapack;
+import net.jamu.complex.ZArrayUtil;
+import net.jamu.complex.Zf;
 
 /**
- * Eigenvalues and eigenvectors of a general n-by-n float matrix.
+ * Eigenvalues and eigenvectors of a general n-by-n float matrix
+ * ({@link MatrixF}).
  */
 public class EvdF {
 
@@ -30,27 +33,16 @@ public class EvdF {
     private final TEigJob rightEVec;
     // (right) eigenvectors if full == true or null
     private final SimpleMatrixF eigenVectors;
-    // eigenvalue real parts
-    private final float[] eigValRealParts;
-    // eigenvalue imaginary parts
-    private final float[] eigValImagParts;
+    // eigenvalues
+    private Zf[] complexEigenValues = new Zf[] {};
 
     /**
-     * Returns the real parts of the eigenvalues.
+     * Returns the eigenvalues.
      * 
-     * @return array containing the real parts of the eigenvalues
+     * @return array containing the eigenvalues
      */
-    public float[] getRealEigenvalues() {
-        return eigValRealParts;
-    }
-
-    /**
-     * Returns the imaginary parts of the eigenvalues.
-     * 
-     * @return array containing the imaginary parts of the eigenvalues
-     */
-    public float[] getImaginaryEigenvalues() {
-        return eigValImagParts;
+    public Zf[] getEigenvalues() {
+        return complexEigenValues;
     }
 
     /**
@@ -80,8 +72,6 @@ public class EvdF {
         int n = A.numRows();
         rightEVec = full ? TEigJob.ALL : TEigJob.VALUES_ONLY;
         eigenVectors = full ? new SimpleMatrixF(n, n) : null;
-        eigValRealParts = new float[n];
-        eigValImagParts = new float[n];
         computeEvdInplace(A);
     }
 
@@ -89,8 +79,12 @@ public class EvdF {
         MatrixF AA = A.copy();
         int n = AA.numRows();
         int ld = Math.max(1, n);
+        float[] eigValRealParts = new float[n];
+        float[] eigValImagParts = new float[n];
         PlainLapack.sgeev(Lapack.getInstance(), leftEVec, rightEVec, n, AA.getArrayUnsafe(), ld, eigValRealParts,
                 eigValImagParts, new float[0], ld, hasEigenvectors() ? eigenVectors.getArrayUnsafe() : new float[0],
                 ld);
+        // convert LAPACK eigenvalues to an Zf[] array
+        complexEigenValues = ZArrayUtil.primitiveToComplexArray(eigValRealParts, eigValImagParts);
     }
 }
