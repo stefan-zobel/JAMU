@@ -362,6 +362,31 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD submatrix(int r0, int c0, int r1, int c1, ComplexMatrixD B, int rb, int cb) {
+        checkSubmatrixIndexes(r0, c0, r1, c1);
+        B.checkIndex(rb, cb);
+        B.checkIndex(rb + r1 - r0, cb + c1 - c0);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        int rbStart = rb;
+        DimensionsBase BB = (DimensionsBase) B;
+        for (int col = c0; col <= c1; ++col) {
+            for (int row = r0; row <= r1; ++row) {
+                int bidx = 2 * BB.idx(rb++, cb);
+                int aidx = 2 * idx(row, col);
+                _b[bidx] = _a[aidx];
+                _b[bidx + 1] = _a[aidx + 1];
+            }
+            rb = rbStart;
+            cb++;
+        }
+        return B;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void get(int row, int col, Zd out) {
         Objects.requireNonNull(out);
         checkIndex(row, col);

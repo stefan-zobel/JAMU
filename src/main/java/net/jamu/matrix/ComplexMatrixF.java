@@ -455,6 +455,28 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
      */
     ComplexMatrixF add(int row, int col, float valr, float vali);
 
+    /**
+     * Copy a submatrix of this matrix into {@code B}.
+     * 
+     * @param r0
+     *            initial row index (left upper corner) in this matrix
+     * @param c0
+     *            initial col index (left upper corner) in this matrix
+     * @param r1
+     *            last row index (right lower corner) in this matrix
+     * @param c1
+     *            last col index (right lower corner) in this matrix
+     * @param B
+     *            matrix of dimension at least
+     *            {@code (r1 - r0 + 1) x (c1 - c0 + 1)}
+     * @param rb
+     *            initial row index (left upper corner) in the matrix {@code B}
+     * @param cb
+     *            initial col index (left upper corner) in the matrix {@code B}
+     * @return the submatrix {@code B}
+     */
+    ComplexMatrixF submatrix(int r0, int c0, int r1, int c1, ComplexMatrixF B, int rb, int cb);
+
     // TODO ...
 
     /**
