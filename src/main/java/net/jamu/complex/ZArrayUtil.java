@@ -53,6 +53,44 @@ public final class ZArrayUtil {
     }
 
     /**
+     * Convert two float[] arrays separately containing the real and imaginary
+     * part to corresponding {@link Zf} array.
+     */
+    public static Zf[] primitiveToComplexArray(float[] re, float[] im) {
+        if (re == null || re.length == 0 || im == null || im.length == 0) {
+            return new Zf[] {};
+        }
+        if (re.length != im.length) {
+            throw new IllegalArgumentException(
+                    "re[] and im[] arrays must have same length: " + re.length + " != " + im.length);
+        }
+        Zf[] c = new Zf[re.length];
+        for (int i = 0; i < c.length; ++i) {
+            c[i] = new ZfImpl(re[i], im[i]);
+        }
+        return c;
+    }
+
+    /**
+     * Convert two double[] arrays separately containing the real and imaginary
+     * part to corresponding {@link Zd} array.
+     */
+    public static Zd[] primitiveToComplexArray(double[] re, double[] im) {
+        if (re == null || re.length == 0 || im == null || im.length == 0) {
+            return new Zd[] {};
+        }
+        if (re.length != im.length) {
+            throw new IllegalArgumentException(
+                    "re[] and im[] arrays must have same length: " + re.length + " != " + im.length);
+        }
+        Zd[] c = new Zd[re.length];
+        for (int i = 0; i < c.length; ++i) {
+            c[i] = new ZdImpl(re[i], im[i]);
+        }
+        return c;
+    }
+
+    /**
      * Convert {@link Zf} array to an even length float[] array.
      */
     public static float[] complexToPrimitiveArray(Zf[] c) {
