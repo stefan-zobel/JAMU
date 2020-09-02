@@ -95,4 +95,13 @@ public interface DComplexMatrixBasicOps {
      * @return the transposed matrix
      */
     ComplexMatrixD transpose();
+
+    /**
+     * Returns <code>A<sup>-1</sup></code> for quadratic matrices. None of the
+     * operands is mutated.
+     * 
+     * @return the inverse of this matrix if it is quadratic
+     * @throws IllegalArgumentException if this matrix is not quadratic
+     */
+    ComplexMatrixD inverse();
 }

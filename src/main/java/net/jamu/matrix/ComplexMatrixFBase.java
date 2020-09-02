@@ -503,6 +503,18 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixF inv(ComplexMatrixF inverse) {
+        if (!this.isSquareMatrix()) {
+            throw new IllegalArgumentException("The inverse is only defined for square matrices");
+        }
+        Checks.checkEqualDimension(this, inverse);
+        return solve(Matrices.identityComplexF(this.numRows()), inverse);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Zf trace() {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("The trace of a matrix is only defined for square matrices");
@@ -596,6 +608,14 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     @Override
     public ComplexMatrixF transpose() {
         return trans(create(cols, rows));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixF inverse() {
+        return inv(create(rows, cols));
     }
 
     // protected methods

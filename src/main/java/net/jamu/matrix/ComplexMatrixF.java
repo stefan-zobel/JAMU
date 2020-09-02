@@ -525,6 +525,22 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
      */
     ComplexMatrixF solve(ComplexMatrixF B, ComplexMatrixF X);
 
+    /**
+     * Matrix inverse for quadratic matrices.
+     * 
+     * @param inverse
+     *            matrix where the inverse is stored. Must have the same
+     *            dimension as this matrix
+     * @return the inverse matrix (i.e. the argument {@code inverse})
+     * @throws IllegalArgumentException
+     *             if this matrix is not quadratic or if {@code inverse} has the
+     *             wrong dimension
+     * @throws ComputationTruncatedException
+     *             for exactly singular factors in the LU decomposition of this
+     *             matrix
+     */
+    ComplexMatrixF inv(ComplexMatrixF inverse);
+
     // TODO ...
 
     /**
