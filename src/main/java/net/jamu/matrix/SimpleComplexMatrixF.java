@@ -172,13 +172,19 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
     public ComplexMatrixF solve(ComplexMatrixF B, ComplexMatrixF X) {
         Checks.checkSolve(this, B, X);
         if (this.isSquareMatrix()) {
-            // return lusolve(this, X, B); TODO
-            return null;
+            return lusolve(this, X, B);
         }
         return qrsolve(this, X, B);
     }
 
     // TODO ...
+
+    private static ComplexMatrixF lusolve(ComplexMatrixF A, ComplexMatrixF X, ComplexMatrixF B) {
+        X.setInplace(B);
+        PlainLapack.cgesv(Lapack.getInstance(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
+                Math.max(1, A.numRows()), new int[A.numRows()], X.getArrayUnsafe(), Math.max(1, A.numRows()));
+        return X;
+    }
 
     private static ComplexMatrixF qrsolve(ComplexMatrixF A, ComplexMatrixF X, ComplexMatrixF B) {
         int rhsCount = B.numColumns();

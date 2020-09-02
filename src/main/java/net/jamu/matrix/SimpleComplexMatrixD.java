@@ -172,13 +172,19 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
     public ComplexMatrixD solve(ComplexMatrixD B, ComplexMatrixD X) {
         Checks.checkSolve(this, B, X);
         if (this.isSquareMatrix()) {
-            // return lusolve(this, X, B); TODO
-            return null;
+            return lusolve(this, X, B);
         }
         return qrsolve(this, X, B);
     }
 
     // TODO ...
+
+    private static ComplexMatrixD lusolve(ComplexMatrixD A, ComplexMatrixD X, ComplexMatrixD B) {
+        X.setInplace(B);
+        PlainLapack.zgesv(Lapack.getInstance(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
+                Math.max(1, A.numRows()), new int[A.numRows()], X.getArrayUnsafe(), Math.max(1, A.numRows()));
+        return X;
+    }
 
     private static ComplexMatrixD qrsolve(ComplexMatrixD A, ComplexMatrixD X, ComplexMatrixD B) {
         int rhsCount = B.numColumns();
