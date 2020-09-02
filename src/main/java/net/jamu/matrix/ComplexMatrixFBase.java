@@ -500,6 +500,26 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     // TODO ...
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Zf trace() {
+        if (!this.isSquareMatrix()) {
+            throw new IllegalArgumentException("The trace of a matrix is only defined for square matrices");
+        }
+        Zf t = new ZfImpl(0.0f);
+        double re = 0.0;
+        double im = 0.0;
+        for (int i = 0; i < rows; ++i) {
+            getUnsafe(i, i, t);
+            re += t.re();
+            im += t.im();
+        }
+        t.set((float) re, (float) im);
+        return t;
+    }
+
+    /**
      * Returns a string representation of this matrix. If the matrix has more
      * than 6 rows and/or more than 6 columns only the first 5 contiguous rows
      * and/or columns are displayed followed by a {@code "......"} marker and

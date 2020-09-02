@@ -504,6 +504,15 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     // TODO ...
 
     /**
+     * Matrix trace of a square matrix.
+     * 
+     * @return sum of the diagonal elements
+     * @throws IllegalArgumentException
+     *             if this matrix is not quadratic
+     */
+    Zf trace();
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array

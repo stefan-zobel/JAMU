@@ -504,6 +504,15 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
     // TODO ...
 
     /**
+     * Matrix trace of a square matrix.
+     * 
+     * @return sum of the diagonal elements
+     * @throws IllegalArgumentException
+     *             if this matrix is not quadratic
+     */
+    Zd trace();
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array
