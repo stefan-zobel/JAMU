@@ -59,13 +59,24 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
     ComplexMatrixD scale(double alphar, double alphai, ComplexMatrixD B);
 
     /**
-     * <code>AH = A<sup>*</sup></code>
+     * Stores <code>AH = A<sup>*</sup></code> (i.e., the conjugate transpose of
+     * {@code A}) in {@code AH}.
      * 
      * @param AH
-     *            output matrix
+     *            output matrix (mutated)
      * @return {@code AH}
      */
     ComplexMatrixD conjTrans(ComplexMatrixD AH);
+
+    /**
+     * Stores <code>AT = A<sup>T</sup></code> (i.e., the transpose of {@code A})
+     * in {@code AT}.
+     * 
+     * @param AT
+     *            output matrix (mutated)
+     * @return {@code AT}
+     */
+    ComplexMatrixD trans(ComplexMatrixD AT);
 
     /**
      * {@code A = A + B}

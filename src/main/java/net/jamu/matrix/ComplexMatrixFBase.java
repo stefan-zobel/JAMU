@@ -123,6 +123,28 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixF trans(ComplexMatrixF AT) {
+        Checks.checkTrans(this, AT);
+        int cols_ = cols;
+        int rows_ = rows;
+        float[] _a = a;
+        float[] _at = AT.getArrayUnsafe();
+        DimensionsBase B = (DimensionsBase) AT;
+        for (int col = 0; col < cols_; ++col) {
+            for (int row = 0; row < rows_; ++row) {
+                int aidx = 2 * idx(row, col);
+                int bidx = 2 * B.idx(col, row);
+                _at[bidx] = _a[aidx];
+                _at[bidx + 1] = _a[aidx + 1];
+            }
+        }
+        return AT;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixF addInplace(ComplexMatrixF B) {
         return addInplace(1.0f, 0.0f, B);
     }
