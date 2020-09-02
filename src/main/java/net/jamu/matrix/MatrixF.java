@@ -500,11 +500,11 @@ public interface MatrixF extends Dimensions, FMatrixBasicOps {
     /**
      * Computes the economy singular value decomposition of this matrix.
      * 
-     * @return the {@link SvdEconomyF} of this matrix
+     * @return the {@link SvdEconF} of this matrix
      * @throws NotConvergedException
      *             if the singular value decomposition did not converge
      */
-    SvdEconomyF svdEcon();
+    SvdEconF svdEcon();
 
     /**
      * Computes the eigenvalue decomposition of this matrix if it is quadratic.

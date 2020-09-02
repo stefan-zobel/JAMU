@@ -20,7 +20,7 @@ import net.frobenius.TSvdJob;
 import net.frobenius.lapack.PlainLapack;
 
 /**
- * Economy singular value decomposition of a float m-by-n matrix {@code A}.
+ * Economy singular value decomposition of a double m-by-n matrix {@code A}.
  * <p>
  * The economy-size decomposition removes extra rows or columns of zeros from
  * the diagonal matrix of singular values, {@code S}, along with the columns in
@@ -29,14 +29,14 @@ import net.frobenius.lapack.PlainLapack;
  * improve execution time and reduce storage requirements without compromising
  * the accuracy of the decomposition.
  */
-public class SvdEconomyF extends SvdF {
+public class SvdEconD extends SvdD {
 
     /**
      * The left singular vectors (column-wise).
      * 
      * @return m-by-m orthogonal matrix
      */
-    public MatrixF getU() {
+    public MatrixD getU() {
         return U;
     }
 
@@ -48,7 +48,7 @@ public class SvdEconomyF extends SvdF {
      * 
      * @return n-by-n orthogonal matrix
      */
-    public MatrixF getVt() {
+    public MatrixD getVt() {
         return Vt;
     }
 
@@ -58,7 +58,7 @@ public class SvdEconomyF extends SvdF {
      * @return array of size {@code min(m, n)} containing the singular values in
      *         descending order
      */
-    public float[] getS() {
+    public double[] getS() {
         return S;
     }
 
@@ -71,21 +71,21 @@ public class SvdEconomyF extends SvdF {
         return true;
     }
 
-    /* package */ SvdEconomyF(MatrixF A) {
+    /* package */ SvdEconD(MatrixD A) {
         // jobType, U, Vt, S
-        super(TSvdJob.PART, new SimpleMatrixF(Math.max(1, A.numRows()), Math.min(A.numRows(), A.numColumns())),
-                new SimpleMatrixF(Math.max(1, Math.min(A.numRows(), A.numColumns())), A.numColumns()),
-                new float[Math.min(A.numRows(), A.numColumns())]);
+        super(TSvdJob.PART, new SimpleMatrixD(Math.max(1, A.numRows()), Math.min(A.numRows(), A.numColumns())),
+                new SimpleMatrixD(Math.max(1, Math.min(A.numRows(), A.numColumns())), A.numColumns()),
+                new double[Math.min(A.numRows(), A.numColumns())]);
         computeSvdInplace(A);
     }
 
-    private void computeSvdInplace(MatrixF A) {
+    private void computeSvdInplace(MatrixD A) {
         // Note: this wouldn't work for TSvdJob.OVERWRITE as A gets overwritten
         // in that case
-        MatrixF AA = A.copy();
+        MatrixD AA = A.copy();
         int m = AA.numRows();
         int n = AA.numColumns();
-        PlainLapack.sgesdd(Lapack.getInstance(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
+        PlainLapack.dgesdd(Lapack.getInstance(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
                 U.getArrayUnsafe(), Math.max(1, U.numRows()), Vt.getArrayUnsafe(), Math.max(1, Vt.numRows()));
     }
 }

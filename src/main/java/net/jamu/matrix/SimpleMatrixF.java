@@ -160,8 +160,8 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
-    public SvdEconomyF svdEcon() {
-        return new SvdEconomyF(this);
+    public SvdEconF svdEcon() {
+        return new SvdEconF(this);
     }
 
     /**

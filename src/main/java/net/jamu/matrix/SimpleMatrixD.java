@@ -160,8 +160,8 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
-    public SvdEconomyD svdEcon() {
-        return new SvdEconomyD(this);
+    public SvdEconD svdEcon() {
+        return new SvdEconD(this);
     }
 
     /**
