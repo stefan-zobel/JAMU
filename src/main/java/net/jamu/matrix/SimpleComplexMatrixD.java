@@ -179,6 +179,19 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
 
     // TODO ...
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EvdComplexD evd(boolean full) {
+        if (!this.isSquareMatrix()) {
+            throw new IllegalArgumentException("EVD only works for square matrices");
+        }
+        return new EvdComplexD(this, full);
+    }
+
+    // TODO ...
+
     private static ComplexMatrixD lusolve(ComplexMatrixD A, ComplexMatrixD X, ComplexMatrixD B) {
         X.setInplace(B);
         PlainLapack.zgesv(Lapack.getInstance(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),

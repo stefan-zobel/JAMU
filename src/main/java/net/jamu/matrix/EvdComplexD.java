@@ -65,7 +65,7 @@ public class EvdComplexD {
         return rightEVec == TEigJob.ALL;
     }
 
-    /* package */ EvdComplexD(MatrixD A, boolean full) {
+    /* package */ EvdComplexD(ComplexMatrixD A, boolean full) {
         if (!A.isSquareMatrix()) {
             throw new IllegalArgumentException("EVD only works for square matrices");
         }
@@ -75,7 +75,7 @@ public class EvdComplexD {
         computeEvdInplace(A);
     }
 
-    private void computeEvdInplace(MatrixD A) {
+    private void computeEvdInplace(ComplexMatrixD A) {
         // note that A need not be copied in the complex case
         int n = A.numRows();
         int ld = Math.max(1, n);

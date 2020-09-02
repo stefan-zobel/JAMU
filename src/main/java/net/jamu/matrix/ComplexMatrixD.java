@@ -541,6 +541,22 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
      */
     ComplexMatrixD inv(ComplexMatrixD inverse);
 
+    /**
+     * Computes the eigenvalue decomposition of this matrix if it is quadratic.
+     * 
+     * @param full
+     *            controls whether the (right) eigenvectors should be computed
+     *            in addition (if {@code true}) or the eigenvalues only (if
+     *            {@code false})
+     * @return the {@link EvdComplexD} of this matrix, either full or the
+     *         eigenvalues only (if {@code full} is set to {@code false})
+     * @throws IllegalArgumentException
+     *             if this matrix is not quadratic
+     * @throws ComputationTruncatedException
+     *             if the QR decomposition failed to compute all eigenvalues
+     */
+    EvdComplexD evd(boolean full);
+
     // TODO ...
 
     /**
