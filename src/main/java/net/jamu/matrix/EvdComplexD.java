@@ -76,6 +76,7 @@ public class EvdComplexD {
     }
 
     private void computeEvdInplace(MatrixD A) {
+        // note that A need not be copied in the complex case
         int n = A.numRows();
         int ld = Math.max(1, n);
         double[] complexEigenVals = new double[2 * n];

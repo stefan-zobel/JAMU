@@ -76,6 +76,7 @@ public class EvdComplexF {
     }
 
     private void computeEvdInplace(MatrixF A) {
+        // note that A need not be copied in the complex case
         int n = A.numRows();
         int ld = Math.max(1, n);
         float[] complexEigenVals = new float[2 * n];
