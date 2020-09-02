@@ -60,7 +60,7 @@ public class EvdF {
      * @return n-by-n eigenvector matrix or {@code null} if
      *         {@link #hasEigenvectors()} returns {@code false}
      */
-    public SimpleMatrixF getEigenvectors() {
+    public MatrixF getEigenvectors() {
         return eigenVectors;
     }
 
