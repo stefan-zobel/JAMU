@@ -39,7 +39,7 @@ import net.frobenius.lapack.PlainLapack;
  */
 public class SvdF {
 
-    // either "A" or "N"
+    // either "A", "N" or "S"
     protected final TSvdJob jobType;
 
     protected final SimpleMatrixF U;
