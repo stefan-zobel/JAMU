@@ -811,6 +811,44 @@ public final class Matrices {
         return cmd;
     }
 
+    /**
+     * Create a {@code MatrixF} copy of the {@code ComplexMatrixF} input matrix
+     * where only the real parts are copied from {@code cmf}.
+     * 
+     * @param cmf
+     *            {@code ComplexMatrixF} input matrix to copy into a
+     *            {@code MatrixF}
+     * @return a {@code MatrixF} copy of the real parts of the input matrix
+     */
+    public static MatrixF convertToReal(ComplexMatrixF cmf) {
+        MatrixF mf = createF(cmf.numRows(), cmf.numColumns());
+        float[] to = mf.getArrayUnsafe();
+        float[] from = cmf.getArrayUnsafe();
+        for (int i = 0; i < to.length; ++i) {
+            to[i] = from[2 * i];
+        }
+        return mf;
+    }
+
+    /**
+     * Create a {@code MatrixD} copy of the {@code ComplexMatrixD} input matrix
+     * where only the real parts are copied from {@code cmd}.
+     * 
+     * @param cmd
+     *            {@code ComplexMatrixD} input matrix to copy into a
+     *            {@code MatrixD}
+     * @return a {@code MatrixD} copy of the real parts of the input matrix
+     */
+    public static MatrixD convertToReal(ComplexMatrixD cmd) {
+        MatrixD md = createD(cmd.numRows(), cmd.numColumns());
+        double[] to = md.getArrayUnsafe();
+        double[] from = cmd.getArrayUnsafe();
+        for (int i = 0; i < to.length; ++i) {
+            to[i] = from[2 * i];
+        }
+        return md;
+    }
+
     /* package */ static String toString(Dimensions dim) {
         StringBuilder buf = new StringBuilder();
         buf.append(dim.asString()).append(System.lineSeparator());
