@@ -508,8 +508,11 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      */
     @Override
     public double trace() {
+        if (!this.isSquareMatrix()) {
+            throw new IllegalArgumentException("The trace of a matrix is only defined for square matrices");
+        }
         double t = 0.0;
-        for (int i = 0; i < Math.min(rows, cols); ++i) {
+        for (int i = 0; i < rows; ++i) {
             t += getUnsafe(i, i);
         }
         return t;

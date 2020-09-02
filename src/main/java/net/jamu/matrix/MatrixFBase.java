@@ -508,8 +508,11 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      */
     @Override
     public float trace() {
+        if (!this.isSquareMatrix()) {
+            throw new IllegalArgumentException("The trace of a matrix is only defined for square matrices");
+        }
         float t = 0.0f;
-        for (int i = 0; i < Math.min(rows, cols); ++i) {
+        for (int i = 0; i < rows; ++i) {
             t += getUnsafe(i, i);
         }
         return t;

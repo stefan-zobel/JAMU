@@ -546,9 +546,11 @@ public interface MatrixD extends Dimensions, DMatrixBasicOps {
     double norm2();
 
     /**
-     * Matrix trace
+     * Matrix trace of a square matrix.
      * 
      * @return sum of the diagonal elements
+     * @throws IllegalArgumentException
+     *             if this matrix is not quadratic
      */
     double trace();
 
