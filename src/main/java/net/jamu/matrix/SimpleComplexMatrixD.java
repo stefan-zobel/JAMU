@@ -19,6 +19,11 @@ import java.util.Arrays;
 
 import net.dedekind.blas.BlasExt;
 import net.dedekind.blas.Trans;
+import net.dedekind.lapack.Lapack;
+import net.frobenius.TTrans;
+import net.frobenius.lapack.PlainLapack;
+import net.jamu.complex.Zd;
+import net.jamu.complex.ZdImpl;
 
 /**
  * A simple dense matrix implementation of a column-major layout double
@@ -160,7 +165,46 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         return C;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD solve(ComplexMatrixD B, ComplexMatrixD X) {
+        Checks.checkSolve(this, B, X);
+        if (this.isSquareMatrix()) {
+            // return lusolve(this, X, B); TODO
+            return null;
+        }
+        return qrsolve(this, X, B);
+    }
+
     // TODO ...
+
+    private static ComplexMatrixD qrsolve(ComplexMatrixD A, ComplexMatrixD X, ComplexMatrixD B) {
+        int rhsCount = B.numColumns();
+        int mm = A.numRows();
+        int nn = A.numColumns();
+
+        SimpleComplexMatrixD tmp = new SimpleComplexMatrixD(Math.max(mm, nn), rhsCount);
+        Zd zVal = new ZdImpl(0.0);
+        for (int j = 0; j < rhsCount; ++j) {
+            for (int i = 0; i < mm; ++i) {
+                B.getUnsafe(i, j, zVal);
+                tmp.setUnsafe(i, j, zVal.re(), zVal.im());
+            }
+        }
+
+        PlainLapack.zgels(Lapack.getInstance(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
+                Math.max(1, mm), tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
+
+        for (int j = 0; j < rhsCount; ++j) {
+            for (int i = 0; i < nn; ++i) {
+                tmp.getUnsafe(i, j, zVal);
+                X.setUnsafe(i, j, zVal.re(), zVal.im());
+            }
+        }
+        return X;
+    }
 
     /**
      * {@inheritDoc}

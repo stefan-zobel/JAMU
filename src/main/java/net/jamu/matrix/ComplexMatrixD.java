@@ -15,6 +15,7 @@
  */
 package net.jamu.matrix;
 
+import net.frobenius.ComputationTruncatedException;
 import net.jamu.complex.Zd;
 
 /**
@@ -500,6 +501,29 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
      * @return this matrix {@code A}
      */
     ComplexMatrixD setSubmatrixInplace(int r0, int c0, ComplexMatrixD B, int rb0, int cb0, int rb1, int cb1);
+
+    /**
+     * Computes the solution ({@code X}) to a system of linear equations
+     * {@code A * X = B}, where {@code A} is either a {@code n x n} matrix and
+     * {@code X} and {@code B} are {@code n x r} matrices, or where {@code A} is
+     * a {@code n x m} and matrix {@code X} is a {@code m x r} matrix and
+     * {@code B} is a {@code n x r} matrix.
+     * 
+     * @param B
+     *            matrix with the same number of rows as this matrix {@code A},
+     *            and the same number of columns as {@code X}
+     * @param X
+     *            matrix with number of rows equal to the number of columns of
+     *            this matrix {@code A}, and the same number of columns as
+     *            {@code B}
+     * @return {@code X}, the solution of dimension either {@code n x r} (in the
+     *         {@code n x n} case) or {@code m x r} (in the {@code m x n} case).
+     * @throws ComputationTruncatedException
+     *             for exactly singular factors in the LU decomposition of a
+     *             quadratic matrix or for a non-quadratic matrix that doesn't
+     *             have full rank
+     */
+    ComplexMatrixD solve(ComplexMatrixD B, ComplexMatrixD X);
 
     // TODO ...
 
