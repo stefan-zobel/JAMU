@@ -224,7 +224,25 @@ public final class ZdImpl implements Zd {
     }
 
     public final String toString() {
-        return re() + "  " + im() + "i";
+        double re_ = re();
+        double im_ = im();
+        // fix negative zero
+        if (re_ == 0.0) {
+            re_ = 0.0;
+        }
+        if (im_ == 0.0) {
+            im_ = 0.0;
+        }
+        StringBuilder buf = new StringBuilder(40);
+        if (re_ >= 0.0) {
+            buf.append("+");
+        }
+        buf.append(String.format("%.10E", re_)).append("  ");
+        if (im_ >= 0.0) {
+            buf.append("+");
+        }
+        buf.append(String.format("%.10E", im_)).append("i");
+        return buf.toString();
     }
 
     public final boolean equals(Object that) {

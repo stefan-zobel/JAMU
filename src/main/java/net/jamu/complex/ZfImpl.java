@@ -224,7 +224,25 @@ public final class ZfImpl implements Zf {
     }
 
     public final String toString() {
-        return re() + "  " + im() + "i";
+        float re_ = re();
+        float im_ = im();
+        // fix negative zero
+        if (re_ == 0.0f) {
+            re_ = 0.0f;
+        }
+        if (im_ == 0.0f) {
+            im_ = 0.0f;
+        }
+        StringBuilder buf = new StringBuilder(40);
+        if (re_ >= 0.0f) {
+            buf.append("+");
+        }
+        buf.append(String.format("%.6E", re_)).append("  ");
+        if (im_ >= 0.0f) {
+            buf.append("+");
+        }
+        buf.append(String.format("%.6E", im_)).append("i");
+        return buf.toString();
     }
 
     public final boolean equals(Object that) {
