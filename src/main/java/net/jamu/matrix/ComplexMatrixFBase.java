@@ -387,6 +387,31 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixF setSubmatrixInplace(int r0, int c0, ComplexMatrixF B, int rb0, int cb0, int rb1, int cb1) {
+        B.checkSubmatrixIndexes(rb0, cb0, rb1, cb1);
+        checkIndex(r0, c0);
+        checkIndex(r0 + rb1 - rb0, c0 + cb1 - cb0);
+        float[] _a = a;
+        float[] _b = B.getArrayUnsafe();
+        int r0Start = r0;
+        DimensionsBase BB = (DimensionsBase) B;
+        for (int col = cb0; col <= cb1; ++col) {
+            for (int row = rb0; row <= rb1; ++row) {
+                int bidx = 2 * BB.idx(row, col);
+                int aidx = 2 * idx(r0++, c0);
+                _a[aidx] = _b[bidx];
+                _a[aidx + 1] = _b[bidx + 1];
+            }
+            r0 = r0Start;
+            c0++;
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void get(int row, int col, Zf out) {
         Objects.requireNonNull(out);
         checkIndex(row, col);

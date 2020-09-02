@@ -477,6 +477,30 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
      */
     ComplexMatrixD submatrix(int r0, int c0, int r1, int c1, ComplexMatrixD B, int rb, int cb);
 
+    /**
+     * Set a submatrix from the values of matrix {@code B} extending from
+     * {@code (rb0, cb0)} to {@code (rb1, cb1)} (the upper left and lower right
+     * corner in {@code B} respectively) at position {@code (r0, c0)} in this
+     * matrix.
+     * 
+     * @param r0
+     *            initial row index (left upper corner) in this matrix
+     * @param c0
+     *            initial col index (left upper corner) in this matrix
+     * @param rb0
+     *            initial row index (left upper corner) in the matrix {@code B}
+     * @param cb0
+     *            initial col index (left upper corner) in the matrix {@code B}
+     * @param rb1
+     *            last row index (right lower corner) in the matrix {@code B}
+     * @param cb1
+     *            last col index (right lower corner) in the matrix {@code B}
+     * @param B
+     *            the matrix that holds the values to set in this matrix
+     * @return this matrix {@code A}
+     */
+    ComplexMatrixD setSubmatrixInplace(int r0, int c0, ComplexMatrixD B, int rb0, int cb0, int rb1, int cb1);
+
     // TODO ...
 
     /**
