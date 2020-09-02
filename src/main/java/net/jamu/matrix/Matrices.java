@@ -860,6 +860,10 @@ public final class Matrices {
                 printRowD(row, _cols, (MatrixD) dim, buf);
             } else if (dim instanceof MatrixF) {
                 printRowF(row, _cols, (MatrixF) dim, buf);
+            } else if (dim instanceof ComplexMatrixD) {
+                printRowComplexD(row, _cols, (ComplexMatrixD) dim, buf);
+            } else if (dim instanceof ComplexMatrixF) {
+                printRowComplexF(row, _cols, (ComplexMatrixF) dim, buf);
             }
         }
         if (row == LAST_IDX && _rows < dim.numRows()) {
@@ -875,6 +879,10 @@ public final class Matrices {
                 printRowD(dim.numRows() - 1, _cols, (MatrixD) dim, buf);
             } else if (dim instanceof MatrixF) {
                 printRowF(dim.numRows() - 1, _cols, (MatrixF) dim, buf);
+            } else if (dim instanceof ComplexMatrixD) {
+                printRowComplexD(dim.numRows() - 1, _cols, (ComplexMatrixD) dim, buf);
+            } else if (dim instanceof ComplexMatrixF) {
+                printRowComplexF(dim.numRows() - 1, _cols, (ComplexMatrixF) dim, buf);
             }
         }
         return buf.toString();
@@ -912,6 +920,36 @@ public final class Matrices {
         if (col == LAST_IDX && _cols < m.numColumns()) {
             buf.append(", ......, ");
             buf.append(String.format(FORMAT_F, m.getUnsafe(row, m.numColumns() - 1)));
+        }
+        buf.append(System.lineSeparator());
+    }
+
+    private static void printRowComplexD(int row, int _cols, ComplexMatrixD m, StringBuilder buf) {
+        int col;
+        for (col = 0; col < _cols; ++col) {
+            buf.append(m.getUnsafe(row, col).toString());
+            if (col < _cols - 1) {
+                buf.append(", ");
+            }
+        }
+        if (col == LAST_IDX && _cols < m.numColumns()) {
+            buf.append(", ......, ");
+            buf.append(m.getUnsafe(row, m.numColumns() - 1).toString());
+        }
+        buf.append(System.lineSeparator());
+    }
+
+    private static void printRowComplexF(int row, int _cols, ComplexMatrixF m, StringBuilder buf) {
+        int col;
+        for (col = 0; col < _cols; ++col) {
+            buf.append(m.getUnsafe(row, col).toString());
+            if (col < _cols - 1) {
+                buf.append(", ");
+            }
+        }
+        if (col == LAST_IDX && _cols < m.numColumns()) {
+            buf.append(", ......, ");
+            buf.append(m.getUnsafe(row, m.numColumns() - 1).toString());
         }
         buf.append(System.lineSeparator());
     }
