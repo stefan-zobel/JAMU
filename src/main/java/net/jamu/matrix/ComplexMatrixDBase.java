@@ -615,6 +615,9 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixD inverse() {
+        if (!this.isSquareMatrix()) {
+            throw new IllegalArgumentException("The inverse is only defined for square matrices");
+        }
         return inv(create(rows, cols));
     }
 
