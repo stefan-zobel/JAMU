@@ -88,4 +88,11 @@ public interface DComplexMatrixBasicOps {
      * @return the conjugate transpose of this matrix
      */
     ComplexMatrixD conjugateTranspose();
+
+    /**
+     * Returns <code>A<sup>T</sup></code>. None of the operands is mutated.
+     * 
+     * @return the transposed matrix
+     */
+    ComplexMatrixD transpose();
 }

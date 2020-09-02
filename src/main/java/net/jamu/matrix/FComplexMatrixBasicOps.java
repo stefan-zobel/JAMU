@@ -88,4 +88,11 @@ public interface FComplexMatrixBasicOps {
      * @return the conjugate transpose of this matrix
      */
     ComplexMatrixF conjugateTranspose();
+
+    /**
+     * Returns <code>A<sup>T</sup></code>. None of the operands is mutated.
+     * 
+     * @return the transposed matrix
+     */
+    ComplexMatrixF transpose();
 }

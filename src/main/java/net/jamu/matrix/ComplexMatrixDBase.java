@@ -507,6 +507,14 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         return conjTrans(create(cols, rows));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD transpose() {
+        return trans(create(cols, rows));
+    }
+
     // protected methods
 
     protected abstract ComplexMatrixD create(int rows, int cols);
