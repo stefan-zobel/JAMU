@@ -211,8 +211,8 @@ public final class ZArrayUtil {
         if (scale == 0.0) {
             return 0.0;
         }
-        while (scale < 1.1) {
-            scale = 2.0 * scale;
+        while (scale <= 1.1) {
+            scale = scale * 1000.0;
         }
         scale = 1.0 / scale;
         double sumsquared = 0.0;
@@ -247,8 +247,8 @@ public final class ZArrayUtil {
         if (scale == 0.0) {
             return 0.0f;
         }
-        while (scale < 1.1) {
-            scale = 2.0 * scale;
+        while (scale <= 1.1) {
+            scale = scale * 1000.0;
         }
         scale = 1.0 / scale;
         double sumsquared = 0.0;
