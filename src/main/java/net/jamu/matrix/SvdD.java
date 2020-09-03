@@ -31,7 +31,7 @@ import net.frobenius.lapack.PlainLapack;
  * </pre>
  *
  * where {@code S} is an m-by-n matrix which is zero except for its min(m, n)
- * diagonal elements, {@code U} is an m-by-n orthogonal matrix, and {@code V} is
+ * diagonal elements, {@code U} is an m-by-m orthogonal matrix, and {@code V} is
  * a n-by-n orthogonal matrix. The diagonal elements of {@code S} are the
  * singular values of {@code A}; they are real and non-negative, and are
  * returned in descending order. The first min(m, n) columns of {@code U} and
@@ -50,7 +50,7 @@ public class SvdD {
      * The left singular vectors (column-wise) or {@code null} if the singular
      * vectors haven't been computed.
      * 
-     * @return m-by-n orthogonal matrix
+     * @return m-by-m orthogonal matrix
      */
     public MatrixD getU() {
         return U;
