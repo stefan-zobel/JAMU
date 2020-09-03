@@ -177,6 +177,22 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         return qrsolve(this, X, B);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SvdComplexD svd(boolean full) {
+        return new SvdComplexD(this, full);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SvdEconComplexD svdEcon() {
+        return new SvdEconComplexD(this);
+    }
+
     // TODO ...
 
     /**

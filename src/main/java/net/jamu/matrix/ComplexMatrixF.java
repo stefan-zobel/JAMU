@@ -16,6 +16,7 @@
 package net.jamu.matrix;
 
 import net.frobenius.ComputationTruncatedException;
+import net.frobenius.NotConvergedException;
 import net.jamu.complex.Zf;
 
 /**
@@ -556,6 +557,28 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
      *             if the QR decomposition failed to compute all eigenvalues
      */
     EvdComplexF evd(boolean full);
+
+    /**
+     * Computes the singular value decomposition of this matrix.
+     * 
+     * @param full
+     *            controls whether the full decomposition should be computed (if
+     *            {@code true}) or the singular values only (if {@code false})
+     * @return the {@link SvdComplexF} of this matrix, either full or the
+     *         singular values only (if {@code full} is set to {@code false})
+     * @throws NotConvergedException
+     *             if the singular value decomposition did not converge
+     */
+    SvdComplexF svd(boolean full);
+
+    /**
+     * Computes the economy singular value decomposition of this matrix.
+     * 
+     * @return the {@link SvdEconComplexF} of this matrix
+     * @throws NotConvergedException
+     *             if the singular value decomposition did not converge
+     */
+    SvdEconComplexF svdEcon();
 
     // TODO ...
 
