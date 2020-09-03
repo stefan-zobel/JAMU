@@ -57,8 +57,8 @@ public class SvdEconD extends SvdD {
     /**
      * The non-zero singular values in descending order.
      * 
-     * @return array of size {@code min(m, n)} containing the non-zero singular
-     *         values in descending order
+     * @return array of size {@code r <= min(m, n)} containing the non-zero
+     *         singular values in descending order
      */
     public double[] getS() {
         return S;
