@@ -190,6 +190,78 @@ public final class ZArrayUtil {
         return im;
     }
 
+    /**
+     * Compute the L2 norm of an even length double[] vector (can also be used
+     * for the computation of the Frobenius norm of complex matrices stored in
+     * either column-major or row-major layout).
+     */
+    public static double l2norm(double[] a) {
+        if (a == null || a.length == 0) {
+            return 0.0;
+        }
+        checkEvenLength(a);
+        double scale = 0.0;
+        for (int i = 0; i < a.length; i += 2) {
+            double xr = a[i];
+            double xi = a[i + 1];
+            if (xr != 0.0 || xi != 0.0) {
+                scale = Math.max(scale, Math.abs(xr) + Math.abs(xi));
+            }
+        }
+        if (scale == 0.0) {
+            return 0.0;
+        }
+        while (scale < 1.1) {
+            scale = 2.0 * scale;
+        }
+        scale = 1.0 / scale;
+        double sumsquared = 0.0;
+        for (int i = 0; i < a.length; ++i) {
+            double x = a[i];
+            if (x != 0.0) {
+                double scaled = scale * x;
+                sumsquared += (scaled * scaled);
+            }
+        }
+        return Math.sqrt(sumsquared) / scale;
+    }
+
+    /**
+     * Compute the L2 norm of an even length float[] vector (can also be used
+     * for the computation of the Frobenius norm of complex matrices stored in
+     * either column-major or row-major layout).
+     */
+    public static float l2norm(float[] a) {
+        if (a == null || a.length == 0) {
+            return 0.0f;
+        }
+        checkEvenLength(a);
+        double scale = 0.0;
+        for (int i = 0; i < a.length; i += 2) {
+            double xr = a[i];
+            double xi = a[i + 1];
+            if (xr != 0.0 || xi != 0.0) {
+                scale = Math.max(scale, Math.abs(xr) + Math.abs(xi));
+            }
+        }
+        if (scale == 0.0) {
+            return 0.0f;
+        }
+        while (scale < 1.1) {
+            scale = 2.0 * scale;
+        }
+        scale = 1.0 / scale;
+        double sumsquared = 0.0;
+        for (int i = 0; i < a.length; ++i) {
+            double x = a[i];
+            if (x != 0.0) {
+                double scaled = scale * x;
+                sumsquared += (scaled * scaled);
+            }
+        }
+        return (float) (Math.sqrt(sumsquared) / scale);
+    }
+
     private static void checkEvenLength(float[] a) {
         if (a.length % 2 != 0) {
             throw new IllegalArgumentException("array length must be even: " + a.length);
