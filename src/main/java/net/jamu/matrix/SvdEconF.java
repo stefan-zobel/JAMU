@@ -34,7 +34,8 @@ public class SvdEconF extends SvdF {
     /**
      * The left singular vectors (column-wise).
      * 
-     * @return reduced m-by-m semi-orthogonal matrix
+     * @return reduced m-by-r semi-orthogonal matrix where {@code r} is the rank
+     *         of {@code A}
      */
     public MatrixF getU() {
         return U;
@@ -46,7 +47,8 @@ public class SvdEconF extends SvdF {
      * Note that the algorithm returns <code>V<sup>T</sup></code>, not
      * {@code V}.
      * 
-     * @return reduced n-by-n semi-orthogonal matrix
+     * @return reduced n-by-r semi-orthogonal matrix where {@code r} is the rank
+     *         of {@code A}
      */
     public MatrixF getVt() {
         return Vt;
