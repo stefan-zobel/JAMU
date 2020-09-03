@@ -536,6 +536,18 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     /**
      * {@inheritDoc}
      */
+    public MatrixD selectConsecutiveColumns(int colFrom, int colTo) {
+        checkSubmatrixIndexes(0, colFrom, rows - 1, colTo);
+        int startPos = rows * colFrom;
+        int length = ((colTo - colFrom) + 1) * rows;
+        double[] dest = new double[length];
+        System.arraycopy(a, startPos, dest, 0, length);
+        return create(rows, (colTo - colFrom) + 1, dest);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MatrixD times(MatrixD B) {
         return mult(B, create(rows, B.numColumns()));

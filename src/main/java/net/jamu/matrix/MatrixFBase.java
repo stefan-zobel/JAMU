@@ -536,6 +536,18 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     /**
      * {@inheritDoc}
      */
+    public MatrixF selectConsecutiveColumns(int colFrom, int colTo) {
+        checkSubmatrixIndexes(0, colFrom, rows - 1, colTo);
+        int startPos = rows * colFrom;
+        int length = ((colTo - colFrom) + 1) * rows;
+        float[] dest = new float[length];
+        System.arraycopy(a, startPos, dest, 0, length);
+        return create(rows, (colTo - colFrom) + 1, dest);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MatrixF times(MatrixF B) {
         return mult(B, create(this.rows, B.numColumns()));

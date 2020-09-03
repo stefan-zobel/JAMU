@@ -549,6 +549,18 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     /**
      * {@inheritDoc}
      */
+    public ComplexMatrixF selectConsecutiveColumns(int colFrom, int colTo) {
+        checkSubmatrixIndexes(0, colFrom, rows - 1, colTo);
+        int startPos = 2 * rows * colFrom;
+        int length = 2 * ((colTo - colFrom) + 1) * rows;
+        float[] dest = new float[length];
+        System.arraycopy(a, startPos, dest, 0, length);
+        return create(rows, (colTo - colFrom) + 1, dest);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ComplexMatrixF times(ComplexMatrixF B) {
         return mult(B, create(rows, B.numColumns()));

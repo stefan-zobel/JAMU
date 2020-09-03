@@ -23,6 +23,20 @@ package net.jamu.matrix;
 public interface FMatrixBasicOps {
 
     /**
+     * Creates a submatrix from this matrix that contains all columns from
+     * {@code colFrom} (inclusive) up to {@code colTo} (inclusive).
+     * 
+     * @param colFrom
+     *            index of the first column to include in the submatrix
+     * @param colTo
+     *            index of the last column to include in the submatrix
+     * @return a submatrix copy of this matrix that consists of the columns
+     *         starting from column index {@code colFrom} up to and including
+     *         the column with column index {@code colTo}
+     */
+    MatrixF selectConsecutiveColumns(int colFrom, int colTo);
+
+    /**
      * {@code A * B} convenience multiplication. None of the operands is
      * mutated.
      * 
