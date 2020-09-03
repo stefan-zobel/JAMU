@@ -34,7 +34,7 @@ public class SvdEconD extends SvdD {
     /**
      * The left singular vectors (column-wise).
      * 
-     * @return m-by-m orthogonal matrix
+     * @return reduced m-by-m semi-orthogonal matrix
      */
     public MatrixD getU() {
         return U;
@@ -46,17 +46,17 @@ public class SvdEconD extends SvdD {
      * Note that the algorithm returns <code>V<sup>T</sup></code>, not
      * {@code V}.
      * 
-     * @return n-by-n orthogonal matrix
+     * @return reduced n-by-n semi-orthogonal matrix
      */
     public MatrixD getVt() {
         return Vt;
     }
 
     /**
-     * The singular values in descending order.
+     * The non-zero singular values in descending order.
      * 
-     * @return array of size {@code min(m, n)} containing the singular values in
-     *         descending order
+     * @return array of size {@code min(m, n)} containing the non-zero singular
+     *         values in descending order
      */
     public double[] getS() {
         return S;
