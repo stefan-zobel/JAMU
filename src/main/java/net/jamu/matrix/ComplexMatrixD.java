@@ -592,6 +592,13 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
     // TODO ...
 
     /**
+     * Frobenius norm
+     * 
+     * @return sqrt of sum of squares of all elements
+     */
+    double normF();
+
+    /**
      * Two norm
      * 
      * @return maximum singular value

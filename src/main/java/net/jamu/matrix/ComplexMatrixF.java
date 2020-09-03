@@ -592,6 +592,13 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     // TODO ...
 
     /**
+     * Frobenius norm
+     * 
+     * @return sqrt of sum of squares of all elements
+     */
+    float normF();
+
+    /**
      * Two norm
      * 
      * @return maximum singular value

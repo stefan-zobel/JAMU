@@ -18,6 +18,7 @@ package net.jamu.matrix;
 import java.util.Arrays;
 import java.util.Objects;
 
+import net.jamu.complex.ZArrayUtil;
 import net.jamu.complex.Zf;
 import net.jamu.complex.ZfImpl;
 
@@ -536,6 +537,14 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         ComplexMatrixF U = svd.getU();
         // voila, the Moore-Penrose pseudoinverse
         return x.conjTransBmult(U, create(x.numRows(), U.numRows()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public float normF() {
+        return ZArrayUtil.l2norm(a);
     }
 
     /**
