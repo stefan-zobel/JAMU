@@ -208,6 +208,14 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
 
     // TODO ...
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public float norm2() {
+        return new SvdComplexF(this, false).norm2();
+    }
+
     private static ComplexMatrixF lusolve(ComplexMatrixF A, ComplexMatrixF X, ComplexMatrixF B) {
         X.setInplace(B);
         PlainLapack.cgesv(Lapack.getInstance(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),

@@ -583,6 +583,15 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     // TODO ...
 
     /**
+     * Two norm
+     * 
+     * @return maximum singular value
+     * @throws NotConvergedException
+     *             if the singular value decomposition did not converge
+     */
+    float norm2();
+
+    /**
      * Matrix trace of a square matrix.
      * 
      * @return sum of the diagonal elements

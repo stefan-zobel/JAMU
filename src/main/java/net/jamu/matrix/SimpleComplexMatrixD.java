@@ -208,6 +208,14 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
 
     // TODO ...
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double norm2() {
+        return new SvdComplexD(this, false).norm2();
+    }
+
     private static ComplexMatrixD lusolve(ComplexMatrixD A, ComplexMatrixD X, ComplexMatrixD B) {
         X.setInplace(B);
         PlainLapack.zgesv(Lapack.getInstance(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
