@@ -543,6 +543,15 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
     ComplexMatrixD inv(ComplexMatrixD inverse);
 
     /**
+     * Compute the Moore-Penrose pseudoinverse.
+     * 
+     * @return the Moore-Penrose Pseudo-Inverse
+     * @throws NotConvergedException
+     *             if the singular value decomposition did not converge
+     */
+    ComplexMatrixD pseudoInv();
+
+    /**
      * Computes the eigenvalue decomposition of this matrix if it is quadratic.
      * 
      * @param full

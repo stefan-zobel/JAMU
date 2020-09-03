@@ -543,6 +543,15 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     ComplexMatrixF inv(ComplexMatrixF inverse);
 
     /**
+     * Compute the Moore-Penrose pseudoinverse.
+     * 
+     * @return the Moore-Penrose Pseudo-Inverse
+     * @throws NotConvergedException
+     *             if the singular value decomposition did not converge
+     */
+    ComplexMatrixF pseudoInv();
+
+    /**
      * Computes the eigenvalue decomposition of this matrix if it is quadratic.
      * 
      * @param full

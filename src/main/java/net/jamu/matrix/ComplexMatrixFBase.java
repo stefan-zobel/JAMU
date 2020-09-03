@@ -515,6 +515,33 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixF pseudoInv() {
+        if (this.isSquareMatrix()) {
+            return inv(create(rows, cols));
+        }
+        SvdComplexF svd = svd(true);
+        float tol = MACH_EPS_FLT * Math.max(rows, cols) * svd.norm2();
+        float[] sigma = svd.getS();
+        // compute Sigma dagger (= SInv)
+        ComplexMatrixF SInv = create(cols, rows);
+        for (int i = 0; i < sigma.length; ++i) {
+            if (sigma[i] > tol) {
+                SInv.setUnsafe(i, i, 1.0f / sigma[i], 0.0f);
+            }
+        }
+        // x = Vh conjugate-transposed (= Vh*) times Sigma dagger
+        ComplexMatrixF Vh = svd.getVh();
+        ComplexMatrixF x = Vh.conjTransAmult(SInv, create(Vh.numRows(), SInv.numColumns()));
+        // compute x times U conjugate-transposed (= xU*)
+        ComplexMatrixF U = svd.getU();
+        // voila, the Moore-Penrose pseudoinverse
+        return x.conjTransBmult(U, create(x.numRows(), U.numRows()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Zf trace() {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("The trace of a matrix is only defined for square matrices");
