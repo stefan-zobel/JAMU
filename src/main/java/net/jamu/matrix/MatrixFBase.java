@@ -518,6 +518,21 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         return t;
     }
 
+    @Override
+    public MatrixF zeroizeSubEpsilonInplace(int k) {
+        if (k < 1) {
+            throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);
+        }
+        float threshold = k * MACH_EPS_FLT;
+        float[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            if (Math.abs(_a[i]) <= threshold) {
+                _a[i] = 0.0f;
+            }
+        }
+        return this;
+    }
+
     /**
      * Returns a string representation of this matrix. If the matrix has more
      * than 6 rows and/or more than 6 columns only the first 5 contiguous rows

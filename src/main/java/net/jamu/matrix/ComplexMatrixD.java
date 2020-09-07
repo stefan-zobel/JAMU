@@ -617,6 +617,20 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
     Zd trace();
 
     /**
+     * Set all elements <code>|x<sub>ij</sub>| <= k * 2<sup>-53</sup></code>
+     * ({@code k} times the machine epsilon for doubles) to {@code 0.0} where
+     * {@code k} is a positive integer {@code >= 1}. Both the real and the
+     * imaginary parts are set to {@code 0.0}.
+     * 
+     * @param k
+     *            positive integer {@code >= 1}
+     * @return this matrix zeroed in-place
+     * @throws IllegalArgumentException
+     *             if {@code k < 1}
+     */
+    ComplexMatrixD zeroizeSubEpsilonInplace(int k);
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array

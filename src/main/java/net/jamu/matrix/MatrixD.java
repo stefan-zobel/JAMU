@@ -555,6 +555,19 @@ public interface MatrixD extends Dimensions, DMatrixBasicOps {
     double trace();
 
     /**
+     * Set all elements <code>|x<sub>ij</sub>| <= k * 2<sup>-53</sup></code>
+     * ({@code k} times the machine epsilon for doubles) to {@code 0.0} where
+     * {@code k} is a positive integer {@code >= 1}.
+     * 
+     * @param k
+     *            positive integer {@code >= 1}
+     * @return this matrix zeroed in-place
+     * @throws IllegalArgumentException
+     *             if {@code k < 1}
+     */
+    MatrixD zeroizeSubEpsilonInplace(int k);
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array

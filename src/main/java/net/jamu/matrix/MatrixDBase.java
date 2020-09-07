@@ -518,6 +518,21 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         return t;
     }
 
+    @Override
+    public MatrixD zeroizeSubEpsilonInplace(int k) {
+        if (k < 1) {
+            throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);
+        }
+        double threshold = k * MACH_EPS_DBL;
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            if (Math.abs(_a[i]) <= threshold) {
+                _a[i] = 0.0;
+            }
+        }
+        return this;
+    }
+
     /**
      * Returns a string representation of this matrix. If the matrix has more
      * than 6 rows and/or more than 6 columns only the first 5 contiguous rows
