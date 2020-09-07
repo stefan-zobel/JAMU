@@ -125,6 +125,26 @@ public abstract class DimensionsBase implements Dimensions {
         }
     }
 
+    @Override
+    public int startRow() {
+        return 0;
+    }
+
+    @Override
+    public int endRow() {
+        return numRows() - 1;
+    }
+
+    @Override
+    public int startCol() {
+        return 0;
+    }
+
+    @Override
+    public int endCol() {
+        return numColumns() - 1;
+    }
+
     /**
      * {@inheritDoc}
      */

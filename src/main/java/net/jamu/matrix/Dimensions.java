@@ -67,6 +67,38 @@ public interface Dimensions {
     int numRows();
 
     /**
+     * Returns the first valid row index of this matrix (which is always
+     * {@code 0}).
+     * 
+     * @return the index of the first row of this matrix
+     */
+    int startRow();
+
+    /**
+     * Returns the last valid row index of this matrix (which is always
+     * {@code numRows() - 1}).
+     * 
+     * @return the index of the last row of this matrix
+     */
+    int endRow();
+
+    /**
+     * Returns the first valid column index of this matrix (which is always
+     * {@code 0}).
+     * 
+     * @return the index of the first column of this matrix
+     */
+    int startCol();
+
+    /**
+     * Returns the last valid column index of this matrix (which is always
+     * {@code numColumns() - 1}).
+     * 
+     * @return the index of the last column of this matrix
+     */
+    int endCol();
+
+    /**
      * Check that {@code row} and {@code col} are valid (zero-based) indexes for
      * this matrix. Throws {@link IllegalArgumentException} otherwise.
      * 
