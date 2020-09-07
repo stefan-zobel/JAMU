@@ -567,6 +567,9 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         return t;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ComplexMatrixD zeroizeSubEpsilonInplace(int k) {
         if (k < 1) {

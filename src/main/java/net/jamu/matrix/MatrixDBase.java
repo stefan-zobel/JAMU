@@ -518,6 +518,9 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         return t;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MatrixD zeroizeSubEpsilonInplace(int k) {
         if (k < 1) {
