@@ -193,8 +193,6 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
         return new SvdEconComplexF(this);
     }
 
-    // TODO ...
-
     /**
      * {@inheritDoc}
      */
@@ -205,8 +203,6 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
         }
         return new EvdComplexF(this, full);
     }
-
-    // TODO ...
 
     /**
      * {@inheritDoc}

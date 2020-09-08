@@ -589,8 +589,6 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
      */
     SvdEconComplexD svdEcon();
 
-    // TODO ...
-
     /**
      * Frobenius norm
      * 

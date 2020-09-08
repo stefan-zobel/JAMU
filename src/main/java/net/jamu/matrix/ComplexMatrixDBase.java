@@ -460,8 +460,6 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         a[idx + 1] += vali;
     }
 
-    // TODO ...
-
     /**
      * {@inheritDoc}
      */
@@ -497,8 +495,6 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         a[idx] = valr;
         a[idx + 1] = vali;
     }
-
-    // TODO ...
 
     /**
      * {@inheritDoc}
