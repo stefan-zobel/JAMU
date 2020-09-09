@@ -567,6 +567,15 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD mldivide(MatrixD B) {
+        Checks.checkSameRows(this, B);
+        return solve(B, Matrices.createD(cols, B.numColumns()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD times(MatrixD B) {
         return mult(B, create(rows, B.numColumns()));
     }

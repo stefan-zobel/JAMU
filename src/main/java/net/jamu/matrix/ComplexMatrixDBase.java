@@ -612,6 +612,15 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD mldivide(ComplexMatrixD B) {
+        Checks.checkSameRows(this, B);
+        return solve(B, Matrices.createComplexD(cols, B.numColumns()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD times(ComplexMatrixD B) {
         return mult(B, create(rows, B.numColumns()));
     }

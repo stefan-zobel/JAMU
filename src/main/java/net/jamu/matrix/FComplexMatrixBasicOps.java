@@ -15,6 +15,8 @@
  */
 package net.jamu.matrix;
 
+import net.frobenius.ComputationTruncatedException;
+
 /**
  * Some basic {@link ComplexMatrixF} operations expressed such that the
  * operations' resulting {@code ComplexMatrixF} doesn't have to be supplied as
@@ -37,6 +39,21 @@ public interface FComplexMatrixBasicOps {
      *         the column with column index {@code colTo}
      */
     ComplexMatrixF selectConsecutiveColumns(int colFrom, int colTo);
+
+    /**
+     * {@code A \ B} matrix left division. {@code X = A\B} is the solution to
+     * the equation {@code A * X = B}.
+     * 
+     * @param B
+     *            a matrix that has the same number of rows as this matrix
+     *            ({@code A})
+     * @return the result of the left division
+     * @throws ComputationTruncatedException
+     *             for exactly singular factors in the LU decomposition of a
+     *             quadratic matrix or for a non-quadratic matrix that doesn't
+     *             have full rank
+     */
+    ComplexMatrixF mldivide(ComplexMatrixF B);
 
     /**
      * {@code A * B} convenience multiplication. None of the operands is
