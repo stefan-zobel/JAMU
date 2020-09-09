@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Stefan Zobel
+ * Copyright 2019, 2020 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,11 +48,11 @@ final class Checks {
     static void checkTrans(Dimensions A, Dimensions AT) {
         if (A.numRows() != AT.numColumns()) {
             throw new IndexOutOfBoundsException(
-                    "A.numRows() != B.numColumns() (" + A.numRows() + " != " + AT.numColumns() + ")");
+                    "A.numRows() != AT.numColumns() (" + A.numRows() + " != " + AT.numColumns() + ")");
         }
         if (A.numColumns() != AT.numRows()) {
             throw new IndexOutOfBoundsException(
-                    "A.numColumns() != B.numRows() (" + A.numColumns() + " != " + AT.numRows() + ")");
+                    "A.numColumns() != AT.numRows() (" + A.numColumns() + " != " + AT.numRows() + ")");
         }
     }
 
@@ -75,25 +75,12 @@ final class Checks {
     }
 
     static void checkEqualDimension(Dimensions A, Dimensions B) {
-        if (A.numRows() != B.numRows()) {
-            throw new IndexOutOfBoundsException(
-                    "A.numRows() != B.numRows() (" + A.numRows() + " != " + B.numRows() + ")");
-        }
-        if (A.numColumns() != B.numColumns()) {
-            throw new IndexOutOfBoundsException(
-                    "A.numColumns() != B.numColumns() (" + A.numColumns() + " != " + B.numColumns() + ")");
-        }
+        checkSameRows(A, B);
+        checkSameCols(A, B);
     }
 
     static void checkAdd(Dimensions A, Dimensions B, Dimensions C) {
-        if (A.numRows() != B.numRows()) {
-            throw new IndexOutOfBoundsException(
-                    "A.numRows() != B.numRows() (" + A.numRows() + " != " + B.numRows() + ")");
-        }
-        if (A.numColumns() != B.numColumns()) {
-            throw new IndexOutOfBoundsException(
-                    "A.numColumns() != B.numColumns() (" + A.numColumns() + " != " + B.numColumns() + ")");
-        }
+        checkEqualDimension(A, B);
         if (B.numRows() != C.numRows()) {
             throw new IndexOutOfBoundsException(
                     "B.numRows() != C.numRows() (" + B.numRows() + " != " + C.numRows() + ")");
@@ -135,10 +122,7 @@ final class Checks {
     }
 
     static void checkTransAmultAdd(Dimensions A, Dimensions B, Dimensions C) {
-        if (A.numRows() != B.numRows()) {
-            throw new IndexOutOfBoundsException(
-                    "A.numRows() != B.numRows() (" + A.numRows() + " != " + B.numRows() + ")");
-        }
+        checkSameRows(A, B);
         if (A.numColumns() != C.numRows()) {
             throw new IndexOutOfBoundsException(
                     "A.numColumns() != C.numRows() (" + A.numColumns() + " != " + C.numRows() + ")");
@@ -150,10 +134,7 @@ final class Checks {
     }
 
     static void checkTransBmultAdd(Dimensions A, Dimensions B, Dimensions C) {
-        if (A.numColumns() != B.numColumns()) {
-            throw new IndexOutOfBoundsException(
-                    "A.numColumns() != B.numColumns() (" + A.numColumns() + " != " + B.numColumns() + ")");
-        }
+        checkSameCols(A, B);
         if (A.numRows() != C.numRows()) {
             throw new IndexOutOfBoundsException(
                     "A.numRows() != C.numRows() (" + A.numRows() + " != " + C.numRows() + ")");
@@ -165,10 +146,7 @@ final class Checks {
     }
 
     static void checkSolve(Dimensions A, Dimensions B, Dimensions X) {
-        if (A.numRows() != B.numRows()) {
-            throw new IndexOutOfBoundsException(
-                    "A.numRows() != B.numRows() (" + A.numRows() + " != " + B.numRows() + ")");
-        }
+        checkSameRows(A, B);
         if (A.numColumns() != X.numRows()) {
             throw new IndexOutOfBoundsException(
                     "A.numColumns() != X.numRows() (" + A.numColumns() + " != " + X.numRows() + ")");
@@ -176,6 +154,20 @@ final class Checks {
         if (X.numColumns() != B.numColumns()) {
             throw new IndexOutOfBoundsException(
                     "X.numColumns() != B.numColumns() (" + X.numColumns() + " != " + B.numColumns() + ")");
+        }
+    }
+
+    static void checkSameRows(Dimensions A, Dimensions B) {
+        if (A.numRows() != B.numRows()) {
+            throw new IndexOutOfBoundsException(
+                    "A.numRows() != B.numRows() (" + A.numRows() + " != " + B.numRows() + ")");
+        }
+    }
+
+    static void checkSameCols(Dimensions A, Dimensions B) {
+        if (A.numColumns() != B.numColumns()) {
+            throw new IndexOutOfBoundsException(
+                    "A.numColumns() != B.numColumns() (" + A.numColumns() + " != " + B.numColumns() + ")");
         }
     }
 
