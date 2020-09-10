@@ -702,6 +702,14 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         return inv(create(rows, cols));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixF toRealMatrix() {
+        return Matrices.convertToReal(this);
+    }
+
     // protected methods
 
     protected abstract ComplexMatrixF create(int rows, int cols);

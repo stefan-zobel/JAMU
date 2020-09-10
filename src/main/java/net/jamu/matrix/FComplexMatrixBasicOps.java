@@ -149,4 +149,12 @@ public interface FComplexMatrixBasicOps {
      *             if this matrix is not quadratic
      */
     ComplexMatrixF inverse();
+
+    /**
+     * Convert this matrix to a real matrix, dropping all imaginary parts.
+     * 
+     * @return this matrix converted to a real matrix (all imaginary parts get
+     *         dropped)
+     */
+    MatrixF toRealMatrix();
 }
