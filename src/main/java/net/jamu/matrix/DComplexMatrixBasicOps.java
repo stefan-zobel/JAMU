@@ -20,7 +20,8 @@ import net.frobenius.ComputationTruncatedException;
 /**
  * Some basic {@link ComplexMatrixD} operations expressed such that the
  * operations' resulting {@code ComplexMatrixD} doesn't have to be supplied as
- * an additional parameter.
+ * an additional parameter. None of these operations mutate the receiving matrix
+ * instance.
  */
 public interface DComplexMatrixBasicOps {
 

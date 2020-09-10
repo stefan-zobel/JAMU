@@ -20,7 +20,7 @@ import net.frobenius.ComputationTruncatedException;
 /**
  * Some basic {@link MatrixF} operations expressed such that the operations'
  * resulting {@code MatrixF} doesn't have to be supplied as an additional
- * parameter.
+ * parameter. None of these operations mutate the receiving matrix instance.
  */
 public interface FMatrixBasicOps {
 
