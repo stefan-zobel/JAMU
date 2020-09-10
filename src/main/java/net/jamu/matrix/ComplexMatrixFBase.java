@@ -638,6 +638,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixF times(MatrixF B) {
+        Checks.checkMult(this, B);
         ComplexMatrixF Bc = Matrices.convertToComplex(B);
         return this.times(Bc);
     }
