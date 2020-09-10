@@ -649,6 +649,14 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         return scale(-1.0, create(rows, cols));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD toComplexMatrix() {
+        return Matrices.convertToComplex(this);
+    }
+
     // protected methods
 
     protected abstract MatrixD create(int rows, int cols);

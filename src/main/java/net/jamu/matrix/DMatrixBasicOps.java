@@ -142,4 +142,13 @@ public interface DMatrixBasicOps {
      *             if this matrix is not quadratic
      */
     MatrixD inverse();
+
+    /**
+     * Convert this matrix to a complex matrix, keeping the real parts with
+     * all imaginary parts set to 0.0.
+     * 
+     * @return this matrix converted to a complex matrix (all imaginary parts
+     *         get initialized with 0.0)
+     */
+    ComplexMatrixD toComplexMatrix();
 }

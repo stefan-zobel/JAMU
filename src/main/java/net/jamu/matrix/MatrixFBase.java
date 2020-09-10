@@ -649,6 +649,14 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         return scale(-1.0f, create(rows, cols));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixF toComplexMatrix() {
+        return Matrices.convertToComplex(this);
+    }
+
     // protected methods
 
     protected abstract MatrixF create(int rows, int cols);
