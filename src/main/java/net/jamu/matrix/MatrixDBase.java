@@ -592,6 +592,15 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD times(ComplexMatrixD B) {
+        ComplexMatrixD Ac = Matrices.convertToComplex(this);
+        return Ac.times(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD transpose() {
         return trans(create(cols, rows));
     }

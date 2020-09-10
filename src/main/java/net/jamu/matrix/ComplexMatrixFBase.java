@@ -637,6 +637,15 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixF times(MatrixF B) {
+        ComplexMatrixF Bc = Matrices.convertToComplex(B);
+        return this.times(Bc);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixF plus(ComplexMatrixF B) {
         return add(B, create(rows, cols));
     }

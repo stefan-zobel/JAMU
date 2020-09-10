@@ -78,6 +78,17 @@ public interface DMatrixBasicOps {
     MatrixD timesTimes(MatrixD B, MatrixD C);
 
     /**
+     * Multiply this matrix {@code A} with a complex matrix {@code B} returning
+     * the result of the multiplication {@code A * B} as a complex matrix. None
+     * of the operands is mutated.
+     * 
+     * @param B
+     *            second multiplicand (a complex matrix)
+     * @return the result of the multiplication with the complex matrix
+     */
+    ComplexMatrixD times(ComplexMatrixD B);
+
+    /**
      * {@code A + B} convenience addition. None of the operands is mutated.
      * 
      * @param B

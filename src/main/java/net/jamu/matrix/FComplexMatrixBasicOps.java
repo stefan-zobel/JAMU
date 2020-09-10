@@ -78,6 +78,17 @@ public interface FComplexMatrixBasicOps {
     ComplexMatrixF timesTimes(ComplexMatrixF B, ComplexMatrixF C);
 
     /**
+     * Multiply this matrix {@code A} with a real matrix {@code B} returning
+     * the result of the multiplication {@code A * B} as a complex matrix. None
+     * of the operands is mutated.
+     * 
+     * @param B
+     *            second multiplicand (a real matrix)
+     * @return the result of the multiplication with the complex matrix
+     */
+    ComplexMatrixF times(MatrixF B);
+
+    /**
      * {@code A + B} convenience addition. None of the operands is mutated.
      * 
      * @param B
