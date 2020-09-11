@@ -44,6 +44,9 @@ public interface DComplexMatrixBasicOps {
     /**
      * {@code A \ B} matrix left division. {@code X = A\B} is the solution to
      * the equation {@code A * X = B}.
+     * <p>
+     * Note: Matrix left division and matrix right division are related by the
+     * equation <code>(B<sup>*</sup> \ A<sup>*</sup>)<sup>*</sup> = A / B</code>
      * 
      * @param B
      *            a matrix that has the same number of rows as this matrix

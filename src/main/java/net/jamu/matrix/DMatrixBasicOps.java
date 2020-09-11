@@ -43,6 +43,9 @@ public interface DMatrixBasicOps {
     /**
      * {@code A \ B} matrix left division. {@code X = A\B} is the solution to
      * the equation {@code A * X = B}.
+     * <p>
+     * Note: Matrix left division and matrix right division are related by the
+     * equation <code>(B<sup>T</sup> \ A<sup>T</sup>)<sup>T</sup> = A / B</code>
      * 
      * @param B
      *            a matrix that has the same number of rows as this matrix
