@@ -576,6 +576,15 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF mrdivide(MatrixF B) {
+        Checks.checkSameCols(this, B);
+        return B.transpose().mldivide(this.transpose()).transpose();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF times(MatrixF B) {
         return mult(B, create(this.rows, B.numColumns()));
     }

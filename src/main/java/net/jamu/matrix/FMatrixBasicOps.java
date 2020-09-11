@@ -59,6 +59,24 @@ public interface FMatrixBasicOps {
     MatrixF mldivide(MatrixF B);
 
     /**
+     * {@code A / B} matrix right division. {@code X = A/B} is the solution to
+     * the equation {@code X * B = A}.
+     * <p>
+     * Note: Matrix right division and matrix left division are related by the
+     * equation <code>A / B = (B<sup>T</sup> \ A<sup>T</sup>)<sup>T</sup></code>
+     * 
+     * @param B
+     *            a matrix that has the same number of columns as this matrix
+     *            ({@code A})
+     * @return the result of the right division
+     * @throws ComputationTruncatedException
+     *             for exactly singular factors in the LU decomposition of a
+     *             quadratic matrix or for a non-quadratic matrix that doesn't
+     *             have full rank
+     */
+    MatrixF mrdivide(MatrixF B);
+
+    /**
      * {@code A * B} convenience multiplication. None of the operands is
      * mutated.
      * 
