@@ -37,6 +37,9 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<doclint>none</doclint>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -50,9 +53,6 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<doclint>none</doclint>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
