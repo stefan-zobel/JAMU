@@ -25,7 +25,7 @@ import net.jamu.complex.Zf;
  * Eigenvalues and eigenvectors of a general n-by-n float matrix
  * ({@link MatrixF}).
  */
-public class EvdF {
+public final class EvdF {
 
     // never compute left eigenvectors
     private static final TEigJob leftEVec = TEigJob.VALUES_ONLY;

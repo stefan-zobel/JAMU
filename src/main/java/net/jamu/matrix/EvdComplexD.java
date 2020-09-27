@@ -25,7 +25,7 @@ import net.jamu.complex.Zd;
  * Eigenvalues and eigenvectors of a general n-by-n double precision complex
  * matrix ({@link ComplexMatrixD}).
  */
-public class EvdComplexD {
+public final class EvdComplexD {
 
     // never compute left eigenvectors
     private static final TEigJob leftEVec = TEigJob.VALUES_ONLY;

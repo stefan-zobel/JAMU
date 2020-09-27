@@ -25,7 +25,7 @@ import net.jamu.complex.Zf;
  * Eigenvalues and eigenvectors of a general n-by-n single precision complex
  * matrix ({@link ComplexMatrixF}).
  */
-public class EvdComplexF {
+public final class EvdComplexF {
 
     // never compute left eigenvectors
     private static final TEigJob leftEVec = TEigJob.VALUES_ONLY;

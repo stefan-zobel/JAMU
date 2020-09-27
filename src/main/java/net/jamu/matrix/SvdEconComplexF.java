@@ -30,7 +30,7 @@ import net.frobenius.lapack.PlainLapack;
  * can improve execution time and reduce storage requirements without
  * compromising the accuracy of the decomposition.
  */
-public class SvdEconComplexF extends SvdComplexF {
+public final class SvdEconComplexF extends SvdComplexF {
 
     /**
      * The left singular vectors (column-wise).

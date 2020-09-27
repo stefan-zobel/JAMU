@@ -25,7 +25,7 @@ import net.jamu.complex.Zd;
  * Eigenvalues and eigenvectors of a general n-by-n double matrix
  * ({@link MatrixD}).
  */
-public class EvdD {
+public final class EvdD {
 
     // never compute left eigenvectors
     private static final TEigJob leftEVec = TEigJob.VALUES_ONLY;

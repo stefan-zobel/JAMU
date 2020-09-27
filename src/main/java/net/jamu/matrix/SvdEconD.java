@@ -29,7 +29,7 @@ import net.frobenius.lapack.PlainLapack;
  * improve execution time and reduce storage requirements without compromising
  * the accuracy of the decomposition.
  */
-public class SvdEconD extends SvdD {
+public final class SvdEconD extends SvdD {
 
     /**
      * The left singular vectors (column-wise).
