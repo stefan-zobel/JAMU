@@ -171,6 +171,34 @@ final class Checks {
         }
     }
 
+    static void checkB_hasAtLeastAsManyRowsAsA(Dimensions A, Dimensions B) {
+        if (B.numRows() < A.numRows()) {
+            throw new IndexOutOfBoundsException(
+                    "B.numRows() < A.numRows() (" + B.numRows() + " < " + A.numRows() + ")");
+        }
+    }
+
+    static void checkB_hasAtLeastAsManyRowsAsARowColMin(Dimensions A, Dimensions B) {
+        if (B.numRows() < Math.min(A.numRows(), A.numColumns())) {
+            throw new IndexOutOfBoundsException("B.numRows() < min(A.numRows(), A.numColumns()) (" + B.numRows() + " < "
+                    + Math.min(A.numRows(), A.numColumns()) + ")");
+        }
+    }
+
+    static void checkB_hasAtLeastAsManyColsAsA(Dimensions A, Dimensions B) {
+        if (B.numColumns() < A.numColumns()) {
+            throw new IndexOutOfBoundsException(
+                    "B.numColumns() < A.numColumns() (" + B.numColumns() + " < " + A.numColumns() + ")");
+        }
+    }
+
+    static void checkB_hasAtLeastAsManyColsAsARowColMin(Dimensions A, Dimensions B) {
+        if (B.numColumns() < Math.min(A.numRows(), A.numColumns())) {
+            throw new IndexOutOfBoundsException("B.numColumns() < min(A.numRows(), A.numColumns()) (" + B.numColumns()
+                    + " < " + Math.min(A.numRows(), A.numColumns()) + ")");
+        }
+    }
+
     static double[] checkJaggedArrayD(double[][] data) {
         int _rows = data.length;
         int _cols = data[0].length;

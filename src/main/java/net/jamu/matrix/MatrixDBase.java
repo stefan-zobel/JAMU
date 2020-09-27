@@ -332,14 +332,15 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
-    public MatrixD setInplaceUpperTrapezoidal(MatrixD other) {
-        Checks.checkEqualDimension(this, other);
+    public MatrixD setInplaceUpperTrapezoidal(MatrixD B) {
+        Checks.checkB_hasAtLeastAsManyColsAsA(this, B);
+        Checks.checkB_hasAtLeastAsManyRowsAsARowColMin(this, B);
         int cols_ = cols;
         int rows_ = rows;
         for (int col = 0; col < cols_; ++col) {
             for (int row = 0; row < rows_; ++row) {
                 if (row <= col) {
-                    this.setUnsafe(row, col, other.getUnsafe(row, col));
+                    this.setUnsafe(row, col, B.getUnsafe(row, col));
                 } else {
                     this.setUnsafe(row, col, 0.0);
                 }
@@ -352,14 +353,15 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
-    public MatrixD setInplaceLowerTrapezoidal(MatrixD other) {
-        Checks.checkEqualDimension(this, other);
+    public MatrixD setInplaceLowerTrapezoidal(MatrixD B) {
+        Checks.checkB_hasAtLeastAsManyRowsAsA(this, B);
+        Checks.checkB_hasAtLeastAsManyColsAsARowColMin(this, B);
         int cols_ = cols;
         int rows_ = rows;
         for (int col = 0; col < cols_; ++col) {
             for (int row = 0; row < rows_; ++row) {
                 if (row >= col) {
-                    this.setUnsafe(row, col, other.getUnsafe(row, col));
+                    this.setUnsafe(row, col, B.getUnsafe(row, col));
                 } else {
                     this.setUnsafe(row, col, 0.0);
                 }

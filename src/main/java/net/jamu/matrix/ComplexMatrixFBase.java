@@ -363,15 +363,16 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
-    public ComplexMatrixF setInplaceUpperTrapezoidal(ComplexMatrixF other) {
-        Checks.checkEqualDimension(this, other);
+    public ComplexMatrixF setInplaceUpperTrapezoidal(ComplexMatrixF B) {
+        Checks.checkB_hasAtLeastAsManyColsAsA(this, B);
+        Checks.checkB_hasAtLeastAsManyRowsAsARowColMin(this, B);
         int cols_ = cols;
         int rows_ = rows;
         ZfImpl entry = new ZfImpl(0.0f);
         for (int col = 0; col < cols_; ++col) {
             for (int row = 0; row < rows_; ++row) {
                 if (row <= col) {
-                    other.getUnsafe(row, col, entry);
+                    B.getUnsafe(row, col, entry);
                     this.setUnsafe(row, col, entry.re(), entry.im());
                 } else {
                     this.setUnsafe(row, col, 0.0f, 0.0f);
@@ -385,15 +386,16 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
-    public ComplexMatrixF setInplaceLowerTrapezoidal(ComplexMatrixF other) {
-        Checks.checkEqualDimension(this, other);
+    public ComplexMatrixF setInplaceLowerTrapezoidal(ComplexMatrixF B) {
+        Checks.checkB_hasAtLeastAsManyRowsAsA(this, B);
+        Checks.checkB_hasAtLeastAsManyColsAsARowColMin(this, B);
         int cols_ = cols;
         int rows_ = rows;
         ZfImpl entry = new ZfImpl(0.0f);
         for (int col = 0; col < cols_; ++col) {
             for (int row = 0; row < rows_; ++row) {
                 if (row >= col) {
-                    other.getUnsafe(row, col, entry);
+                    B.getUnsafe(row, col, entry);
                     this.setUnsafe(row, col, entry.re(), entry.im());
                 } else {
                     this.setUnsafe(row, col, 0.0f, 0.0f);
