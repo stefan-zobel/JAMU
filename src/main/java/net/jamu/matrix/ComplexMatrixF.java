@@ -386,30 +386,42 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     ComplexMatrixF setInplace(ComplexMatrixF other);
 
     /**
-     * Copy the entries on and above the main diagonal from {@code other} into
-     * this matrix and set the entries below the main diagonal in this matrix to
-     * zero (mutating this matrix). The dimensions of {@code other} and
-     * {@code this} must be the same but they don't need to be square matrices.
+     * Let {@code this} be a m-by-n matrix and let {@code B} be a j-by-k matrix.
+     * Set the entries on and above the main diagonal in {@code this} matrix
+     * from the corresponding entries of the {@code B} matrix and set the
+     * entries below the main diagonal in {@code this} matrix to zero (mutating
+     * {@code this} matrix).
+     * <p>
+     * The dimensions of {@code B} must satisfy the conditions {@code k >= n}
+     * ({@code B} must have at least as many columns as {@code this} matrix) and
+     * {@code j >= min(m, n)} ({@code B} must have at least as many rows as the
+     * lesser of the number of rows and columns of {@code this} matrix).
      * 
-     * @param other
-     *            matrix whose entries on and above its main diagonal should be
-     *            copied into this matrix
+     * @param B
+     *            matrix whose corresponding entries are copied on and above the
+     *            main diagonal of {@code this} matrix
      * @return this matrix (mutated)
      */
-    ComplexMatrixF setInplaceUpperTrapezoidal(ComplexMatrixF other);
+    ComplexMatrixF setInplaceUpperTrapezoidal(ComplexMatrixF B);
 
     /**
-     * Copy the entries on and below the main diagonal from {@code other} into
-     * this matrix and set the entries above the main diagonal in this matrix to
-     * zero (mutating this matrix). The dimensions of {@code other} and
-     * {@code this} must be the same but they don't need to be square matrices.
+     * Let {@code this} be a m-by-n matrix and let {@code B} be a j-by-k matrix.
+     * Set the entries on and below the main diagonal in {@code this} matrix
+     * from the corresponding entries of the {@code B} matrix and set the
+     * entries above the main diagonal in {@code this} matrix to zero (mutating
+     * {@code this} matrix).
+     * <p>
+     * The dimensions of {@code B} must satisfy the conditions {@code j >= m}
+     * ({@code B} must have at least as many rows as {@code this} matrix) and
+     * {@code k >= min(m, n)} ({@code B} must have at least as many columns as
+     * the lesser of the number of rows and columns of {@code this} matrix).
      * 
-     * @param other
-     *            matrix whose entries on and below its main diagonal should be
-     *            copied into this matrix
+     * @param B
+     *            matrix whose corresponding entries are copied on and below the
+     *            main diagonal of {@code this} matrix
      * @return this matrix (mutated)
      */
-    ComplexMatrixF setInplaceLowerTrapezoidal(ComplexMatrixF other);
+    ComplexMatrixF setInplaceLowerTrapezoidal(ComplexMatrixF B);
 
     /**
      * {@code A = alpha * B}
