@@ -55,13 +55,12 @@ public final class QrdComplexF {
             throw new IllegalArgumentException("QR decomposition only works for m x n matrices where"
                     + " m >= n. But this is a " + A.numRows() + " x " + A.numColumns() + " matrix");
         }
-        Q = new SimpleComplexMatrixF(A.numRows(), A.numColumns());
+        Q = A.copy();
         R = new SimpleComplexMatrixF(A.numColumns(), A.numColumns());
-        computeQrdInplace(A);
+        computeQrdInplace(Q);
     }
 
-    private void computeQrdInplace(ComplexMatrixF A) {
-        ComplexMatrixF AA = A.copy();
+    private void computeQrdInplace(ComplexMatrixF AA) {
         int m = AA.numRows();
         int n = AA.numColumns();
         int k = Math.min(m, n);
@@ -73,6 +72,5 @@ public final class QrdComplexF {
         R.setInplaceUpperTrapezoidal(AA);
         // compute the elements of Q explicitly
         PlainLapack.cungqr(la, m, n, k, AA.getArrayUnsafe(), lda, tau);
-        System.arraycopy(AA.getArrayUnsafe(), 0, Q.getArrayUnsafe(), 0, 2 * m * n);
     }
 }

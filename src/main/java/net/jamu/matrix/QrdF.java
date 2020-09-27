@@ -55,13 +55,12 @@ public final class QrdF {
             throw new IllegalArgumentException("QR decomposition only works for m x n matrices where"
                     + " m >= n. But this is a " + A.numRows() + " x " + A.numColumns() + " matrix");
         }
-        Q = new SimpleMatrixF(A.numRows(), A.numColumns());
+        Q = A.copy();
         R = new SimpleMatrixF(A.numColumns(), A.numColumns());
-        computeQrdInplace(A);
+        computeQrdInplace(Q);
     }
 
-    private void computeQrdInplace(MatrixF A) {
-        MatrixF AA = A.copy();
+    private void computeQrdInplace(MatrixF AA) {
         int m = AA.numRows();
         int n = AA.numColumns();
         int k = Math.min(m, n);
@@ -73,6 +72,5 @@ public final class QrdF {
         R.setInplaceUpperTrapezoidal(AA);
         // compute the elements of Q explicitly
         PlainLapack.sorgqr(la, m, n, k, AA.getArrayUnsafe(), lda, tau);
-        System.arraycopy(AA.getArrayUnsafe(), 0, Q.getArrayUnsafe(), 0, m * n);
     }
 }
