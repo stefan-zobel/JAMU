@@ -386,6 +386,32 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     ComplexMatrixF setInplace(ComplexMatrixF other);
 
     /**
+     * Copy the entries on and above the main diagonal from {@code other} into
+     * this matrix and set the entries below the main diagonal in this matrix to
+     * zero (mutating this matrix). The dimensions of {@code other} and
+     * {@code this} must be the same but they don't need to be square matrices.
+     * 
+     * @param other
+     *            matrix whose entries on and above its main diagonal should be
+     *            copied into this matrix
+     * @return this matrix (mutated)
+     */
+    ComplexMatrixF setInplaceUpperTrapezoidal(ComplexMatrixF other);
+
+    /**
+     * Copy the entries on and below the main diagonal from {@code other} into
+     * this matrix and set the entries above the main diagonal in this matrix to
+     * zero (mutating this matrix). The dimensions of {@code other} and
+     * {@code this} must be the same but they don't need to be square matrices.
+     * 
+     * @param other
+     *            matrix whose entries on and below its main diagonal should be
+     *            copied into this matrix
+     * @return this matrix (mutated)
+     */
+    ComplexMatrixF setInplaceLowerTrapezoidal(ComplexMatrixF other);
+
+    /**
      * {@code A = alpha * B}
      * 
      * @param alphar

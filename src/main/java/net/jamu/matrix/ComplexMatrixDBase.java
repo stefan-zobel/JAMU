@@ -363,6 +363,50 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD setInplaceUpperTrapezoidal(ComplexMatrixD other) {
+        Checks.checkEqualDimension(this, other);
+        int cols_ = cols;
+        int rows_ = rows;
+        ZdImpl entry = new ZdImpl(0.0);
+        for (int col = 0; col < cols_; ++col) {
+            for (int row = 0; row < rows_; ++row) {
+                if (row <= col) {
+                    other.getUnsafe(row, col, entry);
+                    this.setUnsafe(row, col, entry.re(), entry.im());
+                } else {
+                    this.setUnsafe(row, col, 0.0, 0.0);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD setInplaceLowerTrapezoidal(ComplexMatrixD other) {
+        Checks.checkEqualDimension(this, other);
+        int cols_ = cols;
+        int rows_ = rows;
+        ZdImpl entry = new ZdImpl(0.0);
+        for (int col = 0; col < cols_; ++col) {
+            for (int row = 0; row < rows_; ++row) {
+                if (row >= col) {
+                    other.getUnsafe(row, col, entry);
+                    this.setUnsafe(row, col, entry.re(), entry.im());
+                } else {
+                    this.setUnsafe(row, col, 0.0, 0.0);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD submatrix(int r0, int c0, int r1, int c1, ComplexMatrixD B, int rb, int cb) {
         checkSubmatrixIndexes(r0, c0, r1, c1);
         B.checkIndex(rb, cb);

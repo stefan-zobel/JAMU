@@ -332,6 +332,46 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF setInplaceUpperTrapezoidal(MatrixF other) {
+        Checks.checkEqualDimension(this, other);
+        int cols_ = cols;
+        int rows_ = rows;
+        for (int col = 0; col < cols_; ++col) {
+            for (int row = 0; row < rows_; ++row) {
+                if (row <= col) {
+                    this.setUnsafe(row, col, other.getUnsafe(row, col));
+                } else {
+                    this.setUnsafe(row, col, 0.0f);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixF setInplaceLowerTrapezoidal(MatrixF other) {
+        Checks.checkEqualDimension(this, other);
+        int cols_ = cols;
+        int rows_ = rows;
+        for (int col = 0; col < cols_; ++col) {
+            for (int row = 0; row < rows_; ++row) {
+                if (row >= col) {
+                    this.setUnsafe(row, col, other.getUnsafe(row, col));
+                } else {
+                    this.setUnsafe(row, col, 0.0f);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF submatrix(int r0, int c0, int r1, int c1, MatrixF B, int rb, int cb) {
         checkSubmatrixIndexes(r0, c0, r1, c1);
         B.checkIndex(rb, cb);
