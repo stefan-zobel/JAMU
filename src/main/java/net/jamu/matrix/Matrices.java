@@ -23,8 +23,13 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+
+import net.jamu.complex.ZArrayUtil;
+import net.jamu.complex.Zd;
+import net.jamu.complex.Zf;
 
 /**
  * Static utility methods for matrices.
@@ -1039,6 +1044,78 @@ public final class Matrices {
             to[i] = from[2 * i];
         }
         return md;
+    }
+
+    /**
+     * Create a {@code column.length x 1} column vector from the provided array
+     * which must have at least length {@code 1} and contains the entries of the
+     * new column vector.
+     * 
+     * @param column
+     *            array containing the values of the elements of the vector to
+     *            be created. Must not be {@code null} and must have length
+     *            {@code > 0}.
+     * @return a {@code column.length x 1} MatrixD column vector
+     */
+    public static MatrixD colVectorD(double[] column) {
+        if (Objects.requireNonNull(column).length == 0) {
+            throw new IllegalArgumentException("column array length must be > 0");
+        }
+        return new SimpleMatrixD(column.length, 1, Arrays.copyOf(column, column.length));
+    }
+
+    /**
+     * Create a {@code column.length x 1} column vector from the provided array
+     * which must have at least length {@code 1} and contains the entries of the
+     * new column vector.
+     * 
+     * @param column
+     *            array containing the values of the elements of the vector to
+     *            be created. Must not be {@code null} and must have length
+     *            {@code > 0}.
+     * @return a {@code column.length x 1} MatrixF column vector
+     */
+    public static MatrixF colVectorF(float[] column) {
+        if (Objects.requireNonNull(column).length == 0) {
+            throw new IllegalArgumentException("column array length must be > 0");
+        }
+        return new SimpleMatrixF(column.length, 1, Arrays.copyOf(column, column.length));
+    }
+
+    /**
+     * Create a {@code column.length x 1} column vector from the provided array
+     * which must have at least length {@code 1} and contains the entries of the
+     * new column vector.
+     * 
+     * @param column
+     *            array containing the values of the elements of the vector to
+     *            be created. Must not be {@code null} and must have length
+     *            {@code > 0}.
+     * @return a {@code column.length x 1} ComplexMatrixD column vector
+     */
+    public static ComplexMatrixD colVectorComplexD(Zd[] column) {
+        if (Objects.requireNonNull(column).length == 0) {
+            throw new IllegalArgumentException("column array length must be > 0");
+        }
+        return new SimpleComplexMatrixD(column.length, 1, ZArrayUtil.complexToPrimitiveArray(column));
+    }
+
+    /**
+     * Create a {@code column.length x 1} column vector from the provided array
+     * which must have at least length {@code 1} and contains the entries of the
+     * new column vector.
+     * 
+     * @param column
+     *            array containing the values of the elements of the vector to
+     *            be created. Must not be {@code null} and must have length
+     *            {@code > 0}.
+     * @return a {@code column.length x 1} ComplexMatrixF column vector
+     */
+    public static ComplexMatrixF colVectorComplexF(Zf[] column) {
+        if (Objects.requireNonNull(column).length == 0) {
+            throw new IllegalArgumentException("column array length must be > 0");
+        }
+        return new SimpleComplexMatrixF(column.length, 1, ZArrayUtil.complexToPrimitiveArray(column));
     }
 
     /* package */ static String toString(Dimensions dim) {
