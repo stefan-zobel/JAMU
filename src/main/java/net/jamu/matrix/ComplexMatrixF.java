@@ -606,6 +606,16 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     EvdComplexF evd(boolean full);
 
     /**
+     * Computes the QR decomposition of this matrix provided it has at least as
+     * many rows as columns.
+     * 
+     * @return the {@link QrdComplexF} QR decomposition of this matrix
+     * @throws IllegalArgumentException
+     *             if this matrix has less rows than columns
+     */
+    QrdComplexF qrd();
+
+    /**
      * Computes the singular value decomposition of this matrix.
      * 
      * @param full

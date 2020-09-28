@@ -561,6 +561,16 @@ public interface MatrixF extends Dimensions, FMatrixBasicOps {
     EvdF evd(boolean full);
 
     /**
+     * Computes the QR decomposition of this matrix provided it has at least as
+     * many rows as columns.
+     * 
+     * @return the {@link QrdF} QR decomposition of this matrix
+     * @throws IllegalArgumentException
+     *             if this matrix has less rows than columns
+     */
+    QrdF qrd();
+
+    /**
      * Copy into a jagged array.
      * 
      * @return this matrix converted to a jagged array

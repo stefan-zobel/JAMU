@@ -208,6 +208,14 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
      * {@inheritDoc}
      */
     @Override
+    public QrdComplexD qrd() {
+        return new QrdComplexD(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double norm2() {
         return new SvdComplexD(this, false).norm2();
     }

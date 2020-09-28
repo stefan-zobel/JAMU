@@ -179,6 +179,14 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public QrdF qrd() {
+        return new QrdF(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public float norm2() {
         return new SvdF(this, false).norm2();
     }
