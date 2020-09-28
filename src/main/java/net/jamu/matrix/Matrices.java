@@ -380,6 +380,106 @@ public final class Matrices {
     }
 
     /**
+     * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
+     * normally distributed (i.e., standard gausssian) random complex numbers
+     * with expectation {@code 0.0} and variance {@code 1.0} for both the real
+     * part and the imaginary part.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @return {@code (rows, cols)} ComplexMatrixD filled with {@code ~N[0, 1]}
+     *         distributed random complex numbers (standard normal distribution)
+     *         where {@code ~N[0, 1]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixD randomNormalComplexD(int rows, int cols) {
+        return randomNormalComplexD(rows, cols, null);
+    }
+
+    /**
+     * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
+     * normally distributed (i.e., standard gausssian) random complex numbers
+     * with expectation {@code 0.0} and variance {@code 1.0} for both the real
+     * part and the imaginary part.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} ComplexMatrixD filled with {@code ~N[0, 1]}
+     *         distributed random complex numbers (standard normal distribution)
+     *         where {@code ~N[0, 1]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixD randomNormalComplexD(int rows, int cols, long seed) {
+        return randomNormalComplexD(rows, cols, new Random(seed));
+    }
+
+    private static ComplexMatrixD randomNormalComplexD(int rows, int cols, Random rng) {
+        SimpleComplexMatrixD m = new SimpleComplexMatrixD(rows, cols);
+        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
+        double[] _a = m.getArrayUnsafe();
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = rnd.nextGaussian();
+        }
+        return m;
+    }
+
+    /**
+     * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
+     * normally distributed (i.e., standard gausssian) random complex numbers
+     * with expectation {@code 0.0f} and variance {@code 1.0f} for both the real
+     * part and the imaginary part.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @return {@code (rows, cols)} ComplexMatrixF filled with {@code ~N[0, 1]}
+     *         distributed random complex numbers (standard normal distribution)
+     *         where {@code ~N[0, 1]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixF randomNormalComplexF(int rows, int cols) {
+        return randomNormalComplexF(rows, cols, null);
+    }
+
+    /**
+     * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
+     * normally distributed (i.e., standard gausssian) random complex numbers
+     * with expectation {@code 0.0f} and variance {@code 1.0f} for both the real
+     * part and the imaginary part.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} ComplexMatrixF filled with {@code ~N[0, 1]}
+     *         distributed random complex numbers (standard normal distribution)
+     *         where {@code ~N[0, 1]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixF randomNormalComplexF(int rows, int cols, long seed) {
+        return randomNormalComplexF(rows, cols, new Random(seed));
+    }
+
+    private static ComplexMatrixF randomNormalComplexF(int rows, int cols, Random rng) {
+        SimpleComplexMatrixF m = new SimpleComplexMatrixF(rows, cols);
+        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
+        float[] _a = m.getArrayUnsafe();
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = (float) rnd.nextGaussian();
+        }
+        return m;
+    }
+
+    /**
      * Create a MatrixD of dimension {@code (rows, cols)} whose elements are all
      * {@code 1.0}.
      * 
