@@ -292,6 +292,98 @@ public final class Matrices {
     }
 
     /**
+     * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
+     * uniformly distributed random complex numbers drawn from the range
+     * {@code [0.0, 1.0)} for both the real part and the imaginary part.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @return {@code (rows, cols)} ComplexMatrixD filled with {@code ~U[0, 1]}
+     *         distributed random complex numbers where {@code ~U[0, 1]}
+     *         pertains to the real and imaginary part individually
+     */
+    public static ComplexMatrixD randomUniformComplexD(int rows, int cols) {
+        return randomUniformComplexD(rows, cols, null);
+    }
+
+    /**
+     * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
+     * uniformly distributed random complex numbers drawn from the range
+     * {@code [0.0, 1.0)} for both the real part and the imaginary part.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} ComplexMatrixD filled with {@code ~U[0, 1]}
+     *         distributed random complex numbers where {@code ~U[0, 1]}
+     *         pertains to the real and imaginary part individually
+     */
+    public static ComplexMatrixD randomUniformComplexD(int rows, int cols, long seed) {
+        return randomUniformComplexD(rows, cols, new Random(seed));
+    }
+
+    private static ComplexMatrixD randomUniformComplexD(int rows, int cols, Random rng) {
+        SimpleComplexMatrixD m = new SimpleComplexMatrixD(rows, cols);
+        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
+        double[] _a = m.getArrayUnsafe();
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = rnd.nextDouble();
+        }
+        return m;
+    }
+
+    /**
+     * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
+     * uniformly distributed random complex numbers drawn from the range
+     * {@code [0.0f, 1.0f)} for both the real part and the imaginary part.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @return {@code (rows, cols)} ComplexMatrixF filled with {@code ~U[0, 1]}
+     *         distributed random complex numbers where {@code ~U[0, 1]}
+     *         pertains to the real and imaginary part individually
+     */
+    public static ComplexMatrixF randomUniformComplexF(int rows, int cols) {
+        return randomUniformComplexF(rows, cols, null);
+    }
+
+    /**
+     * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
+     * uniformly distributed random complex numbers drawn from the range
+     * {@code [0.0f, 1.0f)} for both the real part and the imaginary part.
+     * 
+     * @param rows
+     *            number or rows
+     * @param cols
+     *            number or columns
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} ComplexMatrixF filled with {@code ~U[0, 1]}
+     *         distributed random complex numbers where {@code ~U[0, 1]}
+     *         pertains to the real and imaginary part individually
+     */
+    public static ComplexMatrixF randomUniformComplexF(int rows, int cols, long seed) {
+        return randomUniformComplexF(rows, cols, new Random(seed));
+    }
+
+    private static ComplexMatrixF randomUniformComplexF(int rows, int cols, Random rng) {
+        SimpleComplexMatrixF m = new SimpleComplexMatrixF(rows, cols);
+        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
+        float[] _a = m.getArrayUnsafe();
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = rnd.nextFloat();
+        }
+        return m;
+    }
+
+    /**
      * Create a MatrixD of dimension {@code (rows, cols)} filled with normally
      * distributed (i.e., standard gausssian) random numbers with expectation
      * {@code 0.0} and variance {@code 1.0}.
