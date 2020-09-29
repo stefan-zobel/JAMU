@@ -609,6 +609,20 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF appendColumn(MatrixF colVector) {
+        Checks.checkCommensurateColVector(this, colVector);
+        float[] _a = a;
+        float[] _b = colVector.getArrayUnsafe();
+        float[] _ab = new float[rows * (cols + 1)];
+        System.arraycopy(_a, 0, _ab, 0, _a.length);
+        System.arraycopy(_b, 0, _ab, _a.length, _b.length);
+        return create(rows, cols + 1, _ab);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF mldivide(MatrixF B) {
         Checks.checkSameRows(this, B);
         return solve(B, Matrices.createF(cols, B.numColumns()));

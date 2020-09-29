@@ -658,6 +658,20 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD appendColumn(ComplexMatrixD colVector) {
+        Checks.checkCommensurateColVector(this, colVector);
+        double[] _a = a;
+        double[] _b = colVector.getArrayUnsafe();
+        double[] _ab = new double[2 * (rows * (cols + 1))];
+        System.arraycopy(_a, 0, _ab, 0, _a.length);
+        System.arraycopy(_b, 0, _ab, _a.length, _b.length);
+        return create(rows, cols + 1, _ab);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD mldivide(ComplexMatrixD B) {
         Checks.checkSameRows(this, B);
         return solve(B, Matrices.createComplexD(cols, B.numColumns()));

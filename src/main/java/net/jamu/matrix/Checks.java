@@ -171,6 +171,14 @@ final class Checks {
         }
     }
 
+    static void checkCommensurateColVector(Dimensions matrix, Dimensions colVector) {
+        checkSameRows(matrix, colVector);
+        if (colVector.numColumns() != 1) {
+            throw new IndexOutOfBoundsException(
+                    "B is not a column vector (" + colVector.numRows() + " x " + colVector.numColumns() + ")");
+        }
+    }
+
     static void checkB_hasAtLeastAsManyRowsAsA(Dimensions A, Dimensions B) {
         if (B.numRows() < A.numRows()) {
             throw new IndexOutOfBoundsException(
