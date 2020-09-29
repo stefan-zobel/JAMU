@@ -585,7 +585,8 @@ public interface MatrixF extends Dimensions, FMatrixBasicOps {
     float normF();
 
     /**
-     * Two norm
+     * Induced 2-norm (a.k.a spectral norm or {@code l}<sub>2</sub> operator
+     * norm) which happens to correspond to the largest singular value.
      * 
      * @return maximum singular value
      * @throws NotConvergedException
