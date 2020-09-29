@@ -213,6 +213,104 @@ public final class Matrices {
     }
 
     /**
+     * Create a quadratic diagonal matrix whose main diagonal contains the
+     * entries provided in the {@code diagonal} array.
+     * 
+     * @param diagonal
+     *            the entries to be copied to the main diagonal. Must not be
+     *            {@code null} and must have length {@code > 0}
+     * @return a {@code diagonal.length x diagonal.length} diagonal matrix with
+     *         its main diagonal entries equal to the elements from the provided
+     *         array
+     */
+    public static MatrixD diagD(double[] diagonal) {
+        if (Objects.requireNonNull(diagonal).length == 0) {
+            throw new IllegalArgumentException("diagonal array length must be > 0");
+        }
+        int n = diagonal.length;
+        SimpleMatrixD m = new SimpleMatrixD(n, n);
+        for (int i = 0; i < n; ++i) {
+            m.set(i, i, diagonal[i]);
+        }
+        return m;
+    }
+
+    /**
+     * Create a quadratic diagonal matrix whose main diagonal contains the
+     * entries provided in the {@code diagonal} array.
+     * 
+     * @param diagonal
+     *            the entries to be copied to the main diagonal. Must not be
+     *            {@code null} and must have length {@code > 0}
+     * @return a {@code diagonal.length x diagonal.length} diagonal matrix with
+     *         its main diagonal entries equal to the elements from the provided
+     *         array
+     */
+    public static MatrixF diagF(float[] diagonal) {
+        if (Objects.requireNonNull(diagonal).length == 0) {
+            throw new IllegalArgumentException("diagonal array length must be > 0");
+        }
+        int n = diagonal.length;
+        SimpleMatrixF m = new SimpleMatrixF(n, n);
+        for (int i = 0; i < n; ++i) {
+            m.set(i, i, diagonal[i]);
+        }
+        return m;
+    }
+
+    /**
+     * Create a quadratic diagonal matrix whose main diagonal contains the
+     * entries provided in the {@code diagonal} array.
+     * 
+     * @param diagonal
+     *            the entries to be copied to the main diagonal. Must not be
+     *            {@code null} and must have length {@code > 0}
+     * @return a {@code diagonal.length x diagonal.length} diagonal matrix with
+     *         its main diagonal entries equal to the elements from the provided
+     *         array
+     */
+    public static ComplexMatrixD diagComplexD(Zd[] diagonal) {
+        if (Objects.requireNonNull(diagonal).length == 0) {
+            throw new IllegalArgumentException("diagonal array length must be > 0");
+        }
+        int n = diagonal.length;
+        SimpleComplexMatrixD m = new SimpleComplexMatrixD(n, n);
+        for (int i = 0; i < n; ++i) {
+            Zd z = diagonal[i];
+            if (z != null) {
+                m.set(i, i, z.re(), z.im());
+            }
+        }
+        return m;
+    }
+
+    /**
+     * Create a quadratic diagonal matrix whose main diagonal contains the
+     * entries provided in the {@code diagonal} array.
+     * 
+     * @param diagonal
+     *            the entries to be copied to the main diagonal. Must not be
+     *            {@code null} and must have length {@code > 0}
+     * @return a {@code diagonal.length x diagonal.length} diagonal matrix with
+     *         its main diagonal entries equal to the elements from the provided
+     *         array
+     */
+    public static ComplexMatrixF diagComplexF(Zf[] diagonal) {
+        if (Objects.requireNonNull(diagonal).length == 0) {
+            throw new IllegalArgumentException("diagonal array length must be > 0");
+        }
+        int n = diagonal.length;
+        SimpleComplexMatrixF m = new SimpleComplexMatrixF(n, n);
+        for (int i = 0; i < n; ++i) {
+            Zf z = diagonal[i];
+            if (z != null) {
+                m.set(i, i, z.re(), z.im());
+            }
+        }
+        return m;
+    }
+
+    /**
      * Create a MatrixD of dimension {@code (rows, cols)} filled with uniformly
      * distributed random numbers drawn from the range {@code [0.0, 1.0)}.
      * 
