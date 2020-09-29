@@ -42,6 +42,24 @@ public interface FComplexMatrixBasicOps {
     ComplexMatrixF selectConsecutiveColumns(int colFrom, int colTo);
 
     /**
+     * Appends a column vector which must have dimension
+     * {@code this.numRows() x 1} to the right of this matrix returning a new
+     * matrix of dimension {@code this.numRows() x this.numColumns() + 1} where
+     * the values from the passed column vector occupy the newly created column
+     * at column index {@code this.numColumns()} and all other values from this
+     * matrix have been copied over to the new matrix. This matrix doesn't get
+     * mutated by the append operation.
+     * 
+     * @param colVector
+     *            the column vector to append to the right of this matrix. Must
+     *            have dimension {@code this.numRows() x 1}
+     * @return a newly created copy of this matrix with one more column appended
+     *         to the right which contains the contents of the provided
+     *         {@code colVector} argument
+     */
+    ComplexMatrixF appendColumn(ComplexMatrixF colVector);
+
+    /**
      * {@code A \ B} matrix left division. {@code X = A\B} is the solution to
      * the equation {@code A * X = B}.
      * <p>
