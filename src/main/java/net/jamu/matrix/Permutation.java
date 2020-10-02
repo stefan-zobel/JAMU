@@ -19,6 +19,11 @@ package net.jamu.matrix;
  * Build a <a href=https://en.wikipedia.org/wiki/Permutation_matrix>permutation
  * matrix</a> from an array of pivot indexes (describing row interchanges) which
  * gets returned by LAPACK methods like {@code ?getrf}.
+ * <p>
+ * For example, an {@code 'ipiv'} array {@code [2,2,2]} in the {@code 3 x 3}
+ * case means that row 1 was interchanged with row 2, then row 2 (which is the
+ * original row 1) stayed the same, then row 3 was interchanged with row 2
+ * (which was the original row 1).
  */
 final class Permutation {
 
