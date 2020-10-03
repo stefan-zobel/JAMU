@@ -1,0 +1,143 @@
+package net.jamu.matrix;
+
+import net.dedekind.lapack.Lapack;
+import net.frobenius.ComputationTruncatedException;
+import net.frobenius.lapack.PlainLapack;
+import net.jamu.complex.ZdImpl;
+
+/**
+ * LU decomposition of a general m-by-n double precision complex matrix
+ * {@code A = P * L * U} using partial pivoting with row interchanges where
+ * {@code P} is a permutation matrix, {@code L} is a lower triangular (lower
+ * trapezoidal if m > n) matrix with unit diagonal elements and {@code U} is an
+ * upper triangular (upper trapezoidal if m < n) matrix.
+ * <p>
+ * Note that this implementation returns {@code null} for {@code P} when no row
+ * interchanges are necessary (in that case, if the caller wants to consistently
+ * use the {@code A = P * L * U} formulation (instead of the simpler
+ * {@code A = L * U}), simply use the identity matrix for {@code P}).
+ */
+public final class LudComplexD {
+
+    // true if matrix A was singular
+    private boolean isSingular;
+
+    // the pivot vector as returned by LAPACK
+    // (keep that for the case that we need to call other LAPACK routines later)
+    private final int[] pivot;
+
+    // permutation matrix or null if no permutations are necessary
+    private final ComplexMatrixD P;
+
+    // lower triangular (lower trapezoidal if m > n) with unit diagonal elements
+    private final ComplexMatrixD L;
+
+    // upper triangular (upper trapezoidal if m < n)
+    private final ComplexMatrixD U;
+
+    /**
+     * If row interchanges are needed returns the (quadratic) permutation matrix
+     * {@code P}, otherwise {@code null} is returned. In the {@code null} case,
+     * if the caller wants to consistently use the {@code A = P * L * U}
+     * formulation (instead of the simpler {@code A = L * U}), simply use the
+     * identity matrix for {@code P}.
+     * 
+     * @return {@code null} when no row interchanges are necessary, otherwise
+     *         the permutation matrix that describes the row interchanges
+     */
+    public ComplexMatrixD getP() {
+        return P;
+    }
+
+    /**
+     * The lower triangular (lower trapezoidal if m > n) factor {@code L} in the
+     * product {@code A = P * L * U}.
+     * 
+     * @return the lower triangular (lower trapezoidal if m > n) factor
+     *         {@code L} of the {@code LU} decomposition
+     */
+    public ComplexMatrixD getL() {
+        return L;
+    }
+
+    /**
+     * The upper triangular (upper trapezoidal if m < n) factor {@code U} in the
+     * product {@code A = P * L * U}.
+     * 
+     * @return the upper triangular (upper trapezoidal if m < n) factor
+     *         {@code U} of the {@code LU} decomposition
+     */
+    public ComplexMatrixD getU() {
+        return U;
+    }
+
+    /**
+     * Returns {@code true} when the matrix {@code A} was singular, otherwise
+     * {@code false}.
+     * 
+     * @return {@code true} if {@code A} is singular, otherwise {@code false}
+     */
+    public boolean isSingular() {
+        return isSingular;
+    }
+
+    /* package */ LudComplexD(ComplexMatrixD A) {
+        int m = A.numRows();
+        int n = A.numColumns();
+        pivot = new int[Math.min(m, n)];
+        if (m >= n) {
+            L = Matrices.createComplexD(m, n);
+            U = Matrices.createComplexD(n, n);
+        } else {
+            L = Matrices.createComplexD(m, m);
+            U = Matrices.createComplexD(m, n);
+        }
+        P = computeLudInplace(A, L.numRows());
+    }
+
+    private ComplexMatrixD computeLudInplace(ComplexMatrixD A, int dimP) {
+        ComplexMatrixD AA = A.copy();
+        try {
+            int lda = Math.max(1, AA.numRows());
+            PlainLapack.zgetrf(Lapack.getInstance(), AA.numRows(), AA.numColumns(), AA.getArrayUnsafe(), lda, pivot);
+        } catch (ComputationTruncatedException e) {
+            isSingular = true;
+        }
+        copyIntoL(AA);
+        copyIntoU(AA);
+        // return P
+        return Permutation.genPermutationComplexMatrixD(pivot, dimP);
+    }
+
+    private void copyIntoL(ComplexMatrixD AA) {
+        ComplexMatrixD l_ = L;
+        int cols = l_.numColumns();
+        int rows = l_.numRows();
+        ZdImpl z = new ZdImpl(0.0);
+        for (int col = 0; col < cols; ++col) {
+            for (int row = 0; row < rows; ++row) {
+                if (row == col) {
+                    l_.set(row, col, 1.0, 1.0);
+                } else if (row > col) {
+                    AA.getUnsafe(row, col, z);
+                    l_.set(row, col, z.re(), z.im());
+                }
+            }
+        }
+    }
+
+    private void copyIntoU(ComplexMatrixD AA) {
+        ComplexMatrixD u_ = U;
+        int cols = u_.numColumns();
+        int rows = u_.numRows();
+        ZdImpl z = new ZdImpl(0.0);
+        for (int col = 0; col < cols; ++col) {
+            for (int row = 0; row < rows; ++row) {
+                if (row <= col) {
+                    AA.getUnsafe(row, col, z);
+                    u_.set(row, col, z.re(), z.im());
+                }
+            }
+        }
+    }
+}
