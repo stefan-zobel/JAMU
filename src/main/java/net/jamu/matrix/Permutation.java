@@ -28,113 +28,145 @@ package net.jamu.matrix;
 final class Permutation {
 
     /**
-     * Returns a permutation matrix when {@code partialPivot} specifies at least
-     * one actual interchange of rows, otherwise returns {@code null}.
+     * Returns a {@code (dim x dim)} quadratic permutation matrix when
+     * {@code partialPivot} specifies at least one actual interchange of rows,
+     * otherwise returns {@code null}.
      * 
      * @param partialPivot
      *            the {@code 'ipiv'} partial pivoting indexes returned by
      *            {@code ?getrf}
+     * @param dim
+     *            the dimension of the quadratic {@code (dim x dim)} permutation
+     *            matrix
      * @return {@code null} when {@code partialPivot} doesn't describe any
      *         actual row interchanges, otherwise a full-fledged permutation
      *         matrix gets returned
      */
-    static MatrixD genPermutationMatrixD(int[] partialPivot) {
+    static MatrixD genPermutationMatrixD(int[] partialPivot, int dim) {
         int[] permutation = checkPivotVector(partialPivot);
         if (permutation != null) {
-            return buildMatrixD(permutation);
+            return buildMatrixD(permutation, dim);
         }
         return null;
     }
 
     /**
-     * Returns a permutation matrix when {@code partialPivot} specifies at least
-     * one actual interchange of rows, otherwise returns {@code null}.
+     * Returns a {@code (dim x dim)} quadratic permutation matrix when
+     * {@code partialPivot} specifies at least one actual interchange of rows,
+     * otherwise returns {@code null}.
      * 
      * @param partialPivot
      *            the {@code 'ipiv'} partial pivoting indexes returned by
      *            {@code ?getrf}
+     * @param dim
+     *            the dimension of the quadratic {@code (dim x dim)} permutation
+     *            matrix
      * @return {@code null} when {@code partialPivot} doesn't describe any
      *         actual row interchanges, otherwise a full-fledged permutation
      *         matrix gets returned
      */
-    static MatrixF genPermutationMatrixF(int[] partialPivot) {
+    static MatrixF genPermutationMatrixF(int[] partialPivot, int dim) {
         int[] permutation = checkPivotVector(partialPivot);
         if (permutation != null) {
-            return buildMatrixF(permutation);
+            return buildMatrixF(permutation, dim);
         }
         return null;
     }
 
     /**
-     * Returns a permutation matrix when {@code partialPivot} specifies at least
-     * one actual interchange of rows, otherwise returns {@code null}.
+     * Returns a {@code (dim x dim)} quadratic permutation matrix when
+     * {@code partialPivot} specifies at least one actual interchange of rows,
+     * otherwise returns {@code null}.
      * 
      * @param partialPivot
      *            the {@code 'ipiv'} partial pivoting indexes returned by
      *            {@code ?getrf}
+     * @param dim
+     *            the dimension of the quadratic {@code (dim x dim)} permutation
+     *            matrix
      * @return {@code null} when {@code partialPivot} doesn't describe any
      *         actual row interchanges, otherwise a full-fledged permutation
      *         matrix gets returned
      */
-    static ComplexMatrixD genPermutationComplexMatrixD(int[] partialPivot) {
+    static ComplexMatrixD genPermutationComplexMatrixD(int[] partialPivot, int dim) {
         int[] permutation = checkPivotVector(partialPivot);
         if (permutation != null) {
-            return buildComplexMatrixD(permutation);
+            return buildComplexMatrixD(permutation, dim);
         }
         return null;
     }
 
     /**
-     * Returns a permutation matrix when {@code partialPivot} specifies at least
-     * one actual interchange of rows, otherwise returns {@code null}.
+     * Returns a {@code (dim x dim)} quadratic permutation matrix when
+     * {@code partialPivot} specifies at least one actual interchange of rows,
+     * otherwise returns {@code null}.
      * 
      * @param partialPivot
      *            the {@code 'ipiv'} partial pivoting indexes returned by
      *            {@code ?getrf}
+     * @param dim
+     *            the dimension of the quadratic {@code (dim x dim)} permutation
+     *            matrix
      * @return {@code null} when {@code partialPivot} doesn't describe any
      *         actual row interchanges, otherwise a full-fledged permutation
      *         matrix gets returned
      */
-    static ComplexMatrixF genPermutationComplexMatrixF(int[] partialPivot) {
+    static ComplexMatrixF genPermutationComplexMatrixF(int[] partialPivot, int dim) {
         int[] permutation = checkPivotVector(partialPivot);
         if (permutation != null) {
-            return buildComplexMatrixF(permutation);
+            return buildComplexMatrixF(permutation, dim);
         }
         return null;
     }
 
-    private static MatrixD buildMatrixD(int[] perm) {
+    private static MatrixD buildMatrixD(int[] perm, int dim) {
         int n = perm.length;
-        MatrixD permMatrix = Matrices.createD(n, n);
-        for (int i = 0; i < n; ++i) {
-            permMatrix.set(i, perm[i] - 1, 1.0);
+        MatrixD permMatrix = Matrices.createD(dim, dim);
+        for (int i = 0; i < dim; ++i) {
+            if (i < n) {
+                permMatrix.set(i, perm[i] - 1, 1.0);
+            } else {
+                permMatrix.set(i, i, 1.0);
+            }
         }
         return permMatrix;
     }
 
-    private static MatrixF buildMatrixF(int[] perm) {
+    private static MatrixF buildMatrixF(int[] perm, int dim) {
         int n = perm.length;
-        MatrixF permMatrix = Matrices.createF(n, n);
-        for (int i = 0; i < n; ++i) {
-            permMatrix.set(i, perm[i] - 1, 1.0f);
+        MatrixF permMatrix = Matrices.createF(dim, dim);
+        for (int i = 0; i < dim; ++i) {
+            if (i < n) {
+                permMatrix.set(i, perm[i] - 1, 1.0f);
+            } else {
+                permMatrix.set(i, i, 1.0f);
+            }
         }
         return permMatrix;
     }
 
-    private static ComplexMatrixD buildComplexMatrixD(int[] perm) {
+    private static ComplexMatrixD buildComplexMatrixD(int[] perm, int dim) {
         int n = perm.length;
-        ComplexMatrixD permMatrix = Matrices.createComplexD(n, n);
-        for (int i = 0; i < n; ++i) {
-            permMatrix.set(i, perm[i] - 1, 1.0, 1.0);
+        ComplexMatrixD permMatrix = Matrices.createComplexD(dim, dim);
+        for (int i = 0; i < dim; ++i) {
+            if (i < n) {
+                permMatrix.set(i, perm[i] - 1, 1.0, 1.0);
+            } else {
+                permMatrix.set(i, i, 1.0, 1.0);
+            }
         }
         return permMatrix;
     }
 
-    private static ComplexMatrixF buildComplexMatrixF(int[] perm) {
+    private static ComplexMatrixF buildComplexMatrixF(int[] perm, int dim) {
         int n = perm.length;
-        ComplexMatrixF permMatrix = Matrices.createComplexF(n, n);
-        for (int i = 0; i < n; ++i) {
-            permMatrix.set(i, perm[i] - 1, 1.0f, 1.0f);
+        ComplexMatrixF permMatrix = Matrices.createComplexF(dim, dim);
+        for (int i = 0; i < dim; ++i) {
+            if (i < n) {
+                permMatrix.set(i, perm[i] - 1, 1.0f, 1.0f);
+            } else {
+                permMatrix.set(i, i, 1.0f, 1.0f);
+            }
         }
         return permMatrix;
     }
