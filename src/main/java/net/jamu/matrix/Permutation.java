@@ -124,7 +124,7 @@ final class Permutation {
         MatrixD permMatrix = Matrices.createD(dim, dim);
         for (int i = 0; i < dim; ++i) {
             if (i < n) {
-                permMatrix.set(i, perm[i] - 1, 1.0);
+                permMatrix.set(perm[i] - 1, i, 1.0);
             } else {
                 permMatrix.set(i, i, 1.0);
             }
@@ -137,7 +137,7 @@ final class Permutation {
         MatrixF permMatrix = Matrices.createF(dim, dim);
         for (int i = 0; i < dim; ++i) {
             if (i < n) {
-                permMatrix.set(i, perm[i] - 1, 1.0f);
+                permMatrix.set(perm[i] - 1, i, 1.0f);
             } else {
                 permMatrix.set(i, i, 1.0f);
             }
@@ -150,7 +150,7 @@ final class Permutation {
         ComplexMatrixD permMatrix = Matrices.createComplexD(dim, dim);
         for (int i = 0; i < dim; ++i) {
             if (i < n) {
-                permMatrix.set(i, perm[i] - 1, 1.0, 1.0);
+                permMatrix.set(perm[i] - 1, i, 1.0, 1.0);
             } else {
                 permMatrix.set(i, i, 1.0, 1.0);
             }
@@ -163,7 +163,7 @@ final class Permutation {
         ComplexMatrixF permMatrix = Matrices.createComplexF(dim, dim);
         for (int i = 0; i < dim; ++i) {
             if (i < n) {
-                permMatrix.set(i, perm[i] - 1, 1.0f, 1.0f);
+                permMatrix.set(perm[i] - 1, i, 1.0f, 1.0f);
             } else {
                 permMatrix.set(i, i, 1.0f, 1.0f);
             }
@@ -214,11 +214,22 @@ final class Permutation {
     }
 
     private static int[] initPermVector(int[] pivot) {
-        int[] perm = new int[pivot.length];
+        int[] perm = new int[Math.max(pivot.length, getMaxRowIndex(pivot))];
         for (int i = 0; i < perm.length; ++i) {
             perm[i] = i + 1;
         }
         return perm;
+    }
+
+    private static int getMaxRowIndex(int[] pivot) {
+        int maxRowIdx = -1;
+        for (int i = 0; i < pivot.length; ++i) {
+            int row = pivot[i];
+            if (row > maxRowIdx) {
+                maxRowIdx = row;
+            }
+        }
+        return maxRowIdx;
     }
 
     private Permutation() {
