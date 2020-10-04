@@ -606,14 +606,21 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
     EvdComplexD evd(boolean full);
 
     /**
-     * Computes the QR decomposition of this matrix provided it has at least as
-     * many rows as columns.
+     * Computes the {@code QR} decomposition of this matrix provided it has at
+     * least as many rows as columns.
      * 
      * @return the {@link QrdComplexD} QR decomposition of this matrix
      * @throws IllegalArgumentException
      *             if this matrix has less rows than columns
      */
     QrdComplexD qrd();
+
+    /**
+     * Computes the {@code LU} decomposition of this matrix.
+     * 
+     * @return the {@link LudComplexD} LU decomposition of this matrix
+     */
+    LudComplexD lud();
 
     /**
      * Computes the singular value decomposition of this matrix.

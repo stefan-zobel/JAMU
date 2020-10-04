@@ -216,6 +216,14 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
      * {@inheritDoc}
      */
     @Override
+    public LudComplexF lud() {
+        return new LudComplexF(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public float norm2() {
         return new SvdComplexF(this, false).norm2();
     }

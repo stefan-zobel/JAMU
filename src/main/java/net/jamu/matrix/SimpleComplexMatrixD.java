@@ -216,6 +216,14 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
      * {@inheritDoc}
      */
     @Override
+    public LudComplexD lud() {
+        return new LudComplexD(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double norm2() {
         return new SvdComplexD(this, false).norm2();
     }

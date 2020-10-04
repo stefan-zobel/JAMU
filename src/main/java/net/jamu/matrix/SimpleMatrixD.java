@@ -187,6 +187,14 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public LudD lud() {
+        return new LudD(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double norm2() {
         return new SvdD(this, false).norm2();
     }

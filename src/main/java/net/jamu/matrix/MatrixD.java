@@ -561,14 +561,21 @@ public interface MatrixD extends Dimensions, DMatrixBasicOps {
     EvdD evd(boolean full);
 
     /**
-     * Computes the QR decomposition of this matrix provided it has at least as
-     * many rows as columns.
+     * Computes the {@code QR} decomposition of this matrix provided it has at
+     * least as many rows as columns.
      * 
      * @return the {@link QrdD} QR decomposition of this matrix
      * @throws IllegalArgumentException
      *             if this matrix has less rows than columns
      */
     QrdD qrd();
+
+    /**
+     * Computes the {@code LU} decomposition of this matrix.
+     * 
+     * @return the {@link LudD} LU decomposition of this matrix
+     */
+    LudD lud();
 
     /**
      * Copy into a jagged array.
