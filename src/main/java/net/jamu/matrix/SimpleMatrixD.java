@@ -83,7 +83,7 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
     public MatrixD multAdd(double alpha, MatrixD B, MatrixD C) {
         Checks.checkMultAdd(this, B, C);
 
-        Blas blas = Blas.getInstance();
+        Blas blas = Matrices.getBlas();
         blas.dgemm(TTrans.NO_TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
                 Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
                 Math.max(1, C.numRows()));
@@ -98,7 +98,7 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
     public MatrixD transABmultAdd(double alpha, MatrixD B, MatrixD C) {
         Checks.checkTransABmultAdd(this, B, C);
 
-        Blas blas = Blas.getInstance();
+        Blas blas = Matrices.getBlas();
         blas.dgemm(TTrans.TRANS.val(), TTrans.TRANS.val(), C.numRows(), C.numColumns(), rows, alpha, a,
                 Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
                 Math.max(1, C.numRows()));
@@ -113,7 +113,7 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
     public MatrixD transAmultAdd(double alpha, MatrixD B, MatrixD C) {
         Checks.checkTransAmultAdd(this, B, C);
 
-        Blas blas = Blas.getInstance();
+        Blas blas = Matrices.getBlas();
         blas.dgemm(TTrans.TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), rows, alpha, a,
                 Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
                 Math.max(1, C.numRows()));
@@ -128,7 +128,7 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
     public MatrixD transBmultAdd(double alpha, MatrixD B, MatrixD C) {
         Checks.checkTransBmultAdd(this, B, C);
 
-        Blas blas = Blas.getInstance();
+        Blas blas = Matrices.getBlas();
         blas.dgemm(TTrans.NO_TRANS.val(), TTrans.TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
                 Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
                 Math.max(1, C.numRows()));
@@ -201,7 +201,7 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
 
     private static MatrixD lusolve(MatrixD A, MatrixD X, MatrixD B) {
         X.setInplace(B);
-        PlainLapack.dgesv(Lapack.getInstance(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
+        PlainLapack.dgesv(Matrices.getLapack(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
                 Math.max(1, A.numRows()), new int[A.numRows()], X.getArrayUnsafe(), Math.max(1, A.numRows()));
         return X;
     }
@@ -218,7 +218,7 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
             }
         }
 
-        PlainLapack.dgels(Lapack.getInstance(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
+        PlainLapack.dgels(Matrices.getLapack(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
                 Math.max(1, mm), tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
 
         for (int j = 0; j < rhsCount; ++j) {

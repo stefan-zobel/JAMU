@@ -15,7 +15,6 @@
  */
 package net.jamu.matrix;
 
-import net.dedekind.lapack.Lapack;
 import net.frobenius.TEigJob;
 import net.frobenius.lapack.PlainLapack;
 import net.jamu.complex.ZArrayUtil;
@@ -81,7 +80,7 @@ public final class EvdF {
         int ld = Math.max(1, n);
         float[] eigValRealParts = new float[n];
         float[] eigValImagParts = new float[n];
-        PlainLapack.sgeev(Lapack.getInstance(), leftEVec, rightEVec, n, AA.getArrayUnsafe(), ld, eigValRealParts,
+        PlainLapack.sgeev(Matrices.getLapack(), leftEVec, rightEVec, n, AA.getArrayUnsafe(), ld, eigValRealParts,
                 eigValImagParts, new float[0], ld, hasEigenvectors() ? eigenVectors.getArrayUnsafe() : new float[0],
                 ld);
         // convert LAPACK eigenvalues to an Zf[] array

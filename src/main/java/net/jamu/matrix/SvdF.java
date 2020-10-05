@@ -15,7 +15,6 @@
  */
 package net.jamu.matrix;
 
-import net.dedekind.lapack.Lapack;
 import net.frobenius.TSvdJob;
 import net.frobenius.lapack.PlainLapack;
 
@@ -118,7 +117,7 @@ public class SvdF {
         MatrixF AA = A.copy();
         int m = AA.numRows();
         int n = AA.numColumns();
-        PlainLapack.sgesdd(Lapack.getInstance(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
+        PlainLapack.sgesdd(Matrices.getLapack(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
                 hasSingularVectors() ? U.getArrayUnsafe() : new float[0], Math.max(1, m),
                 hasSingularVectors() ? Vt.getArrayUnsafe() : new float[0], Math.max(1, n));
     }

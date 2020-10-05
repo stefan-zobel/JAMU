@@ -27,6 +27,8 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import net.dedekind.blas.Blas;
+import net.dedekind.lapack.Lapack;
 import net.jamu.complex.ZArrayUtil;
 import net.jamu.complex.Zd;
 import net.jamu.complex.Zf;
@@ -1321,12 +1323,37 @@ public final class Matrices {
         buf.append(System.lineSeparator());
     }
 
+    static Lapack getLapack() {
+        if (getBooleanPropVal(USE_NETLIB, false)) {
+            return Lapack.getInstance(false);
+        }
+        return Lapack.getInstance();
+    }
+
+    static Blas getBlas() {
+        if (getBooleanPropVal(USE_NETLIB, false)) {
+            return Blas.getInstance(false);
+        }
+        return Blas.getInstance();
+    }
+
+    private static boolean getBooleanPropVal(String prop, boolean defVal) {
+        boolean val = defVal;
+        try {
+            String s = System.getProperty(prop, Boolean.toString(defVal));
+            val = Boolean.parseBoolean(s.trim());
+        } catch (IllegalArgumentException | NullPointerException ignore) {
+        }
+        return val;
+    }
+
     // 256k
     private static final int BUF_SIZE = 1 << 18;
     private static final int MAX_ROWCOL = 6;
     private static final int LAST_IDX = MAX_ROWCOL - 1;
     private static final String FORMAT_F = "%.8E";
     private static final String FORMAT_D = "%.12E";
+    private static final String USE_NETLIB = "net.jamu.matrix.use.java.implementation";
 
     private Matrices() {
         throw new AssertionError();

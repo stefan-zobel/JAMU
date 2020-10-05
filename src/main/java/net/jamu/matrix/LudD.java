@@ -15,7 +15,6 @@
  */
 package net.jamu.matrix;
 
-import net.dedekind.lapack.Lapack;
 import net.frobenius.ComputationTruncatedException;
 import net.frobenius.lapack.PlainLapack;
 
@@ -113,7 +112,7 @@ public final class LudD {
         MatrixD AA = A.copy();
         try {
             int lda = Math.max(1, AA.numRows());
-            PlainLapack.dgetrf(Lapack.getInstance(), AA.numRows(), AA.numColumns(), AA.getArrayUnsafe(), lda, pivot);
+            PlainLapack.dgetrf(Matrices.getLapack(), AA.numRows(), AA.numColumns(), AA.getArrayUnsafe(), lda, pivot);
         } catch (ComputationTruncatedException e) {
             isSingular = true;
         }

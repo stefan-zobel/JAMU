@@ -118,7 +118,7 @@ public class SvdD {
         MatrixD AA = A.copy();
         int m = AA.numRows();
         int n = AA.numColumns();
-        PlainLapack.dgesdd(Lapack.getInstance(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
+        PlainLapack.dgesdd(Matrices.getLapack(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
                 hasSingularVectors() ? U.getArrayUnsafe() : new double[0], Math.max(1, m),
                 hasSingularVectors() ? Vt.getArrayUnsafe() : new double[0], Math.max(1, n));
     }

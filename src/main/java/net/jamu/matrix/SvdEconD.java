@@ -15,7 +15,6 @@
  */
 package net.jamu.matrix;
 
-import net.dedekind.lapack.Lapack;
 import net.frobenius.TSvdJob;
 import net.frobenius.lapack.PlainLapack;
 
@@ -87,7 +86,7 @@ public final class SvdEconD extends SvdD {
         MatrixD AA = A.copy();
         int m = AA.numRows();
         int n = AA.numColumns();
-        PlainLapack.dgesdd(Lapack.getInstance(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
+        PlainLapack.dgesdd(Matrices.getLapack(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
                 U.getArrayUnsafe(), Math.max(1, U.numRows()), Vt.getArrayUnsafe(), Math.max(1, Vt.numRows()));
     }
 }

@@ -83,7 +83,7 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF multAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkMultAdd(this, B, C);
 
-        Blas blas = Blas.getInstance();
+        Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.NO_TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
                 Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
                 Math.max(1, C.numRows()));
@@ -98,7 +98,7 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF transABmultAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkTransABmultAdd(this, B, C);
 
-        Blas blas = Blas.getInstance();
+        Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.TRANS.val(), TTrans.TRANS.val(), C.numRows(), C.numColumns(), rows, alpha, a,
                 Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
                 Math.max(1, C.numRows()));
@@ -113,7 +113,7 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF transAmultAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkTransAmultAdd(this, B, C);
 
-        Blas blas = Blas.getInstance();
+        Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), rows, alpha, a,
                 Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
                 Math.max(1, C.numRows()));
@@ -128,7 +128,7 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF transBmultAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkTransBmultAdd(this, B, C);
 
-        Blas blas = Blas.getInstance();
+        Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.NO_TRANS.val(), TTrans.TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
                 Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
                 Math.max(1, C.numRows()));
@@ -201,7 +201,7 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
 
     private static MatrixF lusolve(MatrixF A, MatrixF X, MatrixF B) {
         X.setInplace(B);
-        PlainLapack.sgesv(Lapack.getInstance(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
+        PlainLapack.sgesv(Matrices.getLapack(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
                 Math.max(1, A.numRows()), new int[A.numRows()], X.getArrayUnsafe(), Math.max(1, A.numRows()));
         return X;
     }
@@ -218,7 +218,7 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
             }
         }
 
-        PlainLapack.sgels(Lapack.getInstance(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
+        PlainLapack.sgels(Matrices.getLapack(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
                 Math.max(1, mm), tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
 
         for (int j = 0; j < rhsCount; ++j) {

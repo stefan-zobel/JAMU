@@ -66,7 +66,7 @@ public final class QrdD {
         int k = Math.min(m, n);
         int lda = Math.max(1, m);
         double[] tau = new double[k];
-        Lapack la = Lapack.getInstance();
+        Lapack la = Matrices.getLapack();
         // compute the QR factorization
         PlainLapack.dgeqrf(la, m, n, AA.getArrayUnsafe(), lda, tau);
         R.setInplaceUpperTrapezoidal(AA);
