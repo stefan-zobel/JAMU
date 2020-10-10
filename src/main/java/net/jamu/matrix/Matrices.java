@@ -828,6 +828,31 @@ public final class Matrices {
     }
 
     /**
+     * Writes the complex matrix {@code cmf} into the provided Path {@code file}
+     * and returns the number of bytes written.
+     * 
+     * @param cmf
+     *            the complex float matrix that needs to be serialized
+     * @param file
+     *            the file to write the complex {@code cmf} matrix into
+     * @return the number of bytes written into the file
+     * @throws IOException
+     *             if anything goes wrong
+     */
+    public static long serializeComplexF(ComplexMatrixF cmf, Path file) throws IOException {
+        //@formatter:off
+        try (OutputStream os = Files.newOutputStream(file);
+             BufferedOutputStream bos = new BufferedOutputStream(os, BUF_SIZE)
+        )
+        {
+            long sz = serializeComplexF(cmf, bos);
+            bos.flush();
+            return sz;
+        }
+        //@formatter:on
+    }
+
+    /**
      * Writes the matrix {@code mf} into the provided output stream {@code os}
      * and returns the number of bytes written. Everything related to (pre-)
      * positioning, flushing and closing of the output stream must be done by
@@ -845,6 +870,30 @@ public final class Matrices {
         byte[] buf = new byte[4];
         long sz = IO.writeMatrixHeaderB(mf.numRows(), mf.numColumns(), Float.SIZE, buf, os);
         float[] data = mf.getArrayUnsafe();
+        for (int i = 0; i < data.length; ++i) {
+            sz += IO.putFloatB(data[i], buf, os);
+        }
+        return sz;
+    }
+
+    /**
+     * Writes the complex matrix {@code cmf} into the provided output stream
+     * {@code os} and returns the number of bytes written. Everything related to
+     * (pre-) positioning, flushing and closing of the output stream must be
+     * done by the caller.
+     * 
+     * @param cmf
+     *            the complex float matrix that needs to be serialized
+     * @param os
+     *            the output stream to write the {@code cmf} matrix into
+     * @return the number of bytes written into the output stream
+     * @throws IOException
+     *             if anything goes wrong
+     */
+    public static long serializeComplexF(ComplexMatrixF cmf, OutputStream os) throws IOException {
+        byte[] buf = new byte[4];
+        long sz = IO.writeMatrixHeaderB(cmf.numRows(), cmf.numColumns(), -Float.SIZE, buf, os);
+        float[] data = cmf.getArrayUnsafe();
         for (int i = 0; i < data.length; ++i) {
             sz += IO.putFloatB(data[i], buf, os);
         }
@@ -877,6 +926,31 @@ public final class Matrices {
     }
 
     /**
+     * Writes the complex matrix {@code cmd} into the provided Path {@code file}
+     * and returns the number of bytes written.
+     * 
+     * @param cmd
+     *            the complex double matrix that needs to be serialized
+     * @param file
+     *            the file to write the complex {@code cmd} matrix into
+     * @return the number of bytes written into the file
+     * @throws IOException
+     *             if anything goes wrong
+     */
+    public static long serializeComplexD(ComplexMatrixD cmd, Path file) throws IOException {
+        //@formatter:off
+        try (OutputStream os = Files.newOutputStream(file);
+             BufferedOutputStream bos = new BufferedOutputStream(os, BUF_SIZE)
+        )
+        {
+            long sz = serializeComplexD(cmd, bos);
+            bos.flush();
+            return sz;
+        }
+        //@formatter:on
+    }
+
+    /**
      * Writes the matrix {@code md} into the provided output stream {@code os}
      * and returns the number of bytes written. Everything related to (pre-)
      * positioning, flushing and closing of the output stream must be done by
@@ -900,6 +974,29 @@ public final class Matrices {
         return sz;
     }
 
+    /**
+     * Writes the complex matrix {@code cmd} into the provided output stream
+     * {@code os} and returns the number of bytes written. Everything related to
+     * (pre-) positioning, flushing and closing of the output stream must be
+     * done by the caller.
+     * 
+     * @param cmd
+     *            the complex double matrix that needs to be serialized
+     * @param os
+     *            the output stream to write the {@code cmd} matrix into
+     * @return the number of bytes written into the output stream
+     * @throws IOException
+     *             if anything goes wrong
+     */
+    public static long serializeComplexD(ComplexMatrixD cmd, OutputStream os) throws IOException {
+        byte[] buf = new byte[8];
+        long sz = IO.writeMatrixHeaderB(cmd.numRows(), cmd.numColumns(), -Double.SIZE, buf, os);
+        double[] data = cmd.getArrayUnsafe();
+        for (int i = 0; i < data.length; ++i) {
+            sz += IO.putDoubleB(data[i], buf, os);
+        }
+        return sz;
+    }
     /**
      * Attempts to read a float matrix from the provided Path {@code file}.
      * 
@@ -999,7 +1096,7 @@ public final class Matrices {
         int cols = IO.readCols(true, buf, is);
         ComplexMatrixF cmf = createComplexF(rows, cols);
         float[] data = cmf.getArrayUnsafe();
-        for (int i = 0; i < 2 * data.length; ++i) {
+        for (int i = 0; i < data.length; ++i) {
             data[i] = IO.getFloatB(buf, is);
         }
         return cmf;
@@ -1104,7 +1201,7 @@ public final class Matrices {
         int cols = IO.readCols(true, buf, is);
         ComplexMatrixD cmd = createComplexD(rows, cols);
         double[] data = cmd.getArrayUnsafe();
-        for (int i = 0; i < 2 * data.length; ++i) {
+        for (int i = 0; i < data.length; ++i) {
             data[i] = IO.getDoubleB(buf, is);
         }
         return cmd;
