@@ -922,6 +922,28 @@ public final class Matrices {
     }
 
     /**
+     * Attempts to read a complex float matrix from the provided Path
+     * {@code file}.
+     * 
+     * @param file
+     *            the file to read the complex float matrix from
+     * @return the deserialized complex float matrix
+     * @throws IOException
+     *             if anything goes wrong (e.g., there is no complex float
+     *             matrix stored in that file)
+     */
+    public static ComplexMatrixF deserializeComplexF(Path file) throws IOException {
+        //@formatter:off
+        try (InputStream is = Files.newInputStream(file);
+             BufferedInputStream bis = new BufferedInputStream(is, BUF_SIZE)
+        )
+        {
+            return deserializeComplexF(bis);
+        }
+        //@formatter:on
+    }
+
+    /**
      * Attempts to read a float matrix from the current position of the provided
      * input stream {@code is}. The correct positioning of the input stream and
      * closing the input stream must be done by the caller.
@@ -953,6 +975,37 @@ public final class Matrices {
     }
 
     /**
+     * Attempts to read a complex float matrix from the current position of the
+     * provided input stream {@code is}. The correct positioning of the input
+     * stream and closing the input stream must be done by the caller.
+     * 
+     * @param is
+     *            the input stream to read a complex float matrix from
+     * @return the complex float matrix deserialized from the input stream
+     * @throws IOException
+     *             if anything goes wrong (e.g., the position is wrong or there
+     *             is no complex float matrix stored at the current position)
+     */
+    public static ComplexMatrixF deserializeComplexF(InputStream is) throws IOException {
+        byte[] buf = new byte[4];
+        checkBigendian(IO.isBigendian(buf, is));
+        if (IO.isDoubleType(buf, is)) {
+            throw new IOException("Unexpected double type. Use double Deserializer instead.");
+        }
+        if (!IO.isComplexType(buf)) {
+            throw new IOException("Unexpected MatrixF. Use deserializeF() instead.");
+        }
+        int rows = IO.readRows(true, buf, is);
+        int cols = IO.readCols(true, buf, is);
+        ComplexMatrixF cmf = createComplexF(rows, cols);
+        float[] data = cmf.getArrayUnsafe();
+        for (int i = 0; i < 2 * data.length; ++i) {
+            data[i] = IO.getFloatB(buf, is);
+        }
+        return cmf;
+    }
+
+    /**
      * Attempts to read a double matrix from the provided Path {@code file}.
      * 
      * @param file
@@ -969,6 +1022,28 @@ public final class Matrices {
         )
         {
             return deserializeD(bis);
+        }
+        //@formatter:on
+    }
+
+    /**
+     * Attempts to read a complex double matrix from the provided Path
+     * {@code file}.
+     * 
+     * @param file
+     *            the file to read the complex double matrix from
+     * @return the deserialized complex double matrix
+     * @throws IOException
+     *             if anything goes wrong (e.g., there is no complex double
+     *             matrix stored in that file)
+     */
+    public static ComplexMatrixD deserializeComplexD(Path file) throws IOException {
+        //@formatter:off
+        try (InputStream is = Files.newInputStream(file);
+             BufferedInputStream bis = new BufferedInputStream(is, BUF_SIZE)
+        )
+        {
+            return deserializeComplexD(bis);
         }
         //@formatter:on
     }
@@ -1002,6 +1077,37 @@ public final class Matrices {
             data[i] = IO.getDoubleB(buf, is);
         }
         return md;
+    }
+
+    /**
+     * Attempts to read a complex double matrix from the current position of the
+     * provided input stream {@code is}. The correct positioning of the input
+     * stream and closing the input stream must be done by the caller.
+     * 
+     * @param is
+     *            the input stream to read a complex double matrix from
+     * @return the complex double matrix deserialized from the input stream
+     * @throws IOException
+     *             if anything goes wrong (e.g., the position is wrong or there
+     *             is no complex double matrix stored at the current position)
+     */
+    public static ComplexMatrixD deserializeComplexD(InputStream is) throws IOException {
+        byte[] buf = new byte[8];
+        checkBigendian(IO.isBigendian(buf, is));
+        if (!IO.isDoubleType(buf, is)) {
+            throw new IOException("Unexpected float type. Use float Deserializer instead.");
+        }
+        if (!IO.isComplexType(buf)) {
+            throw new IOException("Unexpected MatrixD. Use deserializeD() instead.");
+        }
+        int rows = IO.readRows(true, buf, is);
+        int cols = IO.readCols(true, buf, is);
+        ComplexMatrixD cmd = createComplexD(rows, cols);
+        double[] data = cmd.getArrayUnsafe();
+        for (int i = 0; i < 2 * data.length; ++i) {
+            data[i] = IO.getDoubleB(buf, is);
+        }
+        return cmd;
     }
 
     /**
