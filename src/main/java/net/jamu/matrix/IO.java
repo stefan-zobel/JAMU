@@ -26,15 +26,17 @@ final class IO {
 
     private static final byte BIG_ENDIAN = 1;
     private static final byte LITTLE_ENDIAN = 2;
-    private static final byte DT_FLOAT_BITS = 32;
-    private static final byte DT_DOUBLE_BITS = 64;
+    private static final byte DT_FLOAT = 32;
+    private static final byte DT_DOUBLE = 64;
+    private static final byte DT_COMPLEX_FLOAT = -32;
+    private static final byte DT_COMPLEX_DOUBLE = -64;
     private static final String WRONG_IS_POS = "Wrong InputStream position";
 
-    static long writeMatrixHeaderB(int rows, int cols, int dtNumBits,
+    static long writeMatrixHeaderB(int rows, int cols, int datatype,
             byte[] bytes /* byte[4] */, OutputStream os) throws IOException {
-        checkNumBits(dtNumBits);
+        checkDatatype(datatype);
         os.write(BIG_ENDIAN);
-        os.write(dtNumBits);
+        os.write(datatype);
         putIntB(rows, bytes, os);
         os.write(bytes, 0, 4);
         putIntB(cols, bytes, os);
@@ -42,11 +44,11 @@ final class IO {
         return 10L;
     }
 
-    static long writeMatrixHeaderL(int rows, int cols, int dtNumBits,
+    static long writeMatrixHeaderL(int rows, int cols, int datatype,
             byte[] bytes /* byte[4] */, OutputStream os) throws IOException {
-        checkNumBits(dtNumBits);
+        checkDatatype(datatype);
         os.write(LITTLE_ENDIAN);
-        os.write(dtNumBits);
+        os.write(datatype);
         putIntL(rows, bytes, os);
         os.write(bytes, 0, 4);
         putIntL(cols, bytes, os);
@@ -54,9 +56,15 @@ final class IO {
         return 10L;
     }
 
-    private static void checkNumBits(int dtNumBits) throws IllegalArgumentException {
-        if (dtNumBits != DT_FLOAT_BITS && dtNumBits != DT_DOUBLE_BITS) {
-            throw new IllegalArgumentException("Wrong datatype (number of bits = " + dtNumBits + ")");
+    private static void checkDatatype(int datatype) throws IllegalArgumentException {
+        switch (datatype) {
+            case DT_COMPLEX_DOUBLE:
+            case DT_COMPLEX_FLOAT:
+            case DT_FLOAT:
+            case DT_DOUBLE:
+                break;
+            default:
+                throw new IllegalArgumentException("Wrong datatype (type = " + datatype + ")");
         }
     }
 
@@ -72,9 +80,20 @@ final class IO {
 
     static boolean isDoubleType(byte[] bytes /* byte[4] */, InputStream is) throws IOException {
         is.read(bytes, 0, 1);
-        if (DT_DOUBLE_BITS == bytes[0]) {
+        byte type = bytes[0];
+        if (DT_DOUBLE == type || DT_COMPLEX_DOUBLE == type) {
             return true;
-        } else if (DT_FLOAT_BITS == bytes[0]) {
+        } else if (DT_FLOAT == type || DT_COMPLEX_FLOAT == type) {
+            return false;
+        }
+        throw new IOException(WRONG_IS_POS);
+    }
+
+    static boolean isComplexType(byte[] bytes /* byte[4] */) throws IOException {
+        byte type = bytes[0];
+        if (DT_COMPLEX_FLOAT == type || DT_COMPLEX_DOUBLE == type) {
+            return true;
+        } else if  (DT_FLOAT == type || DT_DOUBLE == type) {
             return false;
         }
         throw new IOException(WRONG_IS_POS);

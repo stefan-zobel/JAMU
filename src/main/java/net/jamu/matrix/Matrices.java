@@ -937,7 +937,10 @@ public final class Matrices {
         byte[] buf = new byte[4];
         checkBigendian(IO.isBigendian(buf, is));
         if (IO.isDoubleType(buf, is)) {
-            throw new IOException("Unexpected MatrixD. Use deserializeD() instead.");
+            throw new IOException("Unexpected double type. Use double Deserializer instead.");
+        }
+        if (IO.isComplexType(buf)) {
+            throw new IOException("Unexpected ComplexMatrixF. Use deserializeComplexF() instead.");
         }
         int rows = IO.readRows(true, buf, is);
         int cols = IO.readCols(true, buf, is);
@@ -986,7 +989,10 @@ public final class Matrices {
         byte[] buf = new byte[8];
         checkBigendian(IO.isBigendian(buf, is));
         if (!IO.isDoubleType(buf, is)) {
-            throw new IOException("Unexpected MatrixF. Use deserializeF() instead.");
+            throw new IOException("Unexpected float type. Use float Deserializer instead.");
+        }
+        if (IO.isComplexType(buf)) {
+            throw new IOException("Unexpected ComplexMatrixD. Use deserializeComplexD() instead.");
         }
         int rows = IO.readRows(true, buf, is);
         int cols = IO.readCols(true, buf, is);
