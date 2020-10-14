@@ -52,6 +52,18 @@ public final class ZfImpl implements Zf {
         return new ZfImpl((float) (radius * Math.cos(phi)), (float) (radius * Math.sin(phi)));
     }
 
+    public static float abs(float re, float im) {
+        // sqrt(a^2 + b^2) without under/overflow
+        if (Math.abs(re) > Math.abs(im)) {
+            double abs = im / re;
+            return (float) (Math.abs(re) * Math.sqrt(1.0 + abs * abs));
+        } else if (im != 0.0f) {
+            double abs = re / im;
+            return (float) (Math.abs(im) * Math.sqrt(1.0 + abs * abs));
+        }
+        return 0.0f;
+    }
+
     public void setRe(float re) {
         this.re = re;
     }
@@ -206,10 +218,10 @@ public final class ZfImpl implements Zf {
         float re = re();
         float im = im();
         if (Math.abs(re) > Math.abs(im)) {
-            float abs = im / re;
+            double abs = im / re;
             return (float) (Math.abs(re) * Math.sqrt(1.0 + abs * abs));
         } else if (im != 0.0f) {
-            float abs = re / im;
+            double abs = re / im;
             return (float) (Math.abs(im) * Math.sqrt(1.0 + abs * abs));
         }
         return 0.0f;

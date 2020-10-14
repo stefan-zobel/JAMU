@@ -52,6 +52,18 @@ public final class ZdImpl implements Zd {
         return new ZdImpl(radius * Math.cos(phi), radius * Math.sin(phi));
     }
 
+    public static double abs(double re, double im) {
+        // sqrt(a^2 + b^2) without under/overflow
+        if (Math.abs(re) > Math.abs(im)) {
+            double abs = im / re;
+            return Math.abs(re) * Math.sqrt(1.0 + abs * abs);
+        } else if (im != 0.0) {
+            double abs = re / im;
+            return Math.abs(im) * Math.sqrt(1.0 + abs * abs);
+        }
+        return 0.0;
+    }
+
     public void setRe(double re) {
         this.re = re;
     }
