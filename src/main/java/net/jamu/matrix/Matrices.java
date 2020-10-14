@@ -31,7 +31,9 @@ import net.dedekind.blas.Blas;
 import net.dedekind.lapack.Lapack;
 import net.jamu.complex.ZArrayUtil;
 import net.jamu.complex.Zd;
+import net.jamu.complex.ZdImpl;
 import net.jamu.complex.Zf;
+import net.jamu.complex.ZfImpl;
 
 /**
  * Static utility methods for matrices.
@@ -1425,6 +1427,525 @@ public final class Matrices {
             throw new IllegalArgumentException("column array length must be > 0");
         }
         return new SimpleComplexMatrixF(column.length, 1, ZArrayUtil.complexToPrimitiveArray(column));
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B} as defined in
+     * {@link #approxEqual(MatrixD, MatrixD, double, double)}. This method is
+     * equivalent to a call of
+     * {@linkplain #approxEqual(MatrixD, MatrixD, double, double)} with an
+     * {@code relTol} argument of value {@code 1.0e-8} and an {@code absTol}
+     * argument equal to {@code 0.0}:
+     * 
+     * <pre>
+     * {@code approxEqual(A, B, 1.0e-8, 0.0)}
+     * </pre>
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined in
+     *         {@link #approxEqual(MatrixD, MatrixD, double, double)}
+     */
+    public static boolean approxEqual(MatrixD A, MatrixD B) {
+        return approxEqual(A, B, 1.0e-8);
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B} as defined in
+     * {@link #approxEqual(MatrixD, MatrixD, double, double)}. This method is
+     * equivalent to a call of
+     * {@linkplain #approxEqual(MatrixD, MatrixD, double, double)} with an
+     * {@code absTol} argument equal to {@code 0.0}:
+     * 
+     * <pre>
+     * {@code approxEqual(A, B, relTol, 0.0)}
+     * </pre>
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @param relTol
+     *            relative tolerance, must be {@code >= 0.0}
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined in
+     *         {@link #approxEqual(MatrixD, MatrixD, double, double)}
+     * @throws IllegalArgumentException
+     *             if {@code relTol < 0.0}
+     */
+    public static boolean approxEqual(MatrixD A, MatrixD B, double relTol) {
+        return approxEqual(A, B, relTol, 0.0);
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B}.
+     * <p>
+     * If, for all pairs {@code (a, b)},
+     * 
+     * <pre>
+     * {@code abs(a - b) <= max( relTol * max(abs(a), abs(b)), absTol )}
+     * </pre>
+     * 
+     * the matrices {@code A} and {@code B} are considered approximately equal,
+     * otherwise they are not. This test is symmetric, so interchanging
+     * {@code A} and {@code B} doesn't change the result.
+     * <p>
+     * <b>Implementation Note:</b><br>
+     * The definition of approximate equality used here is the one employed in
+     * Python's {@code math.isclose()} function defined in
+     * <a href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function
+     * for testing approximate equality</a>. This document gives a nice
+     * discussion of the rationale for this approach, how to use it, and the
+     * alternatives they had considered.
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @param relTol
+     *            relative tolerance, must be {@code >= 0.0}
+     * @param absTol
+     *            absolute tolerance, must be {@code >= 0.0}
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined above, otherwise {@code false}
+     * @throws IllegalArgumentException
+     *             if {@code relTol < 0.0} or {@code absTol < 0.0}
+     */
+    public static boolean approxEqual(MatrixD A, MatrixD B, double relTol, double absTol) {
+        if (!checkApproxEqualArgs(A, B, relTol, absTol)) {
+            return false;
+        }
+        double[] _a = A.getArrayUnsafe();
+        double[] _b = B.getArrayUnsafe();
+        for (int i = 0; i < _a.length; ++i) {
+            double a = _a[i];
+            double b = _b[i];
+            if (a != b) {
+                double diff = Math.abs(a - b);
+                if (!((diff <= relTol * Math.max(Math.abs(a), Math.abs(b))) || (diff <= absTol))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B} as defined in
+     * {@link #approxEqual(MatrixF, MatrixF, float, float)}. This method is
+     * equivalent to a call of
+     * {@linkplain #approxEqual(MatrixF, MatrixF, float, float)} with an
+     * {@code relTol} argument of value {@code 1.0e-4f} and an {@code absTol}
+     * argument equal to {@code 0.0f}:
+     * 
+     * <pre>
+     * {@code approxEqual(A, B, 1.0e-4f, 0.0f)}
+     * </pre>
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined in
+     *         {@link #approxEqual(MatrixF, MatrixF, float, float)}
+     */
+    public static boolean approxEqual(MatrixF A, MatrixF B) {
+        return approxEqual(A, B, 1.0e-4f);
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B} as defined in
+     * {@link #approxEqual(MatrixF, MatrixF, float, float)}. This method is
+     * equivalent to a call of
+     * {@linkplain #approxEqual(MatrixF, MatrixF, float, float)} with an
+     * {@code absTol} argument equal to {@code 0.0f}:
+     * 
+     * <pre>
+     * {@code approxEqual(A, B, relTol, 0.0f)}
+     * </pre>
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @param relTol
+     *            relative tolerance, must be {@code >= 0.0f}
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined in
+     *         {@link #approxEqual(MatrixF, MatrixF, float, float)}
+     * @throws IllegalArgumentException
+     *             if {@code relTol < 0.0f}
+     */
+    public static boolean approxEqual(MatrixF A, MatrixF B, float relTol) {
+        return approxEqual(A, B, relTol, 0.0f);
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B}.
+     * <p>
+     * If, for all pairs {@code (a, b)},
+     * 
+     * <pre>
+     * {@code abs(a - b) <= max( relTol * max(abs(a), abs(b)), absTol )}
+     * </pre>
+     * 
+     * the matrices {@code A} and {@code B} are considered approximately equal,
+     * otherwise they are not. This test is symmetric, so interchanging
+     * {@code A} and {@code B} doesn't change the result.
+     * <p>
+     * <b>Implementation Note:</b><br>
+     * The definition of approximate equality used here is the one employed in
+     * Python's {@code math.isclose()} function defined in
+     * <a href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function
+     * for testing approximate equality</a>. This document gives a nice
+     * discussion of the rationale for this approach, how to use it, and the
+     * alternatives they had considered.
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @param relTol
+     *            relative tolerance, must be {@code >= 0.0f}
+     * @param absTol
+     *            absolute tolerance, must be {@code >= 0.0f}
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined above, otherwise {@code false}
+     * @throws IllegalArgumentException
+     *             if {@code relTol < 0.0f} or {@code absTol < 0.0f}
+     */
+    public static boolean approxEqual(MatrixF A, MatrixF B, float relTol, float absTol) {
+        if (!checkApproxEqualArgs(A, B, relTol, absTol)) {
+            return false;
+        }
+        float[] _a = A.getArrayUnsafe();
+        float[] _b = B.getArrayUnsafe();
+        for (int i = 0; i < _a.length; ++i) {
+            float a = _a[i];
+            float b = _b[i];
+            if (a != b) {
+                float diff = Math.abs(a - b);
+                if (!((diff <= relTol * Math.max(Math.abs(a), Math.abs(b))) || (diff <= absTol))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B} as defined in
+     * {@link #approxEqual(ComplexMatrixD, ComplexMatrixD, double, double)}.
+     * This method is equivalent to a call of
+     * {@linkplain #approxEqual(ComplexMatrixD, ComplexMatrixD, double, double)}
+     * with an {@code relTol} argument of value {@code 1.0e-8} and an
+     * {@code absTol} argument equal to {@code 0.0}:
+     * 
+     * <pre>
+     * {@code approxEqual(A, B, 1.0e-8, 0.0)}
+     * </pre>
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined in
+     *         {@link #approxEqual(ComplexMatrixD, ComplexMatrixD, double, double)}
+     */
+    public static boolean approxEqual(ComplexMatrixD A, ComplexMatrixD B) {
+        return approxEqual(A, B, 1.0e-8);
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B} as defined in
+     * {@link #approxEqual(ComplexMatrixD, ComplexMatrixD, double, double)}.
+     * This method is equivalent to a call of
+     * {@linkplain #approxEqual(ComplexMatrixD, ComplexMatrixD, double, double)}
+     * with an {@code absTol} argument equal to {@code 0.0}:
+     * 
+     * <pre>
+     * {@code approxEqual(A, B, relTol, 0.0)}
+     * </pre>
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @param relTol
+     *            relative tolerance, must be {@code >= 0.0}
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined in
+     *         {@link #approxEqual(ComplexMatrixD, ComplexMatrixD, double, double)}
+     * @throws IllegalArgumentException
+     *             if {@code relTol < 0.0}
+     */
+    public static boolean approxEqual(ComplexMatrixD A, ComplexMatrixD B, double relTol) {
+        return approxEqual(A, B, relTol, 0.0);
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B}.
+     * <p>
+     * If, for all pairs {@code (a, b)},
+     * 
+     * <pre>
+     * {@code abs(a - b) <= max( relTol * max(abs(a), abs(b)), absTol )}
+     * </pre>
+     * 
+     * the matrices {@code A} and {@code B} are considered approximately equal,
+     * otherwise they are not. This test is symmetric, so interchanging
+     * {@code A} and {@code B} doesn't change the result.
+     * <p>
+     * <b>Implementation Note:</b><br>
+     * The definition of approximate equality used here is the one employed in
+     * Python's {@code cmath.isclose()} function defined in
+     * <a href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function
+     * for testing approximate equality</a>. This document gives a nice
+     * discussion of the rationale for this approach, how to use it, and the
+     * alternatives they had considered.
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @param relTol
+     *            relative tolerance, must be {@code >= 0.0}
+     * @param absTol
+     *            absolute tolerance, must be {@code >= 0.0}
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined above, otherwise {@code false}
+     * @throws IllegalArgumentException
+     *             if {@code relTol < 0.0} or {@code absTol < 0.0}
+     */
+    public static boolean approxEqual(ComplexMatrixD A, ComplexMatrixD B, double relTol, double absTol) {
+        if (!checkApproxEqualArgs(A, B, relTol, absTol)) {
+            return false;
+        }
+        double[] _a = A.getArrayUnsafe();
+        double[] _b = B.getArrayUnsafe();
+        for (int i = 0; i < _a.length; i += 2) {
+            double a_re = _a[i];
+            double a_im = _a[i + 1];
+            double b_re = _b[i];
+            double b_im = _b[i + 1];
+            if (a_re != b_re || a_im != b_im) {
+                double diff = ZdImpl.abs(a_re - b_re, a_im - b_im);
+                if (!((diff <= relTol * Math.max(ZdImpl.abs(a_re, a_im), ZdImpl.abs(b_re, b_im)))
+                        || (diff <= absTol))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B} as defined in
+     * {@link #approxEqual(ComplexMatrixF, ComplexMatrixF, float, float)}. This
+     * method is equivalent to a call of
+     * {@linkplain #approxEqual(ComplexMatrixF, ComplexMatrixF, float, float)}
+     * with an {@code relTol} argument of value {@code 1.0e-4f} and an
+     * {@code absTol} argument equal to {@code 0.0f}:
+     * 
+     * <pre>
+     * {@code approxEqual(A, B, 1.0e-4f, 0.0f)}
+     * </pre>
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined in
+     *         {@link #approxEqual(ComplexMatrixF, ComplexMatrixF, float, float)}
+     */
+    public static boolean approxEqual(ComplexMatrixF A, ComplexMatrixF B) {
+        return approxEqual(A, B, 1.0e-4f);
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B} as defined in
+     * {@link #approxEqual(ComplexMatrixF, ComplexMatrixF, float, float)}. This
+     * method is equivalent to a call of
+     * {@linkplain #approxEqual(ComplexMatrixF, ComplexMatrixF, float, float)}
+     * with an {@code absTol} argument equal to {@code 0.0f}:
+     * 
+     * <pre>
+     * {@code approxEqual(A, B, relTol, 0.0f)}
+     * </pre>
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @param relTol
+     *            relative tolerance, must be {@code >= 0.0f}
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined in
+     *         {@link #approxEqual(ComplexMatrixF, ComplexMatrixF, float, float)}
+     * @throws IllegalArgumentException
+     *             if {@code relTol < 0.0f}
+     */
+    public static boolean approxEqual(ComplexMatrixF A, ComplexMatrixF B, float relTol) {
+        return approxEqual(A, B, relTol, 0.0f);
+    }
+
+    /**
+     * Tests for approximate equality (or "closeness") of the two matrices
+     * {@code A} and {@code B} where {@code A} and {@code B} must have the same
+     * dimension and each element {@code a} of {@code A} is tested for
+     * approximate equality against the corresponding element {@code b} of
+     * {@code B}.
+     * <p>
+     * If, for all pairs {@code (a, b)},
+     * 
+     * <pre>
+     * {@code abs(a - b) <= max( relTol * max(abs(a), abs(b)), absTol )}
+     * </pre>
+     * 
+     * the matrices {@code A} and {@code B} are considered approximately equal,
+     * otherwise they are not. This test is symmetric, so interchanging
+     * {@code A} and {@code B} doesn't change the result.
+     * <p>
+     * <b>Implementation Note:</b><br>
+     * The definition of approximate equality used here is the one employed in
+     * Python's {@code cmath.isclose()} function defined in
+     * <a href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function
+     * for testing approximate equality</a>. This document gives a nice
+     * discussion of the rationale for this approach, how to use it, and the
+     * alternatives they had considered.
+     * 
+     * @param A
+     *            one of the two matrices to test for approximate equality (it
+     *            doesn't matter which one since the test is symmetric)
+     * @param B
+     *            the other one of the two matrices to test for approximate
+     *            equality (it doesn't matter which one since the test is
+     *            symmetric)
+     * @param relTol
+     *            relative tolerance, must be {@code >= 0.0f}
+     * @param absTol
+     *            absolute tolerance, must be {@code >= 0.0f}
+     * @return {@code true} if {@code A} and {@code B} are approximately equal
+     *         according to the criterion defined above, otherwise {@code false}
+     * @throws IllegalArgumentException
+     *             if {@code relTol < 0.0f} or {@code absTol < 0.0f}
+     */
+    public static boolean approxEqual(ComplexMatrixF A, ComplexMatrixF B, float relTol, float absTol) {
+        if (!checkApproxEqualArgs(A, B, relTol, absTol)) {
+            return false;
+        }
+        float[] _a = A.getArrayUnsafe();
+        float[] _b = B.getArrayUnsafe();
+        for (int i = 0; i < _a.length; i += 2) {
+            float a_re = _a[i];
+            float a_im = _a[i + 1];
+            float b_re = _b[i];
+            float b_im = _b[i + 1];
+            if (a_re != b_re || a_im != b_im) {
+                double diff = ZfImpl.abs(a_re - b_re, a_im - b_im);
+                if (!((diff <= relTol * Math.max(ZfImpl.abs(a_re, a_im), ZfImpl.abs(b_re, b_im)))
+                        || (diff <= absTol))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean checkApproxEqualArgs(Dimensions A, Dimensions B, double relTol, double absTol) {
+        if (relTol < 0.0) {
+            throw new IllegalArgumentException("relTol < 0.0 : " + relTol);
+        }
+        if (absTol < 0.0) {
+            throw new IllegalArgumentException("absTol < 0.0 : " + absTol);
+        }
+        if (A.numRows() != B.numRows() || A.numColumns() != B.numColumns()) {
+            return false;
+        }
+        return true;
     }
 
     /* package */ static String toString(Dimensions dim) {
