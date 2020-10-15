@@ -15,7 +15,6 @@
  */
 package net.jamu.matrix;
 
-import net.dedekind.lapack.Lapack;
 import net.frobenius.TSvdJob;
 import net.frobenius.lapack.PlainLapack;
 

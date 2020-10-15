@@ -18,7 +18,6 @@ package net.jamu.matrix;
 import java.util.Arrays;
 
 import net.dedekind.blas.Blas;
-import net.dedekind.lapack.Lapack;
 import net.frobenius.TTrans;
 import net.frobenius.lapack.PlainLapack;
 
