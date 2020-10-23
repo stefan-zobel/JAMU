@@ -167,6 +167,15 @@ public interface DComplexMatrixBasicOps {
     ComplexMatrixD uminus();
 
     /**
+     * Returns {@code |A|}, i.e. a matrix where all elements
+     * <code>a<sub>ij</sub></code> have been replaced by their absolute value
+     * <code>|a<sub>ij</sub>|</code>. None of the operands is mutated.
+     * 
+     * @return {@code |A|}, the matrix of absolute values of {@code A}
+     */
+    ComplexMatrixD abs();
+
+    /**
      * Returns <code>A<sup>*</sup></code>. None of the operands is mutated.
      * 
      * @return the conjugate transpose of this matrix

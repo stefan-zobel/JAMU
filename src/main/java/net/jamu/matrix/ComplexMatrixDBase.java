@@ -748,6 +748,22 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD abs() {
+        ComplexMatrixD m = copy();
+        double[] b_ = m.getArrayUnsafe();
+        for (int i = 0; i < b_.length; i += 2) {
+            double re = b_[i];
+            double im = b_[i + 1];
+            b_[i] = ZdImpl.abs(re, im);
+            b_[i + 1] = 0.0;
+        }
+        return m;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD conjugateTranspose() {
         return conjTrans(create(cols, rows));
     }
