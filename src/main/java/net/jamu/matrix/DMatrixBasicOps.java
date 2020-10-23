@@ -166,6 +166,15 @@ public interface DMatrixBasicOps {
     MatrixD uminus();
 
     /**
+     * Returns {@code |A|}, i.e. a matrix where all elements
+     * <code>a<sub>ij</sub></code> have been replaced by their absolute value
+     * <code>|a<sub>ij</sub>|</code>. None of the operands is mutated.
+     * 
+     * @return {@code |A|}, the matrix of absolute values of {@code A}
+     */
+    MatrixD abs();
+
+    /**
      * Returns <code>A<sup>T</sup></code>. None of the operands is mutated.
      * 
      * @return the transposed matrix

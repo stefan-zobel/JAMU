@@ -718,6 +718,22 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD abs() {
+        MatrixD m = copy();
+        double[] b_ = m.getArrayUnsafe();
+        for (int i = 0; i < b_.length; ++i) {
+            double x = b_[i]; 
+            if (x < 0.0) {
+                b_[i] = -x;
+            }
+        }
+        return m;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD toComplexMatrix() {
         return Matrices.convertToComplex(this);
     }

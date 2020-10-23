@@ -718,6 +718,22 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF abs() {
+        MatrixF m = copy();
+        float[] b_ = m.getArrayUnsafe();
+        for (int i = 0; i < b_.length; ++i) {
+            float x = b_[i]; 
+            if (x < 0.0f) {
+                b_[i] = -x;
+            }
+        }
+        return m;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixF toComplexMatrix() {
         return Matrices.convertToComplex(this);
     }
