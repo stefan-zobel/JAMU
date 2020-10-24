@@ -1451,6 +1451,9 @@ public final class Matrices {
      *             if {@code A} and {@code B} do not have the same dimension
      */
     public static double distance(MatrixD A, MatrixD B) {
+        if (A == B) {
+            return 0.0;
+        }
         Checks.checkEqualDimension(A, B);
         double[] _a = A.getArrayUnsafe();
         double[] _b = B.getArrayUnsafe();
@@ -1487,6 +1490,9 @@ public final class Matrices {
      *             if {@code A} and {@code B} do not have the same dimension
      */
     public static float distance(MatrixF A, MatrixF B) {
+        if (A == B) {
+            return 0.0f;
+        }
         Checks.checkEqualDimension(A, B);
         float[] _a = A.getArrayUnsafe();
         float[] _b = B.getArrayUnsafe();
@@ -1523,6 +1529,9 @@ public final class Matrices {
      *             if {@code A} and {@code B} do not have the same dimension
      */
     public static double distance(ComplexMatrixD A, ComplexMatrixD B) {
+        if (A == B) {
+            return 0.0;
+        }
         Checks.checkEqualDimension(A, B);
         double[] _a = A.getArrayUnsafe();
         double[] _b = B.getArrayUnsafe();
@@ -1561,6 +1570,9 @@ public final class Matrices {
      *             if {@code A} and {@code B} do not have the same dimension
      */
     public static float distance(ComplexMatrixF A, ComplexMatrixF B) {
+        if (A == B) {
+            return 0.0f;
+        }
         Checks.checkEqualDimension(A, B);
         float[] _a = A.getArrayUnsafe();
         float[] _b = B.getArrayUnsafe();
@@ -1688,6 +1700,9 @@ public final class Matrices {
         if (!checkApproxEqualArgs(A, B, relTol, absTol)) {
             return false;
         }
+        if (A == B) {
+            return true;
+        }
         double[] _a = A.getArrayUnsafe();
         double[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
@@ -1813,6 +1828,9 @@ public final class Matrices {
         if (!checkApproxEqualArgs(A, B, relTol, absTol)) {
             return false;
         }
+        if (A == B) {
+            return true;
+        }
         float[] _a = A.getArrayUnsafe();
         float[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
@@ -1937,6 +1955,9 @@ public final class Matrices {
     public static boolean approxEqual(ComplexMatrixD A, ComplexMatrixD B, double relTol, double absTol) {
         if (!checkApproxEqualArgs(A, B, relTol, absTol)) {
             return false;
+        }
+        if (A == B) {
+            return true;
         }
         double[] _a = A.getArrayUnsafe();
         double[] _b = B.getArrayUnsafe();
@@ -2065,6 +2086,9 @@ public final class Matrices {
     public static boolean approxEqual(ComplexMatrixF A, ComplexMatrixF B, float relTol, float absTol) {
         if (!checkApproxEqualArgs(A, B, relTol, absTol)) {
             return false;
+        }
+        if (A == B) {
+            return true;
         }
         float[] _a = A.getArrayUnsafe();
         float[] _b = B.getArrayUnsafe();
