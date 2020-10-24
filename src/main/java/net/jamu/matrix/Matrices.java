@@ -1502,6 +1502,83 @@ public final class Matrices {
     }
 
     /**
+     * Returns the distance between {@code A} and {@code B} computed as the
+     * {@code 1-norm} for vectors (a.k.a. {@code L1} norm, Manhattan distance or
+     * taxicab norm for vectors) of {@code A - B}, i.e., the sum of the absolute
+     * values of the differences between the matrix entries. This computation is
+     * symmetric, so interchanging {@code A} and {@code B} doesn't change the
+     * result.
+     * 
+     * @param A
+     *            the first matrix to use for the distance computation (it
+     *            doesn't matter which one since {@code L1} is a distance in the
+     *            metric space sense)
+     * @param B
+     *            the other matrix to use for the distance computation (it
+     *            doesn't matter which one since {@code L1} is a distance in the
+     *            metric space sense)
+     * @return the "entrywise" <code>L<sub>1,1</sub></code> norm of
+     *         {@code A - B}
+     * @throws IndexOutOfBoundsException
+     *             if {@code A} and {@code B} do not have the same dimension
+     */
+    public static double distance(ComplexMatrixD A, ComplexMatrixD B) {
+        Checks.checkEqualDimension(A, B);
+        double[] _a = A.getArrayUnsafe();
+        double[] _b = B.getArrayUnsafe();
+        double d1 = 0.0;
+        for (int i = 0; i < _a.length; i += 2) {
+            double rea = _a[i];
+            double ima = _a[i + 1];
+            double reb = _b[i];
+            double imb = _b[i + 1];
+            if (rea != reb || ima != imb) {
+                d1 += ZdImpl.abs(rea - reb, ima - imb);
+            }
+        }
+        return d1;
+    }
+
+    /**
+     * Returns the distance between {@code A} and {@code B} computed as the
+     * {@code 1-norm} for vectors (a.k.a. {@code L1} norm, Manhattan distance or
+     * taxicab norm for vectors) of {@code A - B}, i.e., the sum of the absolute
+     * values of the differences between the matrix entries. This computation is
+     * symmetric, so interchanging {@code A} and {@code B} doesn't change the
+     * result.
+     * 
+     * @param A
+     *            the first matrix to use for the distance computation (it
+     *            doesn't matter which one since {@code L1} is a distance in the
+     *            metric space sense)
+     * @param B
+     *            the other matrix to use for the distance computation (it
+     *            doesn't matter which one since {@code L1} is a distance in the
+     *            metric space sense)
+     * @return the "entrywise" <code>L<sub>1,1</sub></code> norm of
+     *         {@code A - B}
+     * @throws IndexOutOfBoundsException
+     *             if {@code A} and {@code B} do not have the same dimension
+     */
+    public static float distance(ComplexMatrixF A, ComplexMatrixF B) {
+        Checks.checkEqualDimension(A, B);
+        float[] _a = A.getArrayUnsafe();
+        float[] _b = B.getArrayUnsafe();
+        double d1 = 0.0;
+        for (int i = 0; i < _a.length; i += 2) {
+            // use higher precision internally
+            double rea = _a[i];
+            double ima = _a[i + 1];
+            double reb = _b[i];
+            double imb = _b[i + 1];
+            if (rea != reb || ima != imb) {
+                d1 += ZdImpl.abs(rea - reb, ima - imb);
+            }
+        }
+        return (float) d1;
+    }
+
+    /**
      * Tests for approximate equality (or "closeness") of the two matrices
      * {@code A} and {@code B} where {@code A} and {@code B} must have the same
      * dimension and each element {@code a} of {@code A} is tested for
