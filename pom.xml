@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sourceforge.streamsupport</groupId>
 	<artifactId>jamu</artifactId>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>0.9.2</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>net.sourceforge.streamsupport</groupId>
 			<artifactId>dedekind-mkl</artifactId>
-			<version>0.9.1-SNAPSHOT</version>
+			<version>0.9.1</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

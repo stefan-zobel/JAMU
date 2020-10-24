@@ -754,8 +754,15 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         for (int i = 0; i < b_.length; i += 2) {
             double re = b_[i];
             double im = b_[i + 1];
-            b_[i] = ZdImpl.abs(re, im);
-            b_[i + 1] = 0.0;
+            // nano-optimize
+            if (im == 0.0) {
+                if (re < 0.0) {
+                    b_[i] = -re;
+                }
+            } else {
+                b_[i] = ZdImpl.abs(re, im);
+                b_[i + 1] = 0.0;
+            }
         }
         return m;
     }
