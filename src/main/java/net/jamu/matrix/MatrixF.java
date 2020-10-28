@@ -578,6 +578,21 @@ public interface MatrixF extends Dimensions, FMatrixBasicOps {
     LudF lud();
 
     /**
+     * Computes the matrix exponential <code>e<sup>A</sup></code> of this matrix
+     * if this matrix is a square matrix.
+     * <p>
+     * The algorithm uses the Taylor scaling and squaring method from "Bader,
+     * P.; Blanes, S.; Casas, F.: Computing the Matrix Exponential with an
+     * Optimized Taylor Polynomial Approximation. Mathematics 2019, 7, 1174."
+     * 
+     * @return the matrix exponential (<code>e<sup>A</sup></code>) of this
+     *         matrix
+     * @throws IllegalArgumentException
+     *             if this matrix is not quadratic
+     */
+    MatrixF expm();
+
+    /**
      * Copy into a jagged array.
      * 
      * @return this matrix converted to a jagged array

@@ -527,6 +527,17 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF expm() {
+        if (!this.isSquareMatrix()) {
+            throw new IllegalArgumentException("Matrix exponentiation is only defined for square matrices");
+        }
+        return Expm.expmF(this, normMaxAbs());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public float normF() {
         // overflow resistant implementation
         double scale = 0.0;
