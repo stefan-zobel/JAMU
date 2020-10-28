@@ -305,7 +305,11 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      */
     @Override
     public MatrixF setInplace(MatrixF other) {
-        return setInplace(1.0f, other);
+        Checks.checkEqualDimension(this, other);
+        float[] _a = a;
+        float[] _b = other.getArrayUnsafe();
+        System.arraycopy(_b, 0, _a, 0, _a.length);
+        return this;
     }
 
     /**

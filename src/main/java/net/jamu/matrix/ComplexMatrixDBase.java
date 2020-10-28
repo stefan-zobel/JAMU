@@ -333,7 +333,11 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixD setInplace(ComplexMatrixD other) {
-        return setInplace(1.0, 0.0, other);
+        Checks.checkEqualDimension(this, other);
+        double[] _a = a;
+        double[] _b = other.getArrayUnsafe();
+        System.arraycopy(_b, 0, _a, 0, _a.length);
+        return this;
     }
 
     /**

@@ -305,7 +305,11 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      */
     @Override
     public MatrixD setInplace(MatrixD other) {
-        return setInplace(1.0, other);
+        Checks.checkEqualDimension(this, other);
+        double[] _a = a;
+        double[] _b = other.getArrayUnsafe();
+        System.arraycopy(_b, 0, _a, 0, _a.length);
+        return this;
     }
 
     /**
