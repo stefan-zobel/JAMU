@@ -662,6 +662,14 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     float norm2();
 
     /**
+     * Returns the largest absolute value of this matrix (i.e., the "max norm").
+     * Note that this norm is not submultiplicative.
+     * 
+     * @return the largest absolute value of all elements
+     */
+    float normMaxAbs();
+
+    /**
      * Matrix trace of a square matrix.
      * 
      * @return sum of the diagonal elements

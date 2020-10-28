@@ -593,6 +593,24 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public double normMaxAbs() {
+        double max = Double.NEGATIVE_INFINITY;
+        double[] _a = a;
+        for (int i = 0; i < _a.length; i += 2) {
+            double re = _a[i];
+            double im = _a[i + 1];
+            double abs = (im == 0.0) ? Math.abs(re) : ZdImpl.abs(re, im);
+            if (abs > max) {
+                max = abs;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Zd trace() {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("The trace of a matrix is only defined for square matrices");

@@ -549,6 +549,22 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public float normMaxAbs() {
+        float max = Float.NEGATIVE_INFINITY;
+        float[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            float xi = _a[i];
+            if (xi > max) {
+                max = xi;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public float trace() {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("The trace of a matrix is only defined for square matrices");
