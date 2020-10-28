@@ -685,6 +685,22 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     ComplexMatrixF zeroizeSubEpsilonInplace(int k);
 
     /**
+     * Set all elements that are either NaN, positive or negative infinity to
+     * the respective ersatz value provided by the {@code nanSurrogate},
+     * {@code posInfSurrogate} and {@code negInfSurrogate} arguments. This is a
+     * destructive operation that changes this matrix inplace.
+     * 
+     * @param nanSurrogate
+     *            the substitution value to use for NaN values
+     * @param posInfSurrogate
+     *            the substitution value to use for positive infinity values
+     * @param negInfSurrogate
+     *            the substitution value to use for negative infinity values
+     * @return this matrix changed inplace
+     */
+    ComplexMatrixF sanitizeNonFiniteInplace(float nanSurrogate, float posInfSurrogate, float negInfSurrogate);
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array

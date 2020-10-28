@@ -628,6 +628,31 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixF sanitizeNonFiniteInplace(float nanSurrogate, float posInfSurrogate, float negInfSurrogate) {
+        boolean subNan = (nanSurrogate == nanSurrogate);
+        boolean subPInf = (posInfSurrogate != Float.POSITIVE_INFINITY);
+        boolean subNInf = (negInfSurrogate != Float.NEGATIVE_INFINITY);
+        if (!subNan && !subPInf && !subNInf) {
+            return this;
+        }
+        float[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            float x = _a[i];
+            if (x != x && subNan) {
+                _a[i] = nanSurrogate;
+            } else if (x == Float.POSITIVE_INFINITY && subPInf) {
+                _a[i] = posInfSurrogate;
+            } else if (x == Float.NEGATIVE_INFINITY && subNInf) {
+                _a[i] = negInfSurrogate;
+            }
+        }
+        return this;
+    }
+
+    /**
      * Returns a string representation of this matrix. If the matrix has more
      * than 6 rows and/or more than 6 columns only the first 5 contiguous rows
      * and/or columns are displayed followed by a {@code "......"} marker and

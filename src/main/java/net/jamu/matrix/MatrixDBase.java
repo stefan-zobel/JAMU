@@ -579,6 +579,31 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD sanitizeNonFiniteInplace(double nanSurrogate, double posInfSurrogate, double negInfSurrogate) {
+        boolean subNan = (nanSurrogate == nanSurrogate);
+        boolean subPInf = (posInfSurrogate != Double.POSITIVE_INFINITY);
+        boolean subNInf = (negInfSurrogate != Double.NEGATIVE_INFINITY);
+        if (!subNan && !subPInf && !subNInf) {
+            return this;
+        }
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            double x = _a[i];
+            if (x != x && subNan) {
+                _a[i] = nanSurrogate;
+            } else if (x == Double.POSITIVE_INFINITY && subPInf) {
+                _a[i] = posInfSurrogate;
+            } else if (x == Double.NEGATIVE_INFINITY && subNInf) {
+                _a[i] = negInfSurrogate;
+            }
+        }
+        return this;
+    }
+
+    /**
      * Returns a string representation of this matrix. If the matrix has more
      * than 6 rows and/or more than 6 columns only the first 5 contiguous rows
      * and/or columns are displayed followed by a {@code "......"} marker and
