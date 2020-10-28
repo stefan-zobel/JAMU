@@ -701,6 +701,17 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
     ComplexMatrixD sanitizeNonFiniteInplace(double nanSurrogate, double posInfSurrogate, double negInfSurrogate);
 
     /**
+     * Set all elements that are NaN to the ersatz value provided by the
+     * {@code nanSurrogate} argument. This is a destructive operation that
+     * changes this matrix inplace.
+     * 
+     * @param nanSurrogate
+     *            the substitution value to use for NaN values
+     * @return this matrix changed inplace
+     */
+    ComplexMatrixD sanitizeNaNInplace(double nanSurrogate);
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array

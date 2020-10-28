@@ -653,6 +653,14 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixF sanitizeNaNInplace(float nanSurrogate) {
+        return sanitizeNonFiniteInplace(nanSurrogate, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY);
+    }
+
+    /**
      * Returns a string representation of this matrix. If the matrix has more
      * than 6 rows and/or more than 6 columns only the first 5 contiguous rows
      * and/or columns are displayed followed by a {@code "......"} marker and

@@ -701,6 +701,17 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     ComplexMatrixF sanitizeNonFiniteInplace(float nanSurrogate, float posInfSurrogate, float negInfSurrogate);
 
     /**
+     * Set all elements that are NaN to the ersatz value provided by the
+     * {@code nanSurrogate} argument. This is a destructive operation that
+     * changes this matrix inplace.
+     * 
+     * @param nanSurrogate
+     *            the substitution value to use for NaN values
+     * @return this matrix changed inplace
+     */
+    ComplexMatrixF sanitizeNaNInplace(float nanSurrogate);
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array
