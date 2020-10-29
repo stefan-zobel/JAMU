@@ -15,8 +15,6 @@
  */
 package net.jamu.matrix;
 
-import java.util.Arrays;
-
 /**
  * A Java port of the MATLAB <b>expm2.m</b> source code available online at
  * http://www.gicas.uji.es/Research/MatrixExp.html
@@ -742,9 +740,7 @@ final class Expm {
         MatrixD E = Matrices.identityD(A.numRows());
         E = E.addInplace(A);
 
-        double[] diagonal = new double[A.numRows()];
-        Arrays.fill(diagonal, 0.5);
-        MatrixD I_half = Matrices.diagD(diagonal);
+        MatrixD I_half = Matrices.diagD(A.numRows(), 0.5);
 
         MatrixD tmp = Matrices.sameDimD(A);
         tmp = tmp.addInplace(I_half);
@@ -765,9 +761,7 @@ final class Expm {
         MatrixF E = Matrices.identityF(A.numRows());
         E = E.addInplace(A);
 
-        float[] diagonal = new float[A.numRows()];
-        Arrays.fill(diagonal, 0.5f);
-        MatrixF I_half = Matrices.diagF(diagonal);
+        MatrixF I_half = Matrices.diagF(A.numRows(), 0.5f);
 
         MatrixF tmp = Matrices.sameDimF(A);
         tmp = tmp.addInplace(I_half);
@@ -788,8 +782,7 @@ final class Expm {
         ComplexMatrixD E = Matrices.identityComplexD(A.numRows());
         E = E.addInplace(A);
 
-        ComplexMatrixD I_half = Matrices.identityComplexD(A.numRows());
-        I_half = I_half.scaleInplace(0.5, 0.0);
+        ComplexMatrixD I_half = Matrices.diagComplexD(A.numRows(), 0.5, 0.0);
 
         ComplexMatrixD tmp = Matrices.sameDimComplexD(A);
         tmp = tmp.addInplace(I_half);
@@ -810,8 +803,7 @@ final class Expm {
         ComplexMatrixF E = Matrices.identityComplexF(A.numRows());
         E = E.addInplace(A);
 
-        ComplexMatrixF I_half = Matrices.identityComplexF(A.numRows());
-        I_half = I_half.scaleInplace(0.5f, 0.0f);
+        ComplexMatrixF I_half = Matrices.diagComplexF(A.numRows(), 0.5f, 0.0f);
 
         ComplexMatrixF tmp = Matrices.sameDimComplexF(A);
         tmp = tmp.addInplace(I_half);
