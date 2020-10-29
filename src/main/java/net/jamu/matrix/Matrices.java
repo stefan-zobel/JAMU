@@ -240,6 +240,25 @@ public final class Matrices {
     }
 
     /**
+     * Create a quadratic diagonal matrix of dimension {@code (n, n)} where all
+     * the main diagonal entries contain the value {@code diagVal}.
+     * 
+     * @param n
+     *            the dimension {@code (n, n)} of the quadratic matrix
+     * @param diagVal
+     *            the value to which all main diagonal entries are initialized
+     * @return a {@code (n, n)} diagonal matrix with its main diagonal entries
+     *         equal to {@code diagVal}
+     */
+    public static MatrixD diagD(int n, double diagVal) {
+        SimpleMatrixD m = new SimpleMatrixD(n, n);
+        for (int i = 0; i < n; ++i) {
+            m.set(i, i, diagVal);
+        }
+        return m;
+    }
+
+    /**
      * Create a quadratic diagonal matrix whose main diagonal contains the
      * entries provided in the {@code diagonal} array.
      * 
@@ -258,6 +277,25 @@ public final class Matrices {
         SimpleMatrixF m = new SimpleMatrixF(n, n);
         for (int i = 0; i < n; ++i) {
             m.set(i, i, diagonal[i]);
+        }
+        return m;
+    }
+
+    /**
+     * Create a quadratic diagonal matrix of dimension {@code (n, n)} where all
+     * the main diagonal entries contain the value {@code diagVal}.
+     * 
+     * @param n
+     *            the dimension {@code (n, n)} of the quadratic matrix
+     * @param diagVal
+     *            the value to which all main diagonal entries are initialized
+     * @return a {@code (n, n)} diagonal matrix with its main diagonal entries
+     *         equal to {@code diagVal}
+     */
+    public static MatrixF diagF(int n, float diagVal) {
+        SimpleMatrixF m = new SimpleMatrixF(n, n);
+        for (int i = 0; i < n; ++i) {
+            m.set(i, i, diagVal);
         }
         return m;
     }
@@ -289,6 +327,32 @@ public final class Matrices {
     }
 
     /**
+     * Create a quadratic diagonal matrix of dimension {@code (n, n)} where all
+     * the main diagonal entries contain the complex value with real and
+     * imaginary parts {@code (diagReVal, diagImVal)}.
+     * 
+     * @param n
+     *            the dimension {@code (n, n)} of the quadratic matrix
+     * @param diagReVal
+     *            the real part of the complex number to which all main diagonal
+     *            entries are initialized
+     * @param diagImVal
+     *            the imaginary part of the complex number to which all main
+     *            diagonal entries are initialized
+     * @return a diagonal matrix of dimension {@code (n, n)} with its main
+     *         diagonal entries equal to the complex number with real and
+     *         imaginary parts represented by the pair
+     *         {@code (diagReVal, diagImVal)}
+     */
+    public static ComplexMatrixD diagComplexD(int n, double diagReVal, double diagImVal) {
+        SimpleComplexMatrixD m = new SimpleComplexMatrixD(n, n);
+        for (int i = 0; i < n; ++i) {
+            m.set(i, i, diagReVal, diagImVal);
+        }
+        return m;
+    }
+
+    /**
      * Create a quadratic diagonal matrix whose main diagonal contains the
      * entries provided in the {@code diagonal} array.
      * 
@@ -310,6 +374,32 @@ public final class Matrices {
             if (z != null) {
                 m.set(i, i, z.re(), z.im());
             }
+        }
+        return m;
+    }
+
+    /**
+     * Create a quadratic diagonal matrix of dimension {@code (n, n)} where all
+     * the main diagonal entries contain the complex value with real and
+     * imaginary parts {@code (diagReVal, diagImVal)}.
+     * 
+     * @param n
+     *            the dimension {@code (n, n)} of the quadratic matrix
+     * @param diagReVal
+     *            the real part of the complex number to which all main diagonal
+     *            entries are initialized
+     * @param diagImVal
+     *            the imaginary part of the complex number to which all main
+     *            diagonal entries are initialized
+     * @return a diagonal matrix of dimension {@code (n, n)} with its main
+     *         diagonal entries equal to the complex number with real and
+     *         imaginary parts represented by the pair
+     *         {@code (diagReVal, diagImVal)}
+     */
+    public static ComplexMatrixF diagComplexF(int n, float diagReVal, float diagImVal) {
+        SimpleComplexMatrixF m = new SimpleComplexMatrixF(n, n);
+        for (int i = 0; i < n; ++i) {
+            m.set(i, i, diagReVal, diagImVal);
         }
         return m;
     }
