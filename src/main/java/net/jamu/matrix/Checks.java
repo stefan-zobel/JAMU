@@ -227,6 +227,34 @@ final class Checks {
         return new float[checkArrayLength(_rows, _cols)];
     }
 
+    static double[] checkJaggedComplexArrayD(double[][] complexdata) {
+        int _rows = complexdata.length;
+        int _cols = complexdata[0].length;
+        if (_cols % 2 != 0) {
+            throw new IllegalArgumentException("complexdata[0].length must be even: " + _cols);
+        }
+        _cols = _cols / 2;
+        if (_rows < 1 || _cols < 1) {
+            throw new IllegalArgumentException(
+                    "number of rows and columns must be strictly positive : (" + _rows + " x " + _cols + ")");
+        }
+        return new double[checkComplexArrayLength(_rows, _cols)];
+    }
+
+    static float[] checkJaggedComplexArrayF(float[][] complexdata) {
+        int _rows = complexdata.length;
+        int _cols = complexdata[0].length;
+        if (_cols % 2 != 0) {
+            throw new IllegalArgumentException("complexdata[0].length must be even: " + _cols);
+        }
+        _cols = _cols / 2;       
+        if (_rows < 1 || _cols < 1) {
+            throw new IllegalArgumentException(
+                    "number of rows and columns must be strictly positive : (" + _rows + " x " + _cols + ")");
+        }
+        return new float[checkComplexArrayLength(_rows, _cols)];
+    }
+
     static void throwInconsistentRowLengths(int cols, int rowIdx, int rowLength) {
         throw new IllegalArgumentException("All rows must have the same length: " + cols + " (row " + rowIdx
                 + " has length " + rowLength + ")");

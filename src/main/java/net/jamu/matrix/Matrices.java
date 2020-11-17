@@ -125,6 +125,45 @@ public final class Matrices {
     }
 
     /**
+     * Create a {@link ComplexMatrixD} from a {@code double[][]} array of
+     * complex numbers where each complex number is a pair of two doubles, first
+     * the real part and then the imaginary part. The elements of
+     * {@code complexdata} get copied, i.e. the array is not referenced.
+     * <p>
+     * The first index of {@code complexdata} is interpreted as the row index.
+     * Note that all rows must have the same length (which equals twice the
+     * number of columns in the matrix) otherwise an IllegalArgumentException is
+     * thrown.
+     * 
+     * @param complexdata
+     *            array whose shape and content determines the shape and content
+     *            of the newly created matrix
+     * @return a {@code ComplexMatrixD} of the same shape as {@code complexdata}
+     *         filled with the content of {@code complexdata}.
+     * @throws IllegalArgumentException
+     *             if not all rows have the same length or if that length is not
+     *             an even number
+     */
+    public static ComplexMatrixD fromJaggedComplexArrayD(double[][] complexdata) {
+        double[] copy = Checks.checkJaggedComplexArrayD(complexdata);
+        int _rows = complexdata.length;
+        int _cols = complexdata[0].length;
+        for (int row = 0; row < _rows; ++row) {
+            double[] row_i = complexdata[row];
+            if (row_i.length != _cols) {
+                Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
+            }
+            for (int col = 0; col < row_i.length; col += 2) {
+                int i = 2 * ((col / 2) * _rows + row);
+                copy[i] = row_i[col];
+                copy[i + 1] = row_i[col + 1];
+                
+            }
+        }
+        return new SimpleComplexMatrixD(_rows, _cols / 2, copy);
+    }
+
+    /**
      * Create a {@link MatrixF} from a {@code float[][]} array. The elements of
      * {@code data} get copied, i.e. the array is not referenced.
      * <p>
@@ -154,6 +193,45 @@ public final class Matrices {
             }
         }
         return new SimpleMatrixF(_rows, _cols, copy);
+    }
+
+    /**
+     * Create a {@link ComplexMatrixF} from a {@code float[][]} array of complex
+     * numbers where each complex number is a pair of two floats, first the real
+     * part and then the imaginary part. The elements of {@code complexdata} get
+     * copied, i.e. the array is not referenced.
+     * <p>
+     * The first index of {@code complexdata} is interpreted as the row index.
+     * Note that all rows must have the same length (which equals twice the
+     * number of columns in the matrix) otherwise an IllegalArgumentException is
+     * thrown.
+     * 
+     * @param complexdata
+     *            array whose shape and content determines the shape and content
+     *            of the newly created matrix
+     * @return a {@code ComplexMatrixF} of the same shape as {@code complexdata}
+     *         filled with the content of {@code complexdata}.
+     * @throws IllegalArgumentException
+     *             if not all rows have the same length or if that length is not
+     *             an even number
+     */
+    public static ComplexMatrixF fromJaggedComplexArrayF(float[][] complexdata) {
+        float[] copy = Checks.checkJaggedComplexArrayF(complexdata);
+        int _rows = complexdata.length;
+        int _cols = complexdata[0].length;
+        for (int row = 0; row < _rows; ++row) {
+            float[] row_i = complexdata[row];
+            if (row_i.length != _cols) {
+                Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
+            }
+            for (int col = 0; col < row_i.length; col += 2) {
+                int i = 2 * ((col / 2) * _rows + row);
+                copy[i] = row_i[col];
+                copy[i + 1] = row_i[col + 1];
+                
+            }
+        }
+        return new SimpleComplexMatrixF(_rows, _cols / 2, copy);
     }
 
     /**
