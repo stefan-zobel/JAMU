@@ -79,6 +79,19 @@ final class Checks {
         checkSameCols(A, B);
     }
 
+    static void checkCompatibleDimension(Dimensions A, int rows, int cols) {
+        if (rows <= 0) {
+            throw new IllegalArgumentException("rows must be strictly positive: " + rows);
+        }
+        if (cols <= 0) {
+            throw new IllegalArgumentException("cols must be strictly positive: " + cols);
+        }
+        if (rows * cols != A.numRows() * A.numColumns()) {
+            throw new IllegalArgumentException("dimensions are not compatible: (" + A.numRows() + " x " + A.numColumns()
+                    + ") cannot be reshaped to (" + rows + " x " + cols + ")");
+        }
+    }
+
     static void checkAdd(Dimensions A, Dimensions B, Dimensions C) {
         checkEqualDimension(A, B);
         if (B.numRows() != C.numRows()) {

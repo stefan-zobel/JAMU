@@ -200,6 +200,44 @@ public interface DComplexMatrixBasicOps {
     ComplexMatrixD inverse();
 
     /**
+     * Reshapes this matrix into a new matrix of dimension {@code rows x cols}
+     * where the elements in this matrix are read in Fortran-style column-major
+     * order. For example, the {@code 3 x 2} matrix {@code A}
+     * 
+     * <pre>
+     * <code>
+     *     1 4
+     * A = 2 5
+     *     3 6
+     * </code>
+     * </pre>
+     * 
+     * reshaped to a {@code 2 x 3} matrix {@code B} (i.e.,
+     * {@code B = A.reshape(2, 3);}) would become
+     * 
+     * <pre>
+     * <code>
+     * B = 1 3 5
+     *     2 4 6
+     * </code>
+     * </pre>
+     * 
+     * The new shape must be compatible with the original shape in the sense
+     * that {@code rows x cols == this.numRows() x this.numColumns()} is
+     * required, otherwise an {@code IllegalArgumentException} is thrown. None
+     * of the operands is mutated.
+     * 
+     * @param rows
+     *            the desired number of rows of the reshaped matrix
+     * @param cols
+     *            the desired number of columns of the reshaped matrix
+     * @return the reshaped matrix
+     * @throws IllegalArgumentException
+     *             if {@code rows x cols != this.numRows() x this.numColumns()}
+     */
+    ComplexMatrixD reshape(int rows, int cols);
+
+    /**
      * Convert this matrix to a real matrix, dropping all imaginary parts.
      * 
      * @return this matrix converted to a real matrix (all imaginary parts get

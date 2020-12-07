@@ -864,6 +864,15 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixF reshape(int rows, int cols) {
+        Checks.checkCompatibleDimension(this, rows, cols);
+        return create(rows, cols, Arrays.copyOf(a, a.length));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF toRealMatrix() {
         return Matrices.convertToReal(this);
     }

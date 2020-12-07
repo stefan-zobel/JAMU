@@ -798,6 +798,15 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD reshape(int rows, int cols) {
+        Checks.checkCompatibleDimension(this, rows, cols);
+        return create(rows, cols, Arrays.copyOf(a, a.length));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD toComplexMatrix() {
         return Matrices.convertToComplex(this);
     }
