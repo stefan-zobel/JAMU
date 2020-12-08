@@ -625,6 +625,13 @@ public interface MatrixF extends Dimensions, FMatrixBasicOps {
     float normMaxAbs();
 
     /**
+     * Infinity norm (maximum row sum)
+     * 
+     * @return maximum row sum
+     */
+    float normInf();
+
+    /**
      * Matrix trace of a square matrix.
      * 
      * @return sum of the diagonal elements

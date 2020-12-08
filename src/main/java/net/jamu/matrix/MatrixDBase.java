@@ -580,6 +580,22 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public double normInf() {
+        double max = 0.0;
+        for (int i = 0; i < rows; i++) {
+            double sum = 0.0;
+            for (int j = 0; j < cols; j++) {
+                sum += Math.abs(getUnsafe(i, j));
+            }
+            max = Math.max(max, sum);
+        }
+        return max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double trace() {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("The trace of a matrix is only defined for square matrices");

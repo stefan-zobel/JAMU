@@ -626,6 +626,27 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public float normInf() {
+        ZfImpl z = new ZfImpl(0.0f);
+        double max = 0.0f;
+        for (int i = 0; i < rows; i++) {
+            double sum = 0.0;
+            for (int j = 0; j < cols; j++) {
+                getUnsafe(i, j, z);
+                float re = z.re();
+                float im = z.im();
+                float abs = (im == 0.0f) ? Math.abs(re) : ZfImpl.abs(re, im);
+                sum += abs;
+            }
+            max = Math.max(max, sum);
+        }
+        return (float) max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Zf trace() {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("The trace of a matrix is only defined for square matrices");
