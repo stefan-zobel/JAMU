@@ -685,9 +685,9 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     float normMaxAbs();
 
     /**
-     * Infinity norm (maximum row sum)
+     * Infinity norm (maximum absolute row sum)
      * 
-     * @return maximum row sum
+     * @return maximum absolute row sum
      */
     float normInf();
 

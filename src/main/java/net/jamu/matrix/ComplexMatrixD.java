@@ -685,9 +685,9 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
     double normMaxAbs();
 
     /**
-     * Infinity norm (maximum row sum)
+     * Infinity norm (maximum absolute row sum)
      * 
-     * @return maximum row sum
+     * @return maximum absolute row sum
      */
     double normInf();
 
