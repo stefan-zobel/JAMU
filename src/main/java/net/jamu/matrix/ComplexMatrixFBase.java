@@ -629,12 +629,36 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     public float normInf() {
         ZfImpl z = new ZfImpl(0.0f);
         double max = 0.0f;
-        for (int i = 0; i < rows; i++) {
+        int rows_ = rows;
+        int cols_ = cols;
+        for (int i = 0; i < rows_; i++) {
             double sum = 0.0;
-            for (int j = 0; j < cols; j++) {
+            for (int j = 0; j < cols_; j++) {
                 getUnsafe(i, j, z);
                 float re = z.re();
                 float im = z.im();
+                float abs = (im == 0.0f) ? Math.abs(re) : ZfImpl.abs(re, im);
+                sum += abs;
+            }
+            max = Math.max(max, sum);
+        }
+        return (float) max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public float norm1() {
+        double max = 0.0;
+        float[] _a = a;
+        int rows_ = rows;
+        int cols_ = cols;
+        for (int col = 0; col < cols_; ++col) {
+            double sum = 0.0;
+            for (int idx = 2 * col * rows_; idx < 2 * (col + 1) * rows_; idx += 2) {
+                float re = _a[idx];
+                float im = _a[idx + 1];
                 float abs = (im == 0.0f) ? Math.abs(re) : ZfImpl.abs(re, im);
                 sum += abs;
             }

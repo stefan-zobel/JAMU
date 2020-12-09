@@ -632,6 +632,13 @@ public interface MatrixD extends Dimensions, DMatrixBasicOps {
     double normInf();
 
     /**
+     * 1-norm (maximum absolute column sum)
+     * 
+     * @return maximum absolute column sum
+     */
+    double norm1();
+
+    /**
      * Matrix trace of a square matrix.
      * 
      * @return sum of the diagonal elements

@@ -692,6 +692,13 @@ public interface ComplexMatrixF extends Dimensions, FComplexMatrixBasicOps {
     float normInf();
 
     /**
+     * 1-norm (maximum absolute column sum)
+     * 
+     * @return maximum absolute column sum
+     */
+    float norm1();
+
+    /**
      * Matrix trace of a square matrix.
      * 
      * @return sum of the diagonal elements

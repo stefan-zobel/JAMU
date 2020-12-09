@@ -582,10 +582,31 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     @Override
     public float normInf() {
         double max = 0.0;
-        for (int i = 0; i < rows; i++) {
+        int rows_ = rows;
+        int cols_ = cols;
+        for (int i = 0; i < rows_; i++) {
             double sum = 0.0;
-            for (int j = 0; j < cols; j++) {
+            for (int j = 0; j < cols_; j++) {
                 sum += Math.abs(getUnsafe(i, j));
+            }
+            max = Math.max(max, sum);
+        }
+        return (float) max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public float norm1() {
+        double max = 0.0;
+        float[] _a = a;
+        int rows_ = rows;
+        int cols_ = cols;
+        for (int col = 0; col < cols_; ++col) {
+            double sum = 0.0;
+            for (int idx = col * rows_; idx < (col + 1) * rows_; ++idx) {
+                sum += Math.abs(_a[idx]);
             }
             max = Math.max(max, sum);
         }
