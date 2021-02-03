@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/net.sourceforge.streamsupport/jamu.svg)](http://mvnrepository.com/artifact/net.sourceforge.streamsupport/jamu)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.streamsupport/jamu/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.streamsupport/jamu)
 [![javadoc.io](https://javadoc.io/badge2/net.sourceforge.streamsupport/jamu/javadoc.svg)](https://javadoc.io/doc/net.sourceforge.streamsupport/jamu)
 
 # JAMU
