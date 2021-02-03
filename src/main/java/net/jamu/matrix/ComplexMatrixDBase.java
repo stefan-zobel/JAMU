@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Stefan Zobel
+ * Copyright 2020, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -594,6 +594,27 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
             throw new IllegalArgumentException("Matrix exponentiation is only defined for square matrices");
         }
         return Expm.expmComplexD(this, normMaxAbs());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double[][] toJaggedArray() {
+        int _rows = rows;
+        int _cols = cols;
+        double[] _a = a;
+        double[][] copy = new double[_rows][2 * _cols];
+        for (int row = 0; row < _rows; ++row) {
+            double[] row_i = copy[row];
+            for (int col = 0; col < _cols; ++col) {
+                int idx = 2 * idx(row, col);
+                int rowIdx = 2 * col;
+                row_i[rowIdx] = _a[idx];
+                row_i[rowIdx + 1] = _a[idx + 1];
+            }
+        }
+        return copy;
     }
 
     /**

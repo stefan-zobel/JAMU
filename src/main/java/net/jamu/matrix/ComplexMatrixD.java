@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Stefan Zobel
+ * Copyright 2020, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -658,6 +658,15 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
      *             if the singular value decomposition did not converge
      */
     SvdEconComplexD svdEcon();
+
+    /**
+     * Copy into a jagged array. Note that the length of the second dimension is
+     * {@code 2 x} {@link ComplexMatrixD#numColumns()} because each complex
+     * number requires two doubles to represent the real and the imaginary part.
+     *
+     * @return this matrix converted to a jagged array
+     */
+    double[][] toJaggedArray();
 
     /**
      * Frobenius norm
