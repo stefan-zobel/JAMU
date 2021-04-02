@@ -70,9 +70,9 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] _a = a;
         for (int i = 0; i < _a.length; i += 2) {
             double ai = _a[i];
-            double aip1 = _a[i + 1];
+            double aip1 = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
             _a[i] = ai * alphar - aip1 * alphai;
-            _a[i + 1] = ai * alphai + aip1 * alphar;
+            _a[i + 1] = ai * alphai + aip1 * alphar; // "lgtm[java/index-out-of-bounds]"
         }
         return this;
     }
@@ -93,7 +93,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
             double ai = _a[i];
             double aip1 = _a[i + 1];
             _b[i] = ai * alphar - aip1 * alphai;
-            _b[i + 1] = ai * alphai + aip1 * alphar;
+            _b[i + 1] = ai * alphai + aip1 * alphar; // "lgtm[java/index-out-of-bounds]"
         }
         return B;
     }
@@ -161,7 +161,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
             double[] _b = B.getArrayUnsafe();
             for (int i = 0; i < _b.length; i += 2) {
                 double bi = _b[i];
-                double bip1 = _b[i + 1];
+                double bip1 = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
                 _a[i] = bi * alphar - bip1 * alphai;
                 _a[i + 1] = bi * alphai + bip1 * alphar;
             }
@@ -193,7 +193,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
                 double bi = _b[i];
                 double bip1 = _b[i + 1];
                 _c[i] = _a[i] + (bi * alphar - bip1 * alphai);
-                _c[i + 1] = _a[i + 1] + (bi * alphai + bip1 * alphar);
+                _c[i + 1] = _a[i + 1] + (bi * alphai + bip1 * alphar); // "lgtm[java/index-out-of-bounds]"
             }
         }
         return C;
@@ -356,7 +356,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] _b = other.getArrayUnsafe();
         for (int i = 0; i < _b.length; i += 2) {
             double bi = _b[i];
-            double bip1 = _b[i + 1];
+            double bip1 = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
             _a[i] = bi * alphar - bip1 * alphai;
             _a[i + 1] = bi * alphai + bip1 * alphar;
         }
@@ -634,7 +634,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] _a = a;
         for (int i = 0; i < _a.length; i += 2) {
             double re = _a[i];
-            double im = _a[i + 1];
+            double im = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
             double abs = (im == 0.0) ? Math.abs(re) : ZdImpl.abs(re, im);
             if (abs > max) {
                 max = abs;
@@ -732,7 +732,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
     @Override
     public ComplexMatrixD sanitizeNonFiniteInplace(double nanSurrogate, double posInfSurrogate,
             double negInfSurrogate) {
-        boolean subNan = (nanSurrogate == nanSurrogate);
+        boolean subNan = (nanSurrogate == nanSurrogate); // "lgtm[java/comparison-of-identical-expressions]"
         boolean subPInf = (posInfSurrogate != Double.POSITIVE_INFINITY);
         boolean subNInf = (negInfSurrogate != Double.NEGATIVE_INFINITY);
         if (!subNan && !subPInf && !subNInf) {
@@ -741,7 +741,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
             double x = _a[i];
-            if (x != x && subNan) {
+            if (x != x && subNan) { // "lgtm[java/comparison-of-identical-expressions]"
                 _a[i] = nanSurrogate;
             } else if (x == Double.POSITIVE_INFINITY && subPInf) {
                 _a[i] = posInfSurrogate;
@@ -886,7 +886,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] b_ = m.getArrayUnsafe();
         for (int i = 0; i < b_.length; i += 2) {
             double re = b_[i];
-            double im = b_[i + 1];
+            double im = b_[i + 1]; // "lgtm[java/index-out-of-bounds]"
             // nano-optimize
             if (im == 0.0) {
                 if (re < 0.0) {
@@ -894,7 +894,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
                 }
             } else {
                 b_[i] = ZdImpl.abs(re, im);
-                b_[i + 1] = 0.0;
+                b_[i + 1] = 0.0; // "lgtm[java/index-out-of-bounds]"
             }
         }
         return m;
