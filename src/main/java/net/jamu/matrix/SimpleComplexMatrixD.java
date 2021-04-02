@@ -83,7 +83,7 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         double[] a_ = a;
         for (int i = 0; i < a_.length; i += 2) {
             a_[i] = iniValr;
-            a_[i + 1] = iniVali;
+            a_[i + 1] = iniVali; // "lgtm[java/index-out-of-bounds]"
         }
     }
 

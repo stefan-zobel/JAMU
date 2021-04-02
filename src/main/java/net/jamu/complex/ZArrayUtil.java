@@ -203,7 +203,7 @@ public final class ZArrayUtil {
         double scale = 0.0;
         for (int i = 0; i < a.length; i += 2) {
             double xr = a[i];
-            double xi = a[i + 1];
+            double xi = a[i + 1]; // "lgtm[java/index-out-of-bounds]"
             if (xr != 0.0 || xi != 0.0) {
                 scale = Math.max(scale, Math.abs(xr) + Math.abs(xi));
             }
@@ -239,7 +239,7 @@ public final class ZArrayUtil {
         double scale = 0.0;
         for (int i = 0; i < a.length; i += 2) {
             double xr = a[i];
-            double xi = a[i + 1];
+            double xi = a[i + 1]; // "lgtm[java/index-out-of-bounds]"
             if (xr != 0.0 || xi != 0.0) {
                 scale = Math.max(scale, Math.abs(xr) + Math.abs(xi));
             }

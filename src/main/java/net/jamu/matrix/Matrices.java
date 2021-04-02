@@ -156,7 +156,7 @@ public final class Matrices {
             for (int col = 0; col < row_i.length; col += 2) {
                 int i = 2 * ((col / 2) * _rows + row);
                 copy[i] = row_i[col];
-                copy[i + 1] = row_i[col + 1];
+                copy[i + 1] = row_i[col + 1]; // "lgtm[java/index-out-of-bounds]"
                 
             }
         }
@@ -227,7 +227,7 @@ public final class Matrices {
             for (int col = 0; col < row_i.length; col += 2) {
                 int i = 2 * ((col / 2) * _rows + row);
                 copy[i] = row_i[col];
-                copy[i + 1] = row_i[col + 1];
+                copy[i + 1] = row_i[col + 1]; // "lgtm[java/index-out-of-bounds]"
                 
             }
         }
@@ -1706,7 +1706,7 @@ public final class Matrices {
         double d1 = 0.0;
         for (int i = 0; i < _a.length; i += 2) {
             double rea = _a[i];
-            double ima = _a[i + 1];
+            double ima = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
             double reb = _b[i];
             double imb = _b[i + 1];
             if (rea != reb || ima != imb) {
@@ -1748,9 +1748,9 @@ public final class Matrices {
         for (int i = 0; i < _a.length; i += 2) {
             // use higher precision internally
             double rea = _a[i];
-            double ima = _a[i + 1];
+            double ima = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
             double reb = _b[i];
-            double imb = _b[i + 1];
+            double imb = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
             if (rea != reb || ima != imb) {
                 d1 += ZdImpl.abs(rea - reb, ima - imb);
             }
@@ -2131,9 +2131,9 @@ public final class Matrices {
         double[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _a.length; i += 2) {
             double a_re = _a[i];
-            double a_im = _a[i + 1];
+            double a_im = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
             double b_re = _b[i];
-            double b_im = _b[i + 1];
+            double b_im = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
             if (a_re != b_re || a_im != b_im) {
                 double diff = ZdImpl.abs(a_re - b_re, a_im - b_im);
                 if (!((diff <= relTol * Math.max(ZdImpl.abs(a_re, a_im), ZdImpl.abs(b_re, b_im)))
@@ -2262,9 +2262,9 @@ public final class Matrices {
         float[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _a.length; i += 2) {
             float a_re = _a[i];
-            float a_im = _a[i + 1];
+            float a_im = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
             float b_re = _b[i];
-            float b_im = _b[i + 1];
+            float b_im = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
             if (a_re != b_re || a_im != b_im) {
                 double diff = ZfImpl.abs(a_re - b_re, a_im - b_im);
                 if (!((diff <= relTol * Math.max(ZfImpl.abs(a_re, a_im), ZfImpl.abs(b_re, b_im)))

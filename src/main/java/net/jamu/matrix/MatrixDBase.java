@@ -651,7 +651,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      */
     @Override
     public MatrixD sanitizeNonFiniteInplace(double nanSurrogate, double posInfSurrogate, double negInfSurrogate) {
-        boolean subNan = (nanSurrogate == nanSurrogate);
+        boolean subNan = (nanSurrogate == nanSurrogate); // "lgtm[java/comparison-of-identical-expressions]"
         boolean subPInf = (posInfSurrogate != Double.POSITIVE_INFINITY);
         boolean subNInf = (negInfSurrogate != Double.NEGATIVE_INFINITY);
         if (!subNan && !subPInf && !subNInf) {
@@ -660,7 +660,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         double[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
             double x = _a[i];
-            if (x != x && subNan) {
+            if (x != x && subNan) { // "lgtm[java/comparison-of-identical-expressions]"
                 _a[i] = nanSurrogate;
             } else if (x == Double.POSITIVE_INFINITY && subPInf) {
                 _a[i] = posInfSurrogate;
