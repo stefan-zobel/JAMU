@@ -274,4 +274,12 @@ public final class ZdImpl implements Zd {
         }
         return false;
     }
+
+    public final int hashCode() {
+        long bits = Double.doubleToLongBits(re);
+        int h = 0x7FFFF + (int) (bits ^ (bits >>> 32));
+        bits = Double.doubleToLongBits(im);
+        h = ((h << 19) - h) + (int) (bits ^ (bits >>> 32));
+        return (h << 19) - h;
+    }
 }

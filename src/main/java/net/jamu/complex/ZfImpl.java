@@ -274,4 +274,10 @@ public final class ZfImpl implements Zf {
         }
         return false;
     }
+
+    public final int hashCode() {
+        int h = 0x7FFFF + Float.floatToIntBits(re);
+        h = ((h << 19) - h) + Float.floatToIntBits(im);
+        return (h << 19) - h;
+    }
 }
