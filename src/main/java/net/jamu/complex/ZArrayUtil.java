@@ -195,7 +195,7 @@ public final class ZArrayUtil {
      * for the computation of the Frobenius norm of complex matrices stored in
      * either column-major or row-major layout).
      */
-    public static double l2norm(double[] a) {
+    public static double l2norm(double[] a) {// vectorization prospect
         if (a == null || a.length == 0) {
             return 0.0;
         }

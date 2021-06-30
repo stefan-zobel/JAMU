@@ -1618,7 +1618,7 @@ public final class Matrices {
      * @throws IndexOutOfBoundsException
      *             if {@code A} and {@code B} do not have the same dimension
      */
-    public static double distance(MatrixD A, MatrixD B) {
+    public static double distance(MatrixD A, MatrixD B) {// vectorization prospect
         if (A == B) {
             return 0.0;
         }
@@ -1865,7 +1865,7 @@ public final class Matrices {
      *             if {@code relTol < 0.0} or {@code absTol < 0.0}
      */
     public static boolean approxEqual(MatrixD A, MatrixD B, double relTol, double absTol) {
-        if (!checkApproxEqualArgs(A, B, relTol, absTol)) {
+        if (!checkApproxEqualArgs(A, B, relTol, absTol)) {// vectorization prospect
             return false;
         }
         if (A == B) {
