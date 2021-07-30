@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2020 Stefan Zobel
+ * Copyright 2019, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2276,6 +2276,200 @@ public final class Matrices {
         return true;
     }
 
+    /**
+     * Returns an estimate of the numerical rank of {@code A} using the SVD
+     * method. The default threshold to detect rank deficiency is a test on the
+     * magnitude of the singular values of {@code A}. We identify singular
+     * values less than
+     * {@code max(A.numRows(), A.numColumns()) * norm2(A) * 2^-53} as indicating
+     * rank deficiency. This is the same algorithm that is used by NumPy and
+     * MATLAB.
+     * 
+     * @param A
+     *            matrix whose numerical rank should be computed
+     * @return an estimate of the numerical rank of {@code A}
+     */
+    public static int numericalRank(MatrixD A) {
+        return numericalRank(A, DimensionsBase.MACH_EPS_DBL);
+    }
+
+    /**
+     * Returns an estimate of the numerical rank of {@code A} using the SVD
+     * method. The default threshold to detect rank deficiency is a test on the
+     * magnitude of the singular values of {@code A}. We identify singular
+     * values less than
+     * {@code max(A.numRows(), A.numColumns()) * norm2(A) * tol} as indicating
+     * rank deficiency. This is the same algorithm that is used by NumPy and
+     * MATLAB.
+     * 
+     * @param A
+     *            matrix whose numerical rank should be computed
+     * @param tol
+     *            threshold below which SVD values are considered zero, must be
+     *            {@code >= 0.0}
+     * @return an estimate of the numerical rank of {@code A}
+     */
+    public static int numericalRank(MatrixD A, double tol) {
+        tol = checkTol(tol, DimensionsBase.MACH_EPS_DBL);
+        double[] sigma = A.svdEcon().getS();
+        if (sigma[0] <= DimensionsBase.MACH_EPS_DBL) {
+            return 0;
+        }
+        return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
+    }
+
+    /**
+     * Returns an estimate of the numerical rank of {@code A} using the SVD
+     * method. The default threshold to detect rank deficiency is a test on the
+     * magnitude of the singular values of {@code A}. We identify singular
+     * values less than
+     * {@code max(A.numRows(), A.numColumns()) * norm2(A) * 2^-24} as indicating
+     * rank deficiency. This is the same algorithm that is used by NumPy and
+     * MATLAB.
+     * 
+     * @param A
+     *            matrix whose numerical rank should be computed
+     * @return an estimate of the numerical rank of {@code A}
+     */
+    public static int numericalRank(MatrixF A) {
+        return numericalRank(A, DimensionsBase.MACH_EPS_FLT);
+    }
+
+    /**
+     * Returns an estimate of the numerical rank of {@code A} using the SVD
+     * method. The default threshold to detect rank deficiency is a test on the
+     * magnitude of the singular values of {@code A}. We identify singular
+     * values less than
+     * {@code max(A.numRows(), A.numColumns()) * norm2(A) * tol} as indicating
+     * rank deficiency. This is the same algorithm that is used by NumPy and
+     * MATLAB.
+     * 
+     * @param A
+     *            matrix whose numerical rank should be computed
+     * @param tol
+     *            threshold below which SVD values are considered zero, must be
+     *            {@code >= 0.0f}
+     * @return an estimate of the numerical rank of {@code A}
+     */
+    public static int numericalRank(MatrixF A, float tol) {
+        tol = (float) checkTol(tol, DimensionsBase.MACH_EPS_FLT);
+        float[] sigma = A.svdEcon().getS();
+        if (sigma[0] <= DimensionsBase.MACH_EPS_FLT) {
+            return 0;
+        }
+        return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
+    }
+
+    /**
+     * Returns an estimate of the numerical rank of {@code A} using the SVD
+     * method. The default threshold to detect rank deficiency is a test on the
+     * magnitude of the singular values of {@code A}. We identify singular
+     * values less than
+     * {@code max(A.numRows(), A.numColumns()) * norm2(A) * 2^-53} as indicating
+     * rank deficiency. This is the same algorithm that is used by NumPy and
+     * MATLAB.
+     * 
+     * @param A
+     *            matrix whose numerical rank should be computed
+     * @return an estimate of the numerical rank of {@code A}
+     */
+    public static int numericalRank(ComplexMatrixD A) {
+        return numericalRank(A, DimensionsBase.MACH_EPS_DBL);
+    }
+
+    /**
+     * Returns an estimate of the numerical rank of {@code A} using the SVD
+     * method. The default threshold to detect rank deficiency is a test on the
+     * magnitude of the singular values of {@code A}. We identify singular
+     * values less than
+     * {@code max(A.numRows(), A.numColumns()) * norm2(A) * tol} as indicating
+     * rank deficiency. This is the same algorithm that is used by NumPy and
+     * MATLAB.
+     * 
+     * @param A
+     *            matrix whose numerical rank should be computed
+     * @param tol
+     *            threshold below which SVD values are considered zero, must be
+     *            {@code >= 0.0}
+     * @return an estimate of the numerical rank of {@code A}
+     */
+    public static int numericalRank(ComplexMatrixD A, double tol) {
+        tol = checkTol(tol, DimensionsBase.MACH_EPS_DBL);
+        double[] sigma = A.svdEcon().getS();
+        if (sigma[0] <= DimensionsBase.MACH_EPS_DBL) {
+            return 0;
+        }
+        return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
+    }
+
+    /**
+     * Returns an estimate of the numerical rank of {@code A} using the SVD
+     * method. The default threshold to detect rank deficiency is a test on the
+     * magnitude of the singular values of {@code A}. We identify singular
+     * values less than
+     * {@code max(A.numRows(), A.numColumns()) * norm2(A) * 2^-24} as indicating
+     * rank deficiency. This is the same algorithm that is used by NumPy and
+     * MATLAB.
+     * 
+     * @param A
+     *            matrix whose numerical rank should be computed
+     * @return an estimate of the numerical rank of {@code A}
+     */
+    public static int numericalRank(ComplexMatrixF A) {
+        return numericalRank(A, DimensionsBase.MACH_EPS_FLT);
+    }
+
+    /**
+     * Returns an estimate of the numerical rank of {@code A} using the SVD
+     * method. The default threshold to detect rank deficiency is a test on the
+     * magnitude of the singular values of {@code A}. We identify singular
+     * values less than
+     * {@code max(A.numRows(), A.numColumns()) * norm2(A) * tol} as indicating
+     * rank deficiency. This is the same algorithm that is used by NumPy and
+     * MATLAB.
+     * 
+     * @param A
+     *            matrix whose numerical rank should be computed
+     * @param tol
+     *            threshold below which SVD values are considered zero, must be
+     *            {@code >= 0.0f}
+     * @return an estimate of the numerical rank of {@code A}
+     */
+    public static int numericalRank(ComplexMatrixF A, float tol) {
+        tol = (float) checkTol(tol, DimensionsBase.MACH_EPS_FLT);
+        float[] sigma = A.svdEcon().getS();
+        if (sigma[0] <= DimensionsBase.MACH_EPS_FLT) {
+            return 0;
+        }
+        return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
+    }
+
+    private static int numpyRank(int m, int n, double[] sv, double tol) {
+        double eps = Math.max(m, n) * tol;
+        double cutoff = eps * sv[0];
+        int idx = 0;
+        for (int i = 0; i < sv.length; ++i) {
+            if (sv[i] < cutoff) {
+                break;
+            }
+            idx = i;
+        }
+        return idx + 1;
+    }
+
+    private static int numpyRank(int m, int n, float[] sv, float tol) {
+        float eps = Math.max(m, n) * tol;
+        float cutoff = eps * sv[0];
+        int idx = 0;
+        for (int i = 0; i < sv.length; ++i) {
+            if (sv[i] < cutoff) {
+                break;
+            }
+            idx = i;
+        }
+        return idx + 1;
+    }
+
     private static boolean checkApproxEqualArgs(Dimensions A, Dimensions B, double relTol, double absTol) {
         if (relTol < 0.0 || Double.isNaN(relTol) || Double.isInfinite(relTol)) {
             throw new IllegalArgumentException("illegal relTol : " + relTol);
@@ -2287,6 +2481,13 @@ public final class Matrices {
             return false;
         }
         return true;
+    }
+
+    private static double checkTol(double tol, double defaultTol) {
+        if (tol < 0.0 || Double.isNaN(tol) || Double.isInfinite(tol)) {
+            return defaultTol;
+        }
+        return tol;
     }
 
     /* package */ static String toString(Dimensions dim) {
