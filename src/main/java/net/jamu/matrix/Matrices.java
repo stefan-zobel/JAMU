@@ -2277,11 +2277,11 @@ public final class Matrices {
     }
 
     private static boolean checkApproxEqualArgs(Dimensions A, Dimensions B, double relTol, double absTol) {
-        if (relTol < 0.0) {
-            throw new IllegalArgumentException("relTol < 0.0 : " + relTol);
+        if (relTol < 0.0 || Double.isNaN(relTol) || Double.isInfinite(relTol)) {
+            throw new IllegalArgumentException("illegal relTol : " + relTol);
         }
-        if (absTol < 0.0) {
-            throw new IllegalArgumentException("absTol < 0.0 : " + absTol);
+        if (absTol < 0.0 || Double.isNaN(absTol) || Double.isInfinite(absTol)) {
+            throw new IllegalArgumentException("illegal absTol : " + absTol);
         }
         if (A.numRows() != B.numRows() || A.numColumns() != B.numColumns()) {
             return false;
