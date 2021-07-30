@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2020 Stefan Zobel
+ * Copyright 2019, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,26 @@ public class SvdF {
     protected final SimpleMatrixF U;
     protected final SimpleMatrixF Vt;
     protected final float[] S;
+
+    /**
+     * Computes the approximately optimal Singular Value truncation ("Singular
+     * Values Hard Threshold (SVHT)") after <a
+     * href=https://arxiv.org/pdf/1305.5870.pdf>Gavish and Donoho (2014)</a> for
+     * a real matrix {@code A} of dimension {@code rows x cols} and its
+     * corresponding (economy) SVD decomposition {@code svd}.
+     * 
+     * @param rows
+     *            number of rows of matrix {@code A}
+     * @param cols
+     *            number of columns of matrix {@code A}
+     * @param svd
+     *            the SVD (or economy SVD) of matrix {@code A}
+     * @return the approximately optimal Singular Value truncation value as per
+     *         Gavish and Donoho
+     */
+    public static int optimalHardThreshold(int rows, int cols, SvdF svd) {
+        return SVHT.threshold(rows, cols, svd.getS());
+    }
 
     /**
      * The left singular vectors (column-wise) or {@code null} if the singular
