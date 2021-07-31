@@ -44,7 +44,7 @@ public final class Matrices {
      * Create a new {@link MatrixD} of dimension {@code (row, cols)}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
      *            number of columns
      * @return a {@code MatrixD} of dimension {@code (row, cols)}
@@ -57,7 +57,7 @@ public final class Matrices {
      * Create a new {@link MatrixF} of dimension {@code (row, cols)}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
      *            number of columns
      * @return a {@code MatrixF} of dimension {@code (row, cols)}
@@ -70,7 +70,7 @@ public final class Matrices {
      * Create a new {@link ComplexMatrixD} of dimension {@code (row, cols)}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
      *            number of columns
      * @return a {@code ComplexMatrixD} of dimension {@code (row, cols)}
@@ -83,7 +83,7 @@ public final class Matrices {
      * Create a new {@link ComplexMatrixF} of dimension {@code (row, cols)}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
      *            number of columns
      * @return a {@code ComplexMatrixF} of dimension {@code (row, cols)}
@@ -487,9 +487,9 @@ public final class Matrices {
      * distributed random numbers drawn from the range {@code [0.0, 1.0)}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return {@code (rows, cols)} MatrixD filled with {@code ~U[0, 1]}
      *         distributed random numbers
      */
@@ -502,9 +502,9 @@ public final class Matrices {
      * distributed random numbers drawn from the range {@code [0.0, 1.0)}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @param seed
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} MatrixD filled with {@code ~U[0, 1]}
@@ -529,9 +529,9 @@ public final class Matrices {
      * distributed random numbers drawn from the range {@code [0.0f, 1.0f)}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return {@code (rows, cols)} MatrixF filled with {@code ~U[0, 1]}
      *         distributed random numbers
      */
@@ -544,9 +544,9 @@ public final class Matrices {
      * distributed random numbers drawn from the range {@code [0.0f, 1.0f)}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @param seed
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} MatrixF filled with {@code ~U[0, 1]}
@@ -572,9 +572,9 @@ public final class Matrices {
      * {@code [0.0, 1.0)} for both the real part and the imaginary part.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return {@code (rows, cols)} ComplexMatrixD filled with {@code ~U[0, 1]}
      *         distributed random complex numbers where {@code ~U[0, 1]}
      *         pertains to the real and imaginary part individually
@@ -589,9 +589,9 @@ public final class Matrices {
      * {@code [0.0, 1.0)} for both the real part and the imaginary part.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @param seed
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} ComplexMatrixD filled with {@code ~U[0, 1]}
@@ -618,9 +618,9 @@ public final class Matrices {
      * {@code [0.0f, 1.0f)} for both the real part and the imaginary part.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return {@code (rows, cols)} ComplexMatrixF filled with {@code ~U[0, 1]}
      *         distributed random complex numbers where {@code ~U[0, 1]}
      *         pertains to the real and imaginary part individually
@@ -635,9 +635,9 @@ public final class Matrices {
      * {@code [0.0f, 1.0f)} for both the real part and the imaginary part.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @param seed
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} ComplexMatrixF filled with {@code ~U[0, 1]}
@@ -664,9 +664,9 @@ public final class Matrices {
      * {@code 0.0} and variance {@code 1.0}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return {@code (rows, cols)} MatrixD filled with {@code ~N[0, 1]}
      *         distributed random numbers (standard normal distribution)
      */
@@ -680,9 +680,9 @@ public final class Matrices {
      * {@code 0.0} and variance {@code 1.0}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @param seed
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} MatrixD filled with {@code ~N[0, 1]}
@@ -708,9 +708,9 @@ public final class Matrices {
      * {@code 0.0f} and variance {@code 1.0f}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return {@code (rows, cols)} MatrixF filled with {@code ~N[0, 1]}
      *         distributed random numbers (standard normal distribution)
      */
@@ -724,9 +724,9 @@ public final class Matrices {
      * {@code 0.0f} and variance {@code 1.0f}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @param seed
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} MatrixF filled with {@code ~N[0, 1]}
@@ -753,9 +753,9 @@ public final class Matrices {
      * part and the imaginary part.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return {@code (rows, cols)} ComplexMatrixD filled with {@code ~N[0, 1]}
      *         distributed random complex numbers (standard normal distribution)
      *         where {@code ~N[0, 1]} pertains to the real and imaginary part
@@ -772,9 +772,9 @@ public final class Matrices {
      * part and the imaginary part.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @param seed
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} ComplexMatrixD filled with {@code ~N[0, 1]}
@@ -803,9 +803,9 @@ public final class Matrices {
      * part and the imaginary part.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return {@code (rows, cols)} ComplexMatrixF filled with {@code ~N[0, 1]}
      *         distributed random complex numbers (standard normal distribution)
      *         where {@code ~N[0, 1]} pertains to the real and imaginary part
@@ -822,9 +822,9 @@ public final class Matrices {
      * part and the imaginary part.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @param seed
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} ComplexMatrixF filled with {@code ~N[0, 1]}
@@ -851,9 +851,9 @@ public final class Matrices {
      * {@code 1.0}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return MatrixD of dimension {@code (rows, cols)} filled with ones
      */
     public static MatrixD onesD(int rows, int cols) {
@@ -867,9 +867,9 @@ public final class Matrices {
      * {@code 1.0f}.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return MatrixD of dimension {@code (rows, cols)} filled with ones
      */
     public static MatrixF onesF(int rows, int cols) {
@@ -884,9 +884,9 @@ public final class Matrices {
      * for tests.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return matrix filled with the natural numbers starting with 1 in
      *         row-major order
      */
@@ -907,9 +907,9 @@ public final class Matrices {
      * for tests.
      * 
      * @param rows
-     *            number or rows
+     *            number of rows
      * @param cols
-     *            number or columns
+     *            number of columns
      * @return matrix filled with the natural numbers starting with 1 in
      *         row-major order
      */
