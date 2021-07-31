@@ -41,52 +41,52 @@ import net.jamu.complex.ZfImpl;
 public final class Matrices {
 
     /**
-     * Create a new {@link MatrixD} of dimension {@code (row, cols)}.
+     * Create a new {@link MatrixD} of dimension {@code (rows, cols)}.
      * 
      * @param rows
      *            number of rows
      * @param cols
      *            number of columns
-     * @return a {@code MatrixD} of dimension {@code (row, cols)}
+     * @return a {@code MatrixD} of dimension {@code (rows, cols)}
      */
     public static MatrixD createD(int rows, int cols) {
         return new SimpleMatrixD(rows, cols);
     }
 
     /**
-     * Create a new {@link MatrixF} of dimension {@code (row, cols)}.
+     * Create a new {@link MatrixF} of dimension {@code (rows, cols)}.
      * 
      * @param rows
      *            number of rows
      * @param cols
      *            number of columns
-     * @return a {@code MatrixF} of dimension {@code (row, cols)}
+     * @return a {@code MatrixF} of dimension {@code (rows, cols)}
      */
     public static MatrixF createF(int rows, int cols) {
         return new SimpleMatrixF(rows, cols);
     }
 
     /**
-     * Create a new {@link ComplexMatrixD} of dimension {@code (row, cols)}.
+     * Create a new {@link ComplexMatrixD} of dimension {@code (rows, cols)}.
      * 
      * @param rows
      *            number of rows
      * @param cols
      *            number of columns
-     * @return a {@code ComplexMatrixD} of dimension {@code (row, cols)}
+     * @return a {@code ComplexMatrixD} of dimension {@code (rows, cols)}
      */
     public static ComplexMatrixD createComplexD(int rows, int cols) {
         return new SimpleComplexMatrixD(rows, cols);
     }
 
     /**
-     * Create a new {@link ComplexMatrixF} of dimension {@code (row, cols)}.
+     * Create a new {@link ComplexMatrixF} of dimension {@code (rows, cols)}.
      * 
      * @param rows
      *            number of rows
      * @param cols
      *            number of columns
-     * @return a {@code ComplexMatrixF} of dimension {@code (row, cols)}
+     * @return a {@code ComplexMatrixF} of dimension {@code (rows, cols)}
      */
     public static ComplexMatrixF createComplexF(int rows, int cols) {
         return new SimpleComplexMatrixF(rows, cols);
@@ -265,7 +265,7 @@ public final class Matrices {
                 int i = 2 * ((col / 2) * _rows + row);
                 copy[i] = row_i[col];
                 copy[i + 1] = row_i[col + 1]; // "lgtm[java/index-out-of-bounds]"
-                
+
             }
         }
         return new SimpleComplexMatrixD(_rows, _cols / 2, copy);
@@ -336,7 +336,7 @@ public final class Matrices {
                 int i = 2 * ((col / 2) * _rows + row);
                 copy[i] = row_i[col];
                 copy[i + 1] = row_i[col + 1]; // "lgtm[java/index-out-of-bounds]"
-                
+
             }
         }
         return new SimpleComplexMatrixF(_rows, _cols / 2, copy);
@@ -1275,6 +1275,7 @@ public final class Matrices {
         }
         return sz;
     }
+
     /**
      * Attempts to read a float matrix from the provided Path {@code file}.
      * 
