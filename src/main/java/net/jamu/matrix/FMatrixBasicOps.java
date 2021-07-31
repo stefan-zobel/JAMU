@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Stefan Zobel
+ * Copyright 2020, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package net.jamu.matrix;
 
 import net.frobenius.ComputationTruncatedException;
+import net.frobenius.NotConvergedException;
 
 /**
  * Some basic {@link MatrixF} operations expressed such that the operations'
@@ -228,6 +229,16 @@ public interface FMatrixBasicOps {
      *             if {@code rows x cols != this.numRows() x this.numColumns()}
      */
     MatrixF reshape(int rows, int cols);
+
+    /**
+     * Convenience method that computes the singular values of this matrix (this
+     * is the same as calling {@code A.svd(false).getS();}).
+     * 
+     * @return array containing the singular values in descending order
+     * @throws NotConvergedException
+     *             if the singular value decomposition did not converge
+     */
+    float[] singularValues();
 
     /**
      * Convert this matrix to a complex matrix, keeping the real parts with

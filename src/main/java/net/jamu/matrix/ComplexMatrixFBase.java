@@ -939,6 +939,14 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public float[] singularValues() {
+        return svd(false).getS();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF toRealMatrix() {
         return Matrices.convertToReal(this);
     }
