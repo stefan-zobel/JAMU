@@ -96,8 +96,8 @@ public final class Matrices {
      * Create a new {@link MatrixD} {@code B} of dimension {@code (rows, cols)}
      * that has its values set from matrix {@code A} beginning in its upper left
      * corner, i.e., {@code B[0,0] = A[0,0]} extending up to
-     * {@code B[i,j] = A[i,j]} where {@code i = min(rows, A.endRow())} and
-     * {@code j = min(cols, A.endCol())}. That is, {@code B} can be either
+     * {@code B[i,j] = A[i,j]} where {@code i = min(rows - 1, A.endRow())} and
+     * {@code j = min(cols - 1, A.endCol())}. That is, {@code B} can be either
      * smaller or larger or the same size as {@code A} and only that submatrix
      * of {@code A} gets copied which fits into {@code B}.
      * 
@@ -113,8 +113,8 @@ public final class Matrices {
      */
     public static MatrixD embed(int rows, int cols, MatrixD A) {
         MatrixD B = createD(rows, cols);
-        int i = Math.min(rows, A.endRow());
-        int j = Math.min(cols, A.endCol());
+        int i = Math.min(rows - 1, A.endRow());
+        int j = Math.min(cols - 1, A.endCol());
         return B.setSubmatrixInplace(0, 0, A, 0, 0, i, j);
     }
 
@@ -122,8 +122,8 @@ public final class Matrices {
      * Create a new {@link MatrixF} {@code B} of dimension {@code (rows, cols)}
      * that has its values set from matrix {@code A} beginning in its upper left
      * corner, i.e., {@code B[0,0] = A[0,0]} extending up to
-     * {@code B[i,j] = A[i,j]} where {@code i = min(rows, A.endRow())} and
-     * {@code j = min(cols, A.endCol())}. That is, {@code B} can be either
+     * {@code B[i,j] = A[i,j]} where {@code i = min(rows - 1, A.endRow())} and
+     * {@code j = min(cols - 1, A.endCol())}. That is, {@code B} can be either
      * smaller or larger or the same size as {@code A} and only that submatrix
      * of {@code A} gets copied which fits into {@code B}.
      * 
@@ -139,8 +139,8 @@ public final class Matrices {
      */
     public static MatrixF embed(int rows, int cols, MatrixF A) {
         MatrixF B = createF(rows, cols);
-        int i = Math.min(rows, A.endRow());
-        int j = Math.min(cols, A.endCol());
+        int i = Math.min(rows - 1, A.endRow());
+        int j = Math.min(cols - 1, A.endCol());
         return B.setSubmatrixInplace(0, 0, A, 0, 0, i, j);
     }
 
@@ -149,10 +149,10 @@ public final class Matrices {
      * {@code (rows, cols)} that has its values set from matrix {@code A}
      * beginning in its upper left corner, i.e., {@code B[0,0] = A[0,0]}
      * extending up to {@code B[i,j] = A[i,j]} where
-     * {@code i = min(rows, A.endRow())} and {@code j = min(cols, A.endCol())}.
-     * That is, {@code B} can be either smaller or larger or the same size as
-     * {@code A} and only that submatrix of {@code A} gets copied which fits
-     * into {@code B}.
+     * {@code i = min(rows - 1, A.endRow())} and
+     * {@code j = min(cols - 1, A.endCol())}. That is, {@code B} can be either
+     * smaller or larger or the same size as {@code A} and only that submatrix
+     * of {@code A} gets copied which fits into {@code B}.
      * 
      * @param rows
      *            number of rows of the matrix to create
@@ -167,8 +167,8 @@ public final class Matrices {
      */
     public static ComplexMatrixD embed(int rows, int cols, ComplexMatrixD A) {
         ComplexMatrixD B = createComplexD(rows, cols);
-        int i = Math.min(rows, A.endRow());
-        int j = Math.min(cols, A.endCol());
+        int i = Math.min(rows - 1, A.endRow());
+        int j = Math.min(cols - 1, A.endCol());
         return B.setSubmatrixInplace(0, 0, A, 0, 0, i, j);
     }
 
@@ -177,10 +177,10 @@ public final class Matrices {
      * {@code (rows, cols)} that has its values set from matrix {@code A}
      * beginning in its upper left corner, i.e., {@code B[0,0] = A[0,0]}
      * extending up to {@code B[i,j] = A[i,j]} where
-     * {@code i = min(rows, A.endRow())} and {@code j = min(cols, A.endCol())}.
-     * That is, {@code B} can be either smaller or larger or the same size as
-     * {@code A} and only that submatrix of {@code A} gets copied which fits
-     * into {@code B}.
+     * {@code i = min(rows - 1, A.endRow())} and
+     * {@code j = min(cols - 1, A.endCol())}. That is, {@code B} can be either
+     * smaller or larger or the same size as {@code A} and only that submatrix
+     * of {@code A} gets copied which fits into {@code B}.
      * 
      * @param rows
      *            number of rows of the matrix to create
@@ -195,8 +195,8 @@ public final class Matrices {
      */
     public static ComplexMatrixF embed(int rows, int cols, ComplexMatrixF A) {
         ComplexMatrixF B = createComplexF(rows, cols);
-        int i = Math.min(rows, A.endRow());
-        int j = Math.min(cols, A.endCol());
+        int i = Math.min(rows - 1, A.endRow());
+        int j = Math.min(cols - 1, A.endCol());
         return B.setSubmatrixInplace(0, 0, A, 0, 0, i, j);
     }
 
