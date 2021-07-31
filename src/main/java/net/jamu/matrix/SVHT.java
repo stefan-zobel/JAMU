@@ -188,7 +188,7 @@ class SVHT {
     static float sum(float[] values) {
         float sum = 0.0f;
         for (int i = 0; i < values.length; ++i) {
-            double sv = values[i];
+            float sv = values[i];
             if (sv <= TOL_FLT) {
                 break;
             }
