@@ -239,16 +239,6 @@ public interface DComplexMatrixBasicOps {
     ComplexMatrixD reshape(int rows, int cols);
 
     /**
-     * Convenience method that computes the singular values of this matrix (this
-     * is the same as calling {@code A.svd(false).getS();}).
-     * 
-     * @return array containing the singular values in descending order
-     * @throws NotConvergedException
-     *             if the singular value decomposition did not converge
-     */
-    double[] singularValues();
-
-    /**
      * Convert this matrix to a real matrix, dropping all imaginary parts.
      * 
      * @return this matrix converted to a real matrix (all imaginary parts get

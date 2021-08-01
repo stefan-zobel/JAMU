@@ -231,16 +231,6 @@ public interface FMatrixBasicOps {
     MatrixF reshape(int rows, int cols);
 
     /**
-     * Convenience method that computes the singular values of this matrix (this
-     * is the same as calling {@code A.svd(false).getS();}).
-     * 
-     * @return array containing the singular values in descending order
-     * @throws NotConvergedException
-     *             if the singular value decomposition did not converge
-     */
-    float[] singularValues();
-
-    /**
      * Convert this matrix to a complex matrix, keeping the real parts with
      * all imaginary parts set to 0.0f.
      * 

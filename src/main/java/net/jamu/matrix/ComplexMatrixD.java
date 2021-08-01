@@ -660,6 +660,16 @@ public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
     SvdEconComplexD svdEcon();
 
     /**
+     * Convenience method that computes the singular values of this matrix (this
+     * is the same as calling {@code A.svd(false).getS();}).
+     * 
+     * @return array containing the singular values in descending order
+     * @throws NotConvergedException
+     *             if the singular value decomposition did not converge
+     */
+    double[] singularValues();
+
+    /**
      * Copy into a jagged array. Note that the length of the second dimension is
      * {@code 2 x} {@link ComplexMatrixD#numColumns()} because each complex
      * number requires two doubles to represent the real and the imaginary part.

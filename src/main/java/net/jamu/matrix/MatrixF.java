@@ -545,6 +545,16 @@ public interface MatrixF extends Dimensions, FMatrixBasicOps {
     SvdEconF svdEcon();
 
     /**
+     * Convenience method that computes the singular values of this matrix (this
+     * is the same as calling {@code A.svd(false).getS();}).
+     * 
+     * @return array containing the singular values in descending order
+     * @throws NotConvergedException
+     *             if the singular value decomposition did not converge
+     */
+    float[] singularValues();
+
+    /**
      * Computes the eigenvalue decomposition of this matrix if it is quadratic.
      * 
      * @param full
