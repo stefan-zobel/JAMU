@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Stefan Zobel
+ * Copyright 2020, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,9 @@ public final class LudComplexD {
     // lower triangular (lower trapezoidal if m > n) with unit diagonal elements
     private final ComplexMatrixD L;
 
+    // the factor P * L in the product P * L * U
+    private final ComplexMatrixD PL;
+
     // upper triangular (upper trapezoidal if m < n)
     private final ComplexMatrixD U;
 
@@ -73,6 +76,15 @@ public final class LudComplexD {
      */
     public ComplexMatrixD getL() {
         return L;
+    }
+
+    /**
+     * The factor {@code P * L} in the product {@code A = P * L * U}.
+     * 
+     * @return the factor {@code P * L} of the {@code PLU} decomposition
+     */
+    public ComplexMatrixD getPL() {
+        return PL;
     }
 
     /**
@@ -108,6 +120,7 @@ public final class LudComplexD {
             U = Matrices.createComplexD(m, n);
         }
         P = computeLudInplace(A, L.numRows());
+        PL = (P == null) ? L : P.times(L);
     }
 
     private ComplexMatrixD computeLudInplace(ComplexMatrixD A, int dimP) {
