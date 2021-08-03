@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2020 Stefan Zobel
+ * Copyright 2019, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -266,6 +266,12 @@ final class Checks {
                     "number of rows and columns must be strictly positive : (" + _rows + " x " + _cols + ")");
         }
         return new float[checkComplexArrayLength(_rows, _cols)];
+    }
+
+    static void checkStdDev(double stdDev) {
+        if (stdDev <= 0.0 || Double.isNaN(stdDev) || Double.isInfinite(stdDev)) {
+            throw new IllegalArgumentException("Standard deviation must be positive (" + stdDev + ")");
+        }
     }
 
     static void throwInconsistentRowLengths(int cols, int rowIdx, int rowLength) {
