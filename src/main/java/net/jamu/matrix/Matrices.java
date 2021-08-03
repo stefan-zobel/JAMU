@@ -776,6 +776,28 @@ public final class Matrices {
     /**
      * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
      * uniformly distributed random complex numbers drawn from the range
+     * {@code [min, max)} for both the real part and the imaginary part.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param min
+     *            lower bound of the range
+     * @param max
+     *            upper bound of the range
+     * @return {@code (rows, cols)} ComplexMatrixD filled with
+     *         {@code ~U[min, max]} distributed random complex numbers where
+     *         {@code ~U[min, max]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixD randomUniformComplexD(int rows, int cols, double min, double max) {
+        return randomUniformComplexD(rows, cols, min, max, null);
+    }
+
+    /**
+     * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
+     * uniformly distributed random complex numbers drawn from the range
      * {@code [0.0, 1.0)} for both the real part and the imaginary part.
      * 
      * @param rows
@@ -790,6 +812,30 @@ public final class Matrices {
      */
     public static ComplexMatrixD randomUniformComplexD(int rows, int cols, long seed) {
         return randomUniformComplexD(rows, cols, 0.0, 1.0, new Random(seed));
+    }
+
+    /**
+     * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
+     * uniformly distributed random complex numbers drawn from the range
+     * {@code [min, max)} for both the real part and the imaginary part.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param min
+     *            lower bound of the range
+     * @param max
+     *            upper bound of the range
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} ComplexMatrixD filled with
+     *         {@code ~U[min, max]} distributed random complex numbers where
+     *         {@code ~U[min, max]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixD randomUniformComplexD(int rows, int cols, double min, double max, long seed) {
+        return randomUniformComplexD(rows, cols, min, max, new Random(seed));
     }
 
     private static ComplexMatrixD randomUniformComplexD(int rows, int cols, double min, double max, Random rng) {
@@ -823,6 +869,28 @@ public final class Matrices {
     /**
      * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
      * uniformly distributed random complex numbers drawn from the range
+     * {@code [min, max)} for both the real part and the imaginary part.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param min
+     *            lower bound of the range
+     * @param max
+     *            upper bound of the range
+     * @return {@code (rows, cols)} ComplexMatrixF filled with
+     *         {@code ~U[min, max]} distributed random complex numbers where
+     *         {@code ~U[min, max]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixF randomUniformComplexF(int rows, int cols, float min, float max) {
+        return randomUniformComplexF(rows, cols, min, max, null);
+    }
+
+    /**
+     * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
+     * uniformly distributed random complex numbers drawn from the range
      * {@code [0.0f, 1.0f)} for both the real part and the imaginary part.
      * 
      * @param rows
@@ -837,6 +905,30 @@ public final class Matrices {
      */
     public static ComplexMatrixF randomUniformComplexF(int rows, int cols, long seed) {
         return randomUniformComplexF(rows, cols, 0.0f, 1.0f, new Random(seed));
+    }
+
+    /**
+     * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
+     * uniformly distributed random complex numbers drawn from the range
+     * {@code [min, max)} for both the real part and the imaginary part.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param min
+     *            lower bound of the range
+     * @param max
+     *            upper bound of the range
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} ComplexMatrixF filled with
+     *         {@code ~U[min, max]} distributed random complex numbers where
+     *         {@code ~U[min, max]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixF randomUniformComplexF(int rows, int cols, float min, float max, long seed) {
+        return randomUniformComplexF(rows, cols, min, max, new Random(seed));
     }
 
     private static ComplexMatrixF randomUniformComplexF(int rows, int cols, float min, float max, Random rng) {
