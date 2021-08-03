@@ -625,9 +625,10 @@ public final class Matrices {
     private static MatrixD randomUniformD(int rows, int cols, double min, double max, Random rng) {
         SimpleMatrixD m = new SimpleMatrixD(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
+        double width = max - min;
         double[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = min + (max - min) * rnd.nextDouble();
+            _a[i] = min + width * rnd.nextDouble();
         }
         return m;
     }
@@ -667,9 +668,10 @@ public final class Matrices {
     private static MatrixF randomUniformF(int rows, int cols, float min, float max, Random rng) {
         SimpleMatrixF m = new SimpleMatrixF(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
+        float width = max - min;
         float[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = min + (max - min) * rnd.nextFloat();
+            _a[i] = min + width * rnd.nextFloat();
         }
         return m;
     }
@@ -713,9 +715,10 @@ public final class Matrices {
     private static ComplexMatrixD randomUniformComplexD(int rows, int cols, double min, double max, Random rng) {
         SimpleComplexMatrixD m = new SimpleComplexMatrixD(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
+        double width = max - min;
         double[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = min + (max - min) * rnd.nextDouble();
+            _a[i] = min + width * rnd.nextDouble();
         }
         return m;
     }
@@ -759,9 +762,10 @@ public final class Matrices {
     private static ComplexMatrixF randomUniformComplexF(int rows, int cols, float min, float max, Random rng) {
         SimpleComplexMatrixF m = new SimpleComplexMatrixF(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
+        float width = max - min;
         float[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = min + (max - min) * rnd.nextFloat();
+            _a[i] = min + width * rnd.nextFloat();
         }
         return m;
     }
