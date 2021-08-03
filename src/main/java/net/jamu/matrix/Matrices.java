@@ -1048,6 +1048,27 @@ public final class Matrices {
 
     /**
      * Create a MatrixF of dimension {@code (rows, cols)} filled with normally
+     * distributed random numbers with expectation {@code mu} and variance
+     * {@code sigma^2}.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param mu
+     *            mean (expectation) of the normal distribution
+     * @param sigma
+     *            standard deviation of the normal distribution
+     * @return {@code (rows, cols)} MatrixF filled with {@code ~N[mu, sigma^2]}
+     *         distributed random numbers
+     */
+    public static MatrixF randomNormalF(int rows, int cols, float mu, float sigma) {
+        Checks.checkStdDev(sigma);
+        return randomNormalF(rows, cols, mu, sigma, null);
+    }
+
+    /**
+     * Create a MatrixF of dimension {@code (rows, cols)} filled with normally
      * distributed (i.e., standard gausssian) random numbers with expectation
      * {@code 0.0f} and variance {@code 1.0f}.
      * 
@@ -1062,6 +1083,29 @@ public final class Matrices {
      */
     public static MatrixF randomNormalF(int rows, int cols, long seed) {
         return randomNormalF(rows, cols, 0.0f, 1.0f, new Random(seed));
+    }
+
+    /**
+     * Create a MatrixF of dimension {@code (rows, cols)} filled with normally
+     * distributed random numbers with expectation {@code mu} and variance
+     * {@code sigma^2}.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param mu
+     *            mean (expectation) of the normal distribution
+     * @param sigma
+     *            standard deviation of the normal distribution
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} MatrixF filled with {@code ~N[mu, sigma^2]}
+     *         distributed random numbers
+     */
+    public static MatrixF randomNormalF(int rows, int cols, float mu, float sigma, long seed) {
+        Checks.checkStdDev(sigma);
+        return randomNormalF(rows, cols, mu, sigma, new Random(seed));
     }
 
     private static MatrixF randomNormalF(int rows, int cols, float mean, float stdDev, Random rng) {
@@ -1195,6 +1239,30 @@ public final class Matrices {
 
     /**
      * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
+     * normally distributed random complex numbers with expectation {@code mu}
+     * and variance {@code sigma^2} for both the real part and the imaginary
+     * part.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param mu
+     *            mean (expectation) of the normal distribution
+     * @param sigma
+     *            standard deviation of the normal distribution
+     * @return {@code (rows, cols)} ComplexMatrixF filled with
+     *         {@code ~N[mu, sigma^2]} distributed random complex numbers where
+     *         {@code ~N[mu, sigma^2]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixF randomNormalComplexF(int rows, int cols, float mu, float sigma) {
+        Checks.checkStdDev(sigma);
+        return randomNormalComplexF(rows, cols, mu, sigma, null);
+    }
+
+    /**
+     * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
      * normally distributed (i.e., standard gausssian) random complex numbers
      * with expectation {@code 0.0f} and variance {@code 1.0f} for both the real
      * part and the imaginary part.
@@ -1212,6 +1280,32 @@ public final class Matrices {
      */
     public static ComplexMatrixF randomNormalComplexF(int rows, int cols, long seed) {
         return randomNormalComplexF(rows, cols, 0.0f, 1.0f, new Random(seed));
+    }
+
+    /**
+     * Create a ComplexMatrixF of dimension {@code (rows, cols)} filled with
+     * normally distributed random complex numbers with expectation {@code mu}
+     * and variance {@code sigma^2} for both the real part and the imaginary
+     * part.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param mu
+     *            mean (expectation) of the normal distribution
+     * @param sigma
+     *            standard deviation of the normal distribution
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} ComplexMatrixF filled with
+     *         {@code ~N[mu, sigma^2]} distributed random complex numbers where
+     *         {@code ~N[mu, sigma^2]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixF randomNormalComplexF(int rows, int cols, float mu, float sigma, long seed) {
+        Checks.checkStdDev(sigma);
+        return randomNormalComplexF(rows, cols, mu, sigma, new Random(seed));
     }
 
     private static ComplexMatrixF randomNormalComplexF(int rows, int cols, float mean, float stdDev, Random rng) {
