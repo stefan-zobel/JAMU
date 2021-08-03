@@ -602,7 +602,7 @@ public final class Matrices {
      *         distributed random numbers
      */
     public static MatrixD randomUniformD(int rows, int cols) {
-        return randomUniformD(rows, cols, null);
+        return randomUniformD(rows, cols, 0.0, 1.0, null);
     }
 
     /**
@@ -619,15 +619,15 @@ public final class Matrices {
      *         distributed random numbers
      */
     public static MatrixD randomUniformD(int rows, int cols, long seed) {
-        return randomUniformD(rows, cols, new Random(seed));
+        return randomUniformD(rows, cols, 0.0, 1.0, new Random(seed));
     }
 
-    private static MatrixD randomUniformD(int rows, int cols, Random rng) {
+    private static MatrixD randomUniformD(int rows, int cols, double min, double max, Random rng) {
         SimpleMatrixD m = new SimpleMatrixD(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         double[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = rnd.nextDouble();
+            _a[i] = min + (max - min) * rnd.nextDouble();
         }
         return m;
     }
@@ -644,7 +644,7 @@ public final class Matrices {
      *         distributed random numbers
      */
     public static MatrixF randomUniformF(int rows, int cols) {
-        return randomUniformF(rows, cols, null);
+        return randomUniformF(rows, cols, 0.0f, 1.0f, null);
     }
 
     /**
@@ -661,15 +661,15 @@ public final class Matrices {
      *         distributed random numbers
      */
     public static MatrixF randomUniformF(int rows, int cols, long seed) {
-        return randomUniformF(rows, cols, new Random(seed));
+        return randomUniformF(rows, cols, 0.0f, 1.0f, new Random(seed));
     }
 
-    private static MatrixF randomUniformF(int rows, int cols, Random rng) {
+    private static MatrixF randomUniformF(int rows, int cols, float min, float max, Random rng) {
         SimpleMatrixF m = new SimpleMatrixF(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         float[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = rnd.nextFloat();
+            _a[i] = min + (max - min) * rnd.nextFloat();
         }
         return m;
     }
@@ -688,7 +688,7 @@ public final class Matrices {
      *         pertains to the real and imaginary part individually
      */
     public static ComplexMatrixD randomUniformComplexD(int rows, int cols) {
-        return randomUniformComplexD(rows, cols, null);
+        return randomUniformComplexD(rows, cols, 0.0, 1.0, null);
     }
 
     /**
@@ -707,15 +707,15 @@ public final class Matrices {
      *         pertains to the real and imaginary part individually
      */
     public static ComplexMatrixD randomUniformComplexD(int rows, int cols, long seed) {
-        return randomUniformComplexD(rows, cols, new Random(seed));
+        return randomUniformComplexD(rows, cols, 0.0, 1.0, new Random(seed));
     }
 
-    private static ComplexMatrixD randomUniformComplexD(int rows, int cols, Random rng) {
+    private static ComplexMatrixD randomUniformComplexD(int rows, int cols, double min, double max, Random rng) {
         SimpleComplexMatrixD m = new SimpleComplexMatrixD(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         double[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = rnd.nextDouble();
+            _a[i] = min + (max - min) * rnd.nextDouble();
         }
         return m;
     }
@@ -734,7 +734,7 @@ public final class Matrices {
      *         pertains to the real and imaginary part individually
      */
     public static ComplexMatrixF randomUniformComplexF(int rows, int cols) {
-        return randomUniformComplexF(rows, cols, null);
+        return randomUniformComplexF(rows, cols, 0.0f, 1.0f, null);
     }
 
     /**
@@ -753,15 +753,15 @@ public final class Matrices {
      *         pertains to the real and imaginary part individually
      */
     public static ComplexMatrixF randomUniformComplexF(int rows, int cols, long seed) {
-        return randomUniformComplexF(rows, cols, new Random(seed));
+        return randomUniformComplexF(rows, cols, 0.0f, 1.0f, new Random(seed));
     }
 
-    private static ComplexMatrixF randomUniformComplexF(int rows, int cols, Random rng) {
+    private static ComplexMatrixF randomUniformComplexF(int rows, int cols, float min, float max, Random rng) {
         SimpleComplexMatrixF m = new SimpleComplexMatrixF(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         float[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = rnd.nextFloat();
+            _a[i] = min + (max - min) * rnd.nextFloat();
         }
         return m;
     }
@@ -1951,11 +1951,11 @@ public final class Matrices {
      * <p>
      * <b>Implementation Note:</b><br>
      * The definition of approximate equality used here is the one employed in
-     * Python's {@code math.isclose()} function defined in
-     * <a href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function
-     * for testing approximate equality</a>. This document gives a nice
-     * discussion of the rationale for this approach, how to use it, and the
-     * alternatives they had considered.
+     * Python's {@code math.isclose()} function defined in <a
+     * href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function for
+     * testing approximate equality</a>. This document gives a nice discussion
+     * of the rationale for this approach, how to use it, and the alternatives
+     * they had considered.
      * 
      * @param A
      *            one of the two matrices to test for approximate equality (it
@@ -2079,11 +2079,11 @@ public final class Matrices {
      * <p>
      * <b>Implementation Note:</b><br>
      * The definition of approximate equality used here is the one employed in
-     * Python's {@code math.isclose()} function defined in
-     * <a href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function
-     * for testing approximate equality</a>. This document gives a nice
-     * discussion of the rationale for this approach, how to use it, and the
-     * alternatives they had considered.
+     * Python's {@code math.isclose()} function defined in <a
+     * href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function for
+     * testing approximate equality</a>. This document gives a nice discussion
+     * of the rationale for this approach, how to use it, and the alternatives
+     * they had considered.
      * 
      * @param A
      *            one of the two matrices to test for approximate equality (it
@@ -2207,11 +2207,11 @@ public final class Matrices {
      * <p>
      * <b>Implementation Note:</b><br>
      * The definition of approximate equality used here is the one employed in
-     * Python's {@code cmath.isclose()} function defined in
-     * <a href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function
-     * for testing approximate equality</a>. This document gives a nice
-     * discussion of the rationale for this approach, how to use it, and the
-     * alternatives they had considered.
+     * Python's {@code cmath.isclose()} function defined in <a
+     * href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function for
+     * testing approximate equality</a>. This document gives a nice discussion
+     * of the rationale for this approach, how to use it, and the alternatives
+     * they had considered.
      * 
      * @param A
      *            one of the two matrices to test for approximate equality (it
@@ -2338,11 +2338,11 @@ public final class Matrices {
      * <p>
      * <b>Implementation Note:</b><br>
      * The definition of approximate equality used here is the one employed in
-     * Python's {@code cmath.isclose()} function defined in
-     * <a href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function
-     * for testing approximate equality</a>. This document gives a nice
-     * discussion of the rationale for this approach, how to use it, and the
-     * alternatives they had considered.
+     * Python's {@code cmath.isclose()} function defined in <a
+     * href=https://www.python.org/dev/peps/pep-0485/>PEP 485 - A Function for
+     * testing approximate equality</a>. This document gives a nice discussion
+     * of the rationale for this approach, how to use it, and the alternatives
+     * they had considered.
      * 
      * @param A
      *            one of the two matrices to test for approximate equality (it
