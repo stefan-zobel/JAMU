@@ -955,7 +955,7 @@ public final class Matrices {
      *         distributed random numbers (standard normal distribution)
      */
     public static MatrixD randomNormalD(int rows, int cols) {
-        return randomNormalD(rows, cols, null);
+        return randomNormalD(rows, cols, 0.0, 1.0, null);
     }
 
     /**
@@ -973,15 +973,15 @@ public final class Matrices {
      *         distributed random numbers (standard normal distribution)
      */
     public static MatrixD randomNormalD(int rows, int cols, long seed) {
-        return randomNormalD(rows, cols, new Random(seed));
+        return randomNormalD(rows, cols, 0.0, 1.0, new Random(seed));
     }
 
-    private static MatrixD randomNormalD(int rows, int cols, Random rng) {
+    private static MatrixD randomNormalD(int rows, int cols, double mean, double stdDev, Random rng) {
         SimpleMatrixD m = new SimpleMatrixD(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         double[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = rnd.nextGaussian();
+            _a[i] = mean + stdDev * rnd.nextGaussian();
         }
         return m;
     }
@@ -999,7 +999,7 @@ public final class Matrices {
      *         distributed random numbers (standard normal distribution)
      */
     public static MatrixF randomNormalF(int rows, int cols) {
-        return randomNormalF(rows, cols, null);
+        return randomNormalF(rows, cols, 0.0f, 1.0f, null);
     }
 
     /**
@@ -1017,15 +1017,15 @@ public final class Matrices {
      *         distributed random numbers (standard normal distribution)
      */
     public static MatrixF randomNormalF(int rows, int cols, long seed) {
-        return randomNormalF(rows, cols, new Random(seed));
+        return randomNormalF(rows, cols, 0.0f, 1.0f, new Random(seed));
     }
 
-    private static MatrixF randomNormalF(int rows, int cols, Random rng) {
+    private static MatrixF randomNormalF(int rows, int cols, float mean, float stdDev, Random rng) {
         SimpleMatrixF m = new SimpleMatrixF(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         float[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = (float) rnd.nextGaussian();
+            _a[i] = (float) (mean + stdDev * rnd.nextGaussian());
         }
         return m;
     }
@@ -1046,7 +1046,7 @@ public final class Matrices {
      *         individually
      */
     public static ComplexMatrixD randomNormalComplexD(int rows, int cols) {
-        return randomNormalComplexD(rows, cols, null);
+        return randomNormalComplexD(rows, cols, 0.0, 1.0, null);
     }
 
     /**
@@ -1067,15 +1067,15 @@ public final class Matrices {
      *         individually
      */
     public static ComplexMatrixD randomNormalComplexD(int rows, int cols, long seed) {
-        return randomNormalComplexD(rows, cols, new Random(seed));
+        return randomNormalComplexD(rows, cols, 0.0, 1.0, new Random(seed));
     }
 
-    private static ComplexMatrixD randomNormalComplexD(int rows, int cols, Random rng) {
+    private static ComplexMatrixD randomNormalComplexD(int rows, int cols, double mean, double stdDev, Random rng) {
         SimpleComplexMatrixD m = new SimpleComplexMatrixD(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         double[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = rnd.nextGaussian();
+            _a[i] = mean + stdDev * rnd.nextGaussian();
         }
         return m;
     }
@@ -1096,7 +1096,7 @@ public final class Matrices {
      *         individually
      */
     public static ComplexMatrixF randomNormalComplexF(int rows, int cols) {
-        return randomNormalComplexF(rows, cols, null);
+        return randomNormalComplexF(rows, cols, 0.0f, 1.0f, null);
     }
 
     /**
@@ -1117,15 +1117,15 @@ public final class Matrices {
      *         individually
      */
     public static ComplexMatrixF randomNormalComplexF(int rows, int cols, long seed) {
-        return randomNormalComplexF(rows, cols, new Random(seed));
+        return randomNormalComplexF(rows, cols, 0.0f, 1.0f, new Random(seed));
     }
 
-    private static ComplexMatrixF randomNormalComplexF(int rows, int cols, Random rng) {
+    private static ComplexMatrixF randomNormalComplexF(int rows, int cols, float mean, float stdDev, Random rng) {
         SimpleComplexMatrixF m = new SimpleComplexMatrixF(rows, cols);
         Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         float[] _a = m.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
-            _a[i] = (float) rnd.nextGaussian();
+            _a[i] = (float) (mean + stdDev * rnd.nextGaussian());
         }
         return m;
     }
