@@ -16,7 +16,7 @@ As to the supported matrix operations, apart from the usual suspects that each m
 
 ### Matrix size limitations
 
-Matrices in *JAMU* are internally backed by 1-dimensional Java arrays in column-major storage layout which get passed to the *C* BLAS / LAPACK routines from Intel MKL (in a no-copy fashion). As such, the total size of a matrix is constrained by the maximum length of a Java array. In other words, if your matrix dimension `n x m` gets beyond `2^31 - 1` you can't use JAMU.   
+Matrices in *JAMU* are internally backed by 1-dimensional Java arrays in column-major storage layout which get passed to the *C* BLAS / LAPACK routines from Intel MKL (in a no-copy fashion). As such, the total size of a matrix is constrained by the maximum length of a Java array. In other words, if your matrix dimension `m x n` gets beyond `2^31 - 1` you can't use JAMU.   
 
 
 ### Where it shines
