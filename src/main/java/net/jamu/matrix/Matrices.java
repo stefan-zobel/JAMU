@@ -960,6 +960,27 @@ public final class Matrices {
 
     /**
      * Create a MatrixD of dimension {@code (rows, cols)} filled with normally
+     * distributed random numbers with expectation {@code mu} and variance
+     * {@code sigma^2}.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param mu
+     *            mean (expectation) of the normal distribution
+     * @param sigma
+     *            standard deviation of the normal distribution
+     * @return {@code (rows, cols)} MatrixD filled with {@code ~N[mu, sigma^2]}
+     *         distributed random numbers
+     */
+    public static MatrixD randomNormalD(int rows, int cols, double mu, double sigma) {
+        Checks.checkStdDev(sigma);
+        return randomNormalD(rows, cols, mu, sigma, null);
+    }
+
+    /**
+     * Create a MatrixD of dimension {@code (rows, cols)} filled with normally
      * distributed (i.e., standard gausssian) random numbers with expectation
      * {@code 0.0} and variance {@code 1.0}.
      * 
@@ -974,6 +995,29 @@ public final class Matrices {
      */
     public static MatrixD randomNormalD(int rows, int cols, long seed) {
         return randomNormalD(rows, cols, 0.0, 1.0, new Random(seed));
+    }
+
+    /**
+     * Create a MatrixD of dimension {@code (rows, cols)} filled with normally
+     * distributed random numbers with expectation {@code mu} and variance
+     * {@code sigma^2}.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param mu
+     *            mean (expectation) of the normal distribution
+     * @param sigma
+     *            standard deviation of the normal distribution
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} MatrixD filled with {@code ~N[mu, sigma^2]}
+     *         distributed random numbers
+     */
+    public static MatrixD randomNormalD(int rows, int cols, double mu, double sigma, long seed) {
+        Checks.checkStdDev(sigma);
+        return randomNormalD(rows, cols, mu, sigma, new Random(seed));
     }
 
     private static MatrixD randomNormalD(int rows, int cols, double mean, double stdDev, Random rng) {
@@ -1051,6 +1095,30 @@ public final class Matrices {
 
     /**
      * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
+     * normally distributed random complex numbers with expectation {@code mu}
+     * and variance {@code sigma^2} for both the real part and the imaginary
+     * part.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param mu
+     *            mean (expectation) of the normal distribution
+     * @param sigma
+     *            standard deviation of the normal distribution
+     * @return {@code (rows, cols)} ComplexMatrixD filled with
+     *         {@code ~N[mu, sigma^2]} distributed random complex numbers where
+     *         {@code ~N[mu, sigma^2]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixD randomNormalComplexD(int rows, int cols, double mu, double sigma) {
+        Checks.checkStdDev(sigma);
+        return randomNormalComplexD(rows, cols, mu, sigma, null);
+    }
+
+    /**
+     * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
      * normally distributed (i.e., standard gausssian) random complex numbers
      * with expectation {@code 0.0} and variance {@code 1.0} for both the real
      * part and the imaginary part.
@@ -1068,6 +1136,32 @@ public final class Matrices {
      */
     public static ComplexMatrixD randomNormalComplexD(int rows, int cols, long seed) {
         return randomNormalComplexD(rows, cols, 0.0, 1.0, new Random(seed));
+    }
+
+    /**
+     * Create a ComplexMatrixD of dimension {@code (rows, cols)} filled with
+     * normally distributed random complex numbers with expectation {@code mu}
+     * and variance {@code sigma^2} for both the real part and the imaginary
+     * part.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param mu
+     *            mean (expectation) of the normal distribution
+     * @param sigma
+     *            standard deviation of the normal distribution
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} ComplexMatrixD filled with
+     *         {@code ~N[mu, sigma^2]} distributed random complex numbers where
+     *         {@code ~N[mu, sigma^2]} pertains to the real and imaginary part
+     *         individually
+     */
+    public static ComplexMatrixD randomNormalComplexD(int rows, int cols, double mu, double sigma, long seed) {
+        Checks.checkStdDev(sigma);
+        return randomNormalComplexD(rows, cols, mu, sigma, new Random(seed));
     }
 
     private static ComplexMatrixD randomNormalComplexD(int rows, int cols, double mean, double stdDev, Random rng) {
