@@ -16,7 +16,6 @@
 package net.jamu.matrix;
 
 import net.frobenius.ComputationTruncatedException;
-import net.frobenius.NotConvergedException;
 
 /**
  * Some basic {@link ComplexMatrixD} operations expressed such that the
