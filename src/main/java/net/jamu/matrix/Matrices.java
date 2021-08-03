@@ -607,6 +607,25 @@ public final class Matrices {
 
     /**
      * Create a MatrixD of dimension {@code (rows, cols)} filled with uniformly
+     * distributed random numbers drawn from the range {@code [min, max)}.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param min
+     *            lower bound of the range
+     * @param max
+     *            upper bound of the range
+     * @return {@code (rows, cols)} MatrixD filled with {@code ~U[min, max]}
+     *         distributed random numbers
+     */
+    public static MatrixD randomUniformD(int rows, int cols, double min, double max) {
+        return randomUniformD(rows, cols, min, max, null);
+    }
+
+    /**
+     * Create a MatrixD of dimension {@code (rows, cols)} filled with uniformly
      * distributed random numbers drawn from the range {@code [0.0, 1.0)}.
      * 
      * @param rows
@@ -620,6 +639,27 @@ public final class Matrices {
      */
     public static MatrixD randomUniformD(int rows, int cols, long seed) {
         return randomUniformD(rows, cols, 0.0, 1.0, new Random(seed));
+    }
+
+    /**
+     * Create a MatrixD of dimension {@code (rows, cols)} filled with uniformly
+     * distributed random numbers drawn from the range {@code [min, max)}.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param min
+     *            lower bound of the range
+     * @param max
+     *            upper bound of the range
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} MatrixD filled with {@code ~U[min, max]}
+     *         distributed random numbers
+     */
+    public static MatrixD randomUniformD(int rows, int cols, double min, double max, long seed) {
+        return randomUniformD(rows, cols, min, max, new Random(seed));
     }
 
     private static MatrixD randomUniformD(int rows, int cols, double min, double max, Random rng) {
@@ -650,6 +690,25 @@ public final class Matrices {
 
     /**
      * Create a MatrixF of dimension {@code (rows, cols)} filled with uniformly
+     * distributed random numbers drawn from the range {@code [min, max)}.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param min
+     *            lower bound of the range
+     * @param max
+     *            upper bound of the range
+     * @return {@code (rows, cols)} MatrixF filled with {@code ~U[min, max]}
+     *         distributed random numbers
+     */
+    public static MatrixF randomUniformF(int rows, int cols, float min, float max) {
+        return randomUniformF(rows, cols, min, max, null);
+    }
+
+    /**
+     * Create a MatrixF of dimension {@code (rows, cols)} filled with uniformly
      * distributed random numbers drawn from the range {@code [0.0f, 1.0f)}.
      * 
      * @param rows
@@ -663,6 +722,27 @@ public final class Matrices {
      */
     public static MatrixF randomUniformF(int rows, int cols, long seed) {
         return randomUniformF(rows, cols, 0.0f, 1.0f, new Random(seed));
+    }
+
+    /**
+     * Create a MatrixF of dimension {@code (rows, cols)} filled with uniformly
+     * distributed random numbers drawn from the range {@code [min, max)}.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param min
+     *            lower bound of the range
+     * @param max
+     *            upper bound of the range
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return {@code (rows, cols)} MatrixF filled with {@code ~U[min, max]}
+     *         distributed random numbers
+     */
+    public static MatrixF randomUniformF(int rows, int cols, float min, float max, long seed) {
+        return randomUniformF(rows, cols, min, max, new Random(seed));
     }
 
     private static MatrixF randomUniformF(int rows, int cols, float min, float max, Random rng) {
