@@ -430,6 +430,32 @@ public final class Matrices {
     }
 
     /**
+     * Create a rectangular diagonal matrix of dimension {@code rows x cols}
+     * whose main diagonal contains the entries provided in the {@code diagonal}
+     * array.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param diagonal
+     *            the entries to be copied to the main diagonal. Must not be
+     *            {@code null}
+     * @return a {@code rows x cols} rectangular diagonal matrix with its main
+     *         diagonal entries filled from the provided array
+     * @since 1.2
+     */
+    public static MatrixD diagD(int rows, int cols, double[] diagonal) {
+        int len = Objects.requireNonNull(diagonal).length;
+        SimpleMatrixD mat = new SimpleMatrixD(rows, cols);
+        int n = Math.min(len, Math.min(rows, cols));
+        for (int i = 0; i < n; ++i) {
+            mat.set(i, i, diagonal[i]);
+        }
+        return mat;
+    }
+
+    /**
      * Create a quadratic diagonal matrix of dimension {@code (n, n)} where all
      * the main diagonal entries contain the value {@code diagVal}.
      * 
@@ -469,6 +495,32 @@ public final class Matrices {
             m.set(i, i, diagonal[i]);
         }
         return m;
+    }
+
+    /**
+     * Create a rectangular diagonal matrix of dimension {@code rows x cols}
+     * whose main diagonal contains the entries provided in the {@code diagonal}
+     * array.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param diagonal
+     *            the entries to be copied to the main diagonal. Must not be
+     *            {@code null}
+     * @return a {@code rows x cols} rectangular diagonal matrix with its main
+     *         diagonal entries filled from the provided array
+     * @since 1.2
+     */
+    public static MatrixF diagF(int rows, int cols, float[] diagonal) {
+        int len = Objects.requireNonNull(diagonal).length;
+        SimpleMatrixF mat = new SimpleMatrixF(rows, cols);
+        int n = Math.min(len, Math.min(rows, cols));
+        for (int i = 0; i < n; ++i) {
+            mat.set(i, i, diagonal[i]);
+        }
+        return mat;
     }
 
     /**
@@ -514,6 +566,33 @@ public final class Matrices {
             }
         }
         return m;
+    }
+
+    /**
+     * Create a rectangular diagonal matrix of dimension {@code rows x cols}
+     * whose main diagonal contains the entries provided in the {@code diagonal}
+     * array.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param diagonal
+     *            the entries to be copied to the main diagonal. Must not be
+     *            {@code null}
+     * @return a {@code rows x cols} rectangular diagonal matrix with its main
+     *         diagonal entries filled from the provided array
+     * @since 1.2
+     */
+    public static ComplexMatrixD diagComplexD(int rows, int cols, Zd[] diagonal) {
+        int len = Objects.requireNonNull(diagonal).length;
+        SimpleComplexMatrixD mat = new SimpleComplexMatrixD(rows, cols);
+        int n = Math.min(len, Math.min(rows, cols));
+        for (int i = 0; i < n; ++i) {
+            Zd z = diagonal[i];
+            mat.set(i, i, z.re(), z.im());
+        }
+        return mat;
     }
 
     /**
@@ -566,6 +645,33 @@ public final class Matrices {
             }
         }
         return m;
+    }
+
+    /**
+     * Create a rectangular diagonal matrix of dimension {@code rows x cols}
+     * whose main diagonal contains the entries provided in the {@code diagonal}
+     * array.
+     * 
+     * @param rows
+     *            number of rows
+     * @param cols
+     *            number of columns
+     * @param diagonal
+     *            the entries to be copied to the main diagonal. Must not be
+     *            {@code null}
+     * @return a {@code rows x cols} rectangular diagonal matrix with its main
+     *         diagonal entries filled from the provided array
+     * @since 1.2
+     */
+    public static ComplexMatrixF diagComplexF(int rows, int cols, Zf[] diagonal) {
+        int len = Objects.requireNonNull(diagonal).length;
+        SimpleComplexMatrixF mat = new SimpleComplexMatrixF(rows, cols);
+        int n = Math.min(len, Math.min(rows, cols));
+        for (int i = 0; i < n; ++i) {
+            Zf z = diagonal[i];
+            mat.set(i, i, z.re(), z.im());
+        }
+        return mat;
     }
 
     /**
