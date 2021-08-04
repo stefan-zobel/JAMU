@@ -3051,6 +3051,66 @@ public final class Matrices {
         return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
     }
 
+    /**
+     * Creates a mean-centered copy of matrix {@code A}, i.e., the values in
+     * each column of the copy have the mean of the corresponding column in
+     * {@code A} subtracted creating a new matrix that is a de-meaned version of
+     * {@code A}. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix that contains the non-centered data
+     * @return a de-meaned copy of A
+     * @since 1.2
+     */
+    public static MatrixD center(MatrixD A) {
+        return A.copy().centerInplace();
+    }
+
+    /**
+     * Creates a mean-centered copy of matrix {@code A}, i.e., the values in
+     * each column of the copy have the mean of the corresponding column in
+     * {@code A} subtracted creating a new matrix that is a de-meaned version of
+     * {@code A}. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix that contains the non-centered data
+     * @return a de-meaned copy of A
+     * @since 1.2
+     */
+    public static MatrixF center(MatrixF A) {
+        return A.copy().centerInplace();
+    }
+
+    /**
+     * Creates a mean-centered copy of matrix {@code A}, i.e., the values in
+     * each column of the copy have the mean of the corresponding column in
+     * {@code A} subtracted creating a new matrix that is a de-meaned version of
+     * {@code A}. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix that contains the non-centered data
+     * @return a de-meaned copy of A
+     * @since 1.2
+     */
+    public static ComplexMatrixD center(ComplexMatrixD A) {
+        return A.copy().centerInplace();
+    }
+
+    /**
+     * Creates a mean-centered copy of matrix {@code A}, i.e., the values in
+     * each column of the copy have the mean of the corresponding column in
+     * {@code A} subtracted creating a new matrix that is a de-meaned version of
+     * {@code A}. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix that contains the non-centered data
+     * @return a de-meaned copy of A
+     * @since 1.2
+     */
+    public static ComplexMatrixF center(ComplexMatrixF A) {
+        return A.copy().centerInplace();
+    }
+
     private static int numpyRank(int m, int n, double[] sv, double tol) {
         double eps = Math.max(m, n) * tol;
         double cutoff = eps * sv[0];
