@@ -61,6 +61,7 @@ public class SvdD {
      * @return the approximately optimal Singular Value truncation value as per
      *         Gavish and Donoho
      * @see "Gavish, M., & Donoho, D.L. (2014). The optimal hard threshold for singular values is 4/sqrt(3). IEEE Transactions on Information Theory, 60(8), 5040-5053."
+     * @since 1.1
      */
     public static int optimalHardThreshold(int rows, int cols, SvdD svd) {
         return SVHT.threshold(rows, cols, svd.getS());

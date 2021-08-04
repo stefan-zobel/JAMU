@@ -551,6 +551,7 @@ public interface MatrixD extends Dimensions, DMatrixBasicOps {
      * @return array containing the singular values in descending order
      * @throws NotConvergedException
      *             if the singular value decomposition did not converge
+     * @since 1.2
      */
     double[] singularValues();
 

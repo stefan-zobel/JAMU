@@ -77,6 +77,7 @@ public final class LudF {
      * The factor {@code P * L} in the product {@code A = P * L * U}.
      * 
      * @return the factor {@code P * L} of the {@code PLU} decomposition
+     * @since 1.2
      */
     public MatrixF getPL() {
         return (P == null) ? L : P.times(L);

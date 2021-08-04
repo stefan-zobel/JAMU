@@ -110,6 +110,7 @@ public final class Matrices {
      *            newly created matrix
      * @return a {@code MatrixD} of dimension {@code (rows, cols)} that contains
      *         a (possibly partial) copy of {@code A} in its upper left corner
+     * @since 1.1.1
      */
     public static MatrixD embed(int rows, int cols, MatrixD A) {
         MatrixD B = createD(rows, cols);
@@ -136,6 +137,7 @@ public final class Matrices {
      *            newly created matrix
      * @return a {@code MatrixF} of dimension {@code (rows, cols)} that contains
      *         a (possibly partial) copy of {@code A} in its upper left corner
+     * @since 1.1.1
      */
     public static MatrixF embed(int rows, int cols, MatrixF A) {
         MatrixF B = createF(rows, cols);
@@ -164,6 +166,7 @@ public final class Matrices {
      * @return a {@code ComplexMatrixD} of dimension {@code (rows, cols)} that
      *         contains a (possibly partial) copy of {@code A} in its upper left
      *         corner
+     * @since 1.1.1
      */
     public static ComplexMatrixD embed(int rows, int cols, ComplexMatrixD A) {
         ComplexMatrixD B = createComplexD(rows, cols);
@@ -192,6 +195,7 @@ public final class Matrices {
      * @return a {@code ComplexMatrixF} of dimension {@code (rows, cols)} that
      *         contains a (possibly partial) copy of {@code A} in its upper left
      *         corner
+     * @since 1.1.1
      */
     public static ComplexMatrixF embed(int rows, int cols, ComplexMatrixF A) {
         ComplexMatrixF B = createComplexF(rows, cols);
@@ -619,6 +623,7 @@ public final class Matrices {
      *            upper bound of the range
      * @return {@code (rows, cols)} MatrixD filled with {@code ~U[min, max]}
      *         distributed random numbers
+     * @since 1.2
      */
     public static MatrixD randomUniformD(int rows, int cols, double min, double max) {
         return randomUniformD(rows, cols, min, max, null);
@@ -657,6 +662,7 @@ public final class Matrices {
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} MatrixD filled with {@code ~U[min, max]}
      *         distributed random numbers
+     * @since 1.2
      */
     public static MatrixD randomUniformD(int rows, int cols, double min, double max, long seed) {
         return randomUniformD(rows, cols, min, max, new Random(seed));
@@ -702,6 +708,7 @@ public final class Matrices {
      *            upper bound of the range
      * @return {@code (rows, cols)} MatrixF filled with {@code ~U[min, max]}
      *         distributed random numbers
+     * @since 1.2
      */
     public static MatrixF randomUniformF(int rows, int cols, float min, float max) {
         return randomUniformF(rows, cols, min, max, null);
@@ -740,6 +747,7 @@ public final class Matrices {
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} MatrixF filled with {@code ~U[min, max]}
      *         distributed random numbers
+     * @since 1.2
      */
     public static MatrixF randomUniformF(int rows, int cols, float min, float max, long seed) {
         return randomUniformF(rows, cols, min, max, new Random(seed));
@@ -790,6 +798,7 @@ public final class Matrices {
      *         {@code ~U[min, max]} distributed random complex numbers where
      *         {@code ~U[min, max]} pertains to the real and imaginary part
      *         individually
+     * @since 1.2
      */
     public static ComplexMatrixD randomUniformComplexD(int rows, int cols, double min, double max) {
         return randomUniformComplexD(rows, cols, min, max, null);
@@ -833,6 +842,7 @@ public final class Matrices {
      *         {@code ~U[min, max]} distributed random complex numbers where
      *         {@code ~U[min, max]} pertains to the real and imaginary part
      *         individually
+     * @since 1.2
      */
     public static ComplexMatrixD randomUniformComplexD(int rows, int cols, double min, double max, long seed) {
         return randomUniformComplexD(rows, cols, min, max, new Random(seed));
@@ -883,6 +893,7 @@ public final class Matrices {
      *         {@code ~U[min, max]} distributed random complex numbers where
      *         {@code ~U[min, max]} pertains to the real and imaginary part
      *         individually
+     * @since 1.2
      */
     public static ComplexMatrixF randomUniformComplexF(int rows, int cols, float min, float max) {
         return randomUniformComplexF(rows, cols, min, max, null);
@@ -926,6 +937,7 @@ public final class Matrices {
      *         {@code ~U[min, max]} distributed random complex numbers where
      *         {@code ~U[min, max]} pertains to the real and imaginary part
      *         individually
+     * @since 1.2
      */
     public static ComplexMatrixF randomUniformComplexF(int rows, int cols, float min, float max, long seed) {
         return randomUniformComplexF(rows, cols, min, max, new Random(seed));
@@ -973,6 +985,7 @@ public final class Matrices {
      *            standard deviation of the normal distribution
      * @return {@code (rows, cols)} MatrixD filled with {@code ~N[mu, sigma^2]}
      *         distributed random numbers
+     * @since 1.2
      */
     public static MatrixD randomNormalD(int rows, int cols, double mu, double sigma) {
         Checks.checkStdDev(sigma);
@@ -1014,6 +1027,7 @@ public final class Matrices {
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} MatrixD filled with {@code ~N[mu, sigma^2]}
      *         distributed random numbers
+     * @since 1.2
      */
     public static MatrixD randomNormalD(int rows, int cols, double mu, double sigma, long seed) {
         Checks.checkStdDev(sigma);
@@ -1061,6 +1075,7 @@ public final class Matrices {
      *            standard deviation of the normal distribution
      * @return {@code (rows, cols)} MatrixF filled with {@code ~N[mu, sigma^2]}
      *         distributed random numbers
+     * @since 1.2
      */
     public static MatrixF randomNormalF(int rows, int cols, float mu, float sigma) {
         Checks.checkStdDev(sigma);
@@ -1102,6 +1117,7 @@ public final class Matrices {
      *            the initial seed to use for the PRNG
      * @return {@code (rows, cols)} MatrixF filled with {@code ~N[mu, sigma^2]}
      *         distributed random numbers
+     * @since 1.2
      */
     public static MatrixF randomNormalF(int rows, int cols, float mu, float sigma, long seed) {
         Checks.checkStdDev(sigma);
@@ -1155,6 +1171,7 @@ public final class Matrices {
      *         {@code ~N[mu, sigma^2]} distributed random complex numbers where
      *         {@code ~N[mu, sigma^2]} pertains to the real and imaginary part
      *         individually
+     * @since 1.2
      */
     public static ComplexMatrixD randomNormalComplexD(int rows, int cols, double mu, double sigma) {
         Checks.checkStdDev(sigma);
@@ -1202,6 +1219,7 @@ public final class Matrices {
      *         {@code ~N[mu, sigma^2]} distributed random complex numbers where
      *         {@code ~N[mu, sigma^2]} pertains to the real and imaginary part
      *         individually
+     * @since 1.2
      */
     public static ComplexMatrixD randomNormalComplexD(int rows, int cols, double mu, double sigma, long seed) {
         Checks.checkStdDev(sigma);
@@ -1255,6 +1273,7 @@ public final class Matrices {
      *         {@code ~N[mu, sigma^2]} distributed random complex numbers where
      *         {@code ~N[mu, sigma^2]} pertains to the real and imaginary part
      *         individually
+     * @since 1.2
      */
     public static ComplexMatrixF randomNormalComplexF(int rows, int cols, float mu, float sigma) {
         Checks.checkStdDev(sigma);
@@ -1302,6 +1321,7 @@ public final class Matrices {
      *         {@code ~N[mu, sigma^2]} distributed random complex numbers where
      *         {@code ~N[mu, sigma^2]} pertains to the real and imaginary part
      *         individually
+     * @since 1.2
      */
     public static ComplexMatrixF randomNormalComplexF(int rows, int cols, float mu, float sigma, long seed) {
         Checks.checkStdDev(sigma);
@@ -2761,6 +2781,7 @@ public final class Matrices {
      * @param A
      *            matrix whose numerical rank should be computed
      * @return an estimate of the numerical rank of {@code A}
+     * @since 1.1
      */
     public static int numericalRank(MatrixD A) {
         return numericalRank(A, DimensionsBase.MACH_EPS_DBL);
@@ -2781,6 +2802,7 @@ public final class Matrices {
      *            threshold below which SVD values are considered zero, must be
      *            {@code >= 0.0}
      * @return an estimate of the numerical rank of {@code A}
+     * @since 1.1
      */
     public static int numericalRank(MatrixD A, double tol) {
         tol = checkTol(tol, DimensionsBase.MACH_EPS_DBL);
@@ -2803,6 +2825,7 @@ public final class Matrices {
      * @param A
      *            matrix whose numerical rank should be computed
      * @return an estimate of the numerical rank of {@code A}
+     * @since 1.1
      */
     public static int numericalRank(MatrixF A) {
         return numericalRank(A, DimensionsBase.MACH_EPS_FLT);
@@ -2823,6 +2846,7 @@ public final class Matrices {
      *            threshold below which SVD values are considered zero, must be
      *            {@code >= 0.0f}
      * @return an estimate of the numerical rank of {@code A}
+     * @since 1.1
      */
     public static int numericalRank(MatrixF A, float tol) {
         tol = (float) checkTol(tol, DimensionsBase.MACH_EPS_FLT);
@@ -2845,6 +2869,7 @@ public final class Matrices {
      * @param A
      *            matrix whose numerical rank should be computed
      * @return an estimate of the numerical rank of {@code A}
+     * @since 1.1
      */
     public static int numericalRank(ComplexMatrixD A) {
         return numericalRank(A, DimensionsBase.MACH_EPS_DBL);
@@ -2865,6 +2890,7 @@ public final class Matrices {
      *            threshold below which SVD values are considered zero, must be
      *            {@code >= 0.0}
      * @return an estimate of the numerical rank of {@code A}
+     * @since 1.1
      */
     public static int numericalRank(ComplexMatrixD A, double tol) {
         tol = checkTol(tol, DimensionsBase.MACH_EPS_DBL);
@@ -2887,6 +2913,7 @@ public final class Matrices {
      * @param A
      *            matrix whose numerical rank should be computed
      * @return an estimate of the numerical rank of {@code A}
+     * @since 1.1
      */
     public static int numericalRank(ComplexMatrixF A) {
         return numericalRank(A, DimensionsBase.MACH_EPS_FLT);
@@ -2907,6 +2934,7 @@ public final class Matrices {
      *            threshold below which SVD values are considered zero, must be
      *            {@code >= 0.0f}
      * @return an estimate of the numerical rank of {@code A}
+     * @since 1.1
      */
     public static int numericalRank(ComplexMatrixF A, float tol) {
         tol = (float) checkTol(tol, DimensionsBase.MACH_EPS_FLT);
