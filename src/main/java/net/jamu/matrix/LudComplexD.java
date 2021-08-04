@@ -47,9 +47,6 @@ public final class LudComplexD {
     // lower triangular (lower trapezoidal if m > n) with unit diagonal elements
     private final ComplexMatrixD L;
 
-    // the factor P * L in the product P * L * U
-    private final ComplexMatrixD PL;
-
     // upper triangular (upper trapezoidal if m < n)
     private final ComplexMatrixD U;
 
@@ -84,7 +81,7 @@ public final class LudComplexD {
      * @return the factor {@code P * L} of the {@code PLU} decomposition
      */
     public ComplexMatrixD getPL() {
-        return PL;
+        return (P == null) ? L : P.times(L);
     }
 
     /**
@@ -120,7 +117,6 @@ public final class LudComplexD {
             U = Matrices.createComplexD(m, n);
         }
         P = computeLudInplace(A, L.numRows());
-        PL = (P == null) ? L : P.times(L);
     }
 
     private ComplexMatrixD computeLudInplace(ComplexMatrixD A, int dimP) {
