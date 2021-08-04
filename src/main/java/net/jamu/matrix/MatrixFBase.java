@@ -680,6 +680,28 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixF centerInplace() {
+        float[] _a = a;
+        int rows_ = rows;
+        int cols_ = cols;
+        for (int col = 0; col < cols_; ++col) {
+            float colSum = 0.0f;
+            float colMean = 0.0f;
+            for (int idx = col * rows_; idx < (col + 1) * rows_; ++idx) {
+                colSum += _a[idx];
+            }
+            colMean = colSum / rows_;
+            for (int idx = col * rows_; idx < (col + 1) * rows_; ++idx) {
+                _a[idx] -= colMean;
+            }
+        }
+        return this;
+    }
+
+    /**
      * Returns a string representation of this matrix. If the matrix has more
      * than 6 rows and/or more than 6 columns only the first 5 contiguous rows
      * and/or columns are displayed followed by a {@code "......"} marker and
