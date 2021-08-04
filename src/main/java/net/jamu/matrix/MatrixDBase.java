@@ -698,6 +698,14 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD selectColumn(int col) {
+        return selectConsecutiveColumns(col, col);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD selectConsecutiveColumns(int colFrom, int colTo) {
         checkSubmatrixIndexes(0, colFrom, rows - 1, colTo);
         int startPos = rows * colFrom;

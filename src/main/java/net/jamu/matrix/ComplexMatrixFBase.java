@@ -778,6 +778,14 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixF selectColumn(int col) {
+        return selectConsecutiveColumns(col, col);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixF selectConsecutiveColumns(int colFrom, int colTo) {
         checkSubmatrixIndexes(0, colFrom, rows - 1, colTo);
         int startPos = 2 * rows * colFrom;

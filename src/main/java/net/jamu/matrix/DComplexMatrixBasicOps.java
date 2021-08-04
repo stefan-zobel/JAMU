@@ -26,6 +26,18 @@ import net.frobenius.ComputationTruncatedException;
 public interface DComplexMatrixBasicOps {
 
     /**
+     * Creates a column vector copy from this matrix that contains the column at
+     * index {@code col}.
+     * 
+     * @param col
+     *            zero based index of the column to return
+     * @return a column vector that contains the column indexed by {@code col}
+     *         of this matrix
+     * @since 1.2
+     */
+    ComplexMatrixD selectColumn(int col);
+
+    /**
      * Creates a submatrix copy from this matrix that contains all columns from
      * {@code colFrom} (inclusive) up to {@code colTo} (inclusive).
      * 
