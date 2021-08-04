@@ -697,6 +697,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     /**
      * {@inheritDoc}
      */
+    @Override
     public MatrixD selectConsecutiveColumns(int colFrom, int colTo) {
         checkSubmatrixIndexes(0, colFrom, rows - 1, colTo);
         int startPos = rows * colFrom;
@@ -709,6 +710,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     /**
      * {@inheritDoc}
      */
+    @Override
     public MatrixD selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo) {
         checkSubmatrixIndexes(rowFrom, colFrom, rowTo, colTo);
         MatrixD copy = create(rowTo - rowFrom + 1, colTo - colFrom + 1);
@@ -727,6 +729,21 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         System.arraycopy(_a, 0, _ab, 0, _a.length);
         System.arraycopy(_b, 0, _ab, _a.length, _b.length);
         return create(rows, cols + 1, _ab);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD appendMatrix(MatrixD matrix) {
+        Checks.checkSameRows(this, matrix);
+        int colsNew = cols + matrix.numColumns();
+        double[] _a = a;
+        double[] _b = matrix.getArrayUnsafe();
+        double[] _ab = new double[rows * colsNew];
+        System.arraycopy(_a, 0, _ab, 0, _a.length);
+        System.arraycopy(_b, 0, _ab, _a.length, _b.length);
+        return create(rows, colsNew, _ab);
     }
 
     /**

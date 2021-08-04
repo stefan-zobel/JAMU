@@ -70,11 +70,11 @@ public interface DComplexMatrixBasicOps {
     /**
      * Appends a column vector which must have dimension
      * {@code this.numRows() x 1} to the right of this matrix returning a new
-     * matrix of dimension {@code this.numRows() x this.numColumns() + 1} where
-     * the values from the passed column vector occupy the newly created column
-     * at column index {@code this.numColumns()} and all other values from this
-     * matrix have been copied over to the new matrix. This matrix doesn't get
-     * mutated by the append operation.
+     * matrix of dimension {@code this.numRows() x (this.numColumns() + 1)}
+     * where the values from the passed column vector occupy the newly created
+     * column at column index {@code this.numColumns()} and all other values
+     * from this matrix have been copied over to the new matrix. This matrix
+     * doesn't get mutated by the append operation.
      * 
      * @param colVector
      *            the column vector to append to the right of this matrix. Must
@@ -84,6 +84,24 @@ public interface DComplexMatrixBasicOps {
      *         {@code colVector} argument
      */
     ComplexMatrixD appendColumn(ComplexMatrixD colVector);
+
+    /**
+     * Appends a matrix which must have dimension {@code this.numRows() x k} to
+     * the right of this matrix returning a new matrix of dimension
+     * {@code this.numRows() x (this.numColumns() + k)} where the values from
+     * the passed matrix occupy the newly created columns starting at column
+     * index {@code this.numColumns()} and all other values from this matrix
+     * have been copied over to the new matrix. This matrix doesn't get mutated
+     * by the append operation.
+     * 
+     * @param matrix
+     *            the matrix to append to the right of this matrix. Must have
+     *            dimension {@code this.numRows() x k}
+     * @return a newly created copy of this matrix with the columns from
+     *         {@code matrix} appended to the right
+     * @since 1.2
+     */
+    ComplexMatrixD appendMatrix(ComplexMatrixD matrix);
 
     /**
      * {@code A \ B} matrix left division. {@code X = A\B} is the solution to

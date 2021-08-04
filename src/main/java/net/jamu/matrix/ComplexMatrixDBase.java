@@ -778,6 +778,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
     /**
      * {@inheritDoc}
      */
+    @Override
     public ComplexMatrixD selectConsecutiveColumns(int colFrom, int colTo) {
         checkSubmatrixIndexes(0, colFrom, rows - 1, colTo);
         int startPos = 2 * rows * colFrom;
@@ -790,6 +791,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
     /**
      * {@inheritDoc}
      */
+    @Override
     public ComplexMatrixD selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo) {
         checkSubmatrixIndexes(rowFrom, colFrom, rowTo, colTo);
         ComplexMatrixD copy = create(rowTo - rowFrom + 1, colTo - colFrom + 1);
@@ -808,6 +810,21 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         System.arraycopy(_a, 0, _ab, 0, _a.length);
         System.arraycopy(_b, 0, _ab, _a.length, _b.length);
         return create(rows, cols + 1, _ab);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD appendMatrix(ComplexMatrixD matrix) {
+        Checks.checkSameRows(this, matrix);
+        int colsNew = cols + matrix.numColumns();
+        double[] _a = a;
+        double[] _b = matrix.getArrayUnsafe();
+        double[] _ab = new double[2 * (rows * colsNew)];
+        System.arraycopy(_a, 0, _ab, 0, _a.length);
+        System.arraycopy(_b, 0, _ab, _a.length, _b.length);
+        return create(rows, colsNew, _ab);
     }
 
     /**
