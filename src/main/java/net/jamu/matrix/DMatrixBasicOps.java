@@ -18,9 +18,12 @@ package net.jamu.matrix;
 import net.frobenius.ComputationTruncatedException;
 
 /**
- * Some basic {@link MatrixD} operations expressed such that the operations'
- * resulting {@code MatrixD} doesn't have to be supplied as an additional
- * parameter. None of these operations mutate the receiving matrix instance.
+ * Some basic operations for {@link MatrixD} objects expressed such that the
+ * operations' resulting {@code MatrixD} doesn't have to be supplied as an
+ * additional parameter. None of these operations mutate the receiving matrix
+ * instance. In some sense these are all convenience methods, which could be
+ * expressed by more fundamental methods from {@link MatrixD} leading to more
+ * cumbersome code
  */
 public interface DMatrixBasicOps {
 

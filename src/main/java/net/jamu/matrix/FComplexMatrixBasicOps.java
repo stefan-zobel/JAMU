@@ -18,10 +18,12 @@ package net.jamu.matrix;
 import net.frobenius.ComputationTruncatedException;
 
 /**
- * Some basic {@link ComplexMatrixF} operations expressed such that the
- * operations' resulting {@code ComplexMatrixF} doesn't have to be supplied as
- * an additional parameter. None of these operations mutate the receiving matrix
- * instance.
+ * Some basic operations for {@link ComplexMatrixF} objects expressed such that
+ * the operations' resulting {@code ComplexMatrixF} doesn't have to be supplied
+ * as an additional parameter. None of these operations mutate the receiving
+ * matrix instance. In some sense these are all convenience methods, which could
+ * be expressed by more fundamental methods from {@link ComplexMatrixF} leading
+ * to more cumbersome code
  */
 public interface FComplexMatrixBasicOps {
 
