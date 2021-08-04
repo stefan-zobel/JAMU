@@ -790,6 +790,15 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
     /**
      * {@inheritDoc}
      */
+    public ComplexMatrixD selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo) {
+        checkSubmatrixIndexes(rowFrom, colFrom, rowTo, colTo);
+        ComplexMatrixD copy = create(rowTo - rowFrom + 1, colTo - colFrom + 1);
+        return submatrix(rowFrom, colFrom, rowTo, colTo, copy, 0, 0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ComplexMatrixD appendColumn(ComplexMatrixD colVector) {
         Checks.checkCommensurateColVector(this, colVector);

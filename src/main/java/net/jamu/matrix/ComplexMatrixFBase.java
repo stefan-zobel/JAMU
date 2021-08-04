@@ -772,7 +772,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         return Matrices.toString(this);
     }
 
-    // DComplexMatrixBasicOps
+    // FComplexMatrixBasicOps
 
     /**
      * {@inheritDoc}
@@ -784,6 +784,15 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         float[] dest = new float[length];
         System.arraycopy(a, startPos, dest, 0, length);
         return create(rows, (colTo - colFrom) + 1, dest);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ComplexMatrixF selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo) {
+        checkSubmatrixIndexes(rowFrom, colFrom, rowTo, colTo);
+        ComplexMatrixF copy = create(rowTo - rowFrom + 1, colTo - colFrom + 1);
+        return submatrix(rowFrom, colFrom, rowTo, colTo, copy, 0, 0);
     }
 
     /**

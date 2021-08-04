@@ -709,6 +709,15 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     /**
      * {@inheritDoc}
      */
+    public MatrixF selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo) {
+        checkSubmatrixIndexes(rowFrom, colFrom, rowTo, colTo);
+        MatrixF copy = create(rowTo - rowFrom + 1, colTo - colFrom + 1);
+        return submatrix(rowFrom, colFrom, rowTo, colTo, copy, 0, 0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MatrixF appendColumn(MatrixF colVector) {
         Checks.checkCommensurateColVector(this, colVector);

@@ -42,6 +42,32 @@ public interface DComplexMatrixBasicOps {
     ComplexMatrixD selectConsecutiveColumns(int colFrom, int colTo);
 
     /**
+     * Creates a submatrix copy of dimension
+     * {@code (rowTo - rowFrom + 1) x (colTo - colFrom + 1)} from this matrix
+     * that contains the submatrix which has {@code (rowFrom, colFrom)} as its
+     * upper left corner and {@code (rowTo, colTo)} as its lower right corner.
+     * Indices are zero-based.
+     * 
+     * @param rowFrom
+     *            index (zero based) of the first row to include in the
+     *            submatrix (left upper corner)
+     * @param colFrom
+     *            index (zero based) of the first column to include in the
+     *            submatrix (left upper corner)
+     * @param rowTo
+     *            index (zero based) of the last row to include in the submatrix
+     *            (right lower corner)
+     * @param colTo
+     *            index (zero based) of the last column to include in the
+     *            submatrix (right lower corner)
+     * @return a submatrix copy of this matrix that contains the submatrix with
+     *         upper left corner {@code (rowFrom, colFrom)} and lower right
+     *         corner {@code (rowTo, colTo)}
+     * @since 1.2
+     */
+    ComplexMatrixD selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo);
+
+    /**
      * Appends a column vector which must have dimension
      * {@code this.numRows() x 1} to the right of this matrix returning a new
      * matrix of dimension {@code this.numRows() x this.numColumns() + 1} where
