@@ -164,8 +164,9 @@ public interface DMatrixBasicOps {
     MatrixD times(MatrixD B);
 
     /**
-     * {@code A * B * C} convenience multiplication. None of the operands is
-     * mutated.
+     * {@code A * B * C} convenience multiplication. The optimal
+     * parenthesization of the involved product of 3 matrices will be determined
+     * automatically. None of the operands is mutated.
      * 
      * @param B
      *            second multiplicand
