@@ -486,7 +486,7 @@ public final class Matrices {
      *            the value to which all main diagonal entries are initialized
      * @return a {@code rows x cols} rectangular diagonal matrix with its main
      *         diagonal entries equal to {@code diagVal}
-     * @since 1.3
+     * @since 1.2.1
      */
     public static MatrixD diagD(int rows, int cols, double diagVal) {
         SimpleMatrixD mat = new SimpleMatrixD(rows, cols);
@@ -577,7 +577,7 @@ public final class Matrices {
      *            the value to which all main diagonal entries are initialized
      * @return a {@code rows x cols} rectangular diagonal matrix with its main
      *         diagonal entries equal to {@code diagVal}
-     * @since 1.3
+     * @since 1.2.1
      */
     public static MatrixF diagF(int rows, int cols, float diagVal) {
         SimpleMatrixF mat = new SimpleMatrixF(rows, cols);
@@ -686,7 +686,7 @@ public final class Matrices {
      *         diagonal entries equal to the complex number with real and
      *         imaginary parts represented by the pair
      *         {@code (diagReVal, diagImVal)}
-     * @since 1.3
+     * @since 1.2.1
      */
     public static ComplexMatrixD diagComplexD(int rows, int cols, double diagReVal, double diagImVal) {
         SimpleComplexMatrixD mat = new SimpleComplexMatrixD(rows, cols);
@@ -795,7 +795,7 @@ public final class Matrices {
      *         diagonal entries equal to the complex number with real and
      *         imaginary parts represented by the pair
      *         {@code (diagReVal, diagImVal)}
-     * @since 1.3
+     * @since 1.2.1
      */
     public static ComplexMatrixF diagComplexF(int rows, int cols, float diagReVal, float diagImVal) {
         SimpleComplexMatrixF mat = new SimpleComplexMatrixF(rows, cols);

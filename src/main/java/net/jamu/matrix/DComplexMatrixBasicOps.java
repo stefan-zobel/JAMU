@@ -181,7 +181,7 @@ public interface DComplexMatrixBasicOps {
      * None of the operands is mutated.
      * 
      * @return the result of the multiplication
-     * @since 1.3
+     * @since 1.2.1
      */
     ComplexMatrixD timesConjugateTransposed();
 
