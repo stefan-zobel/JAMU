@@ -181,6 +181,7 @@ public interface DMatrixBasicOps {
      * operands is mutated.
      * 
      * @return the result of the multiplication
+     * @since 1.3
      */
     MatrixD timesTransposed();
 

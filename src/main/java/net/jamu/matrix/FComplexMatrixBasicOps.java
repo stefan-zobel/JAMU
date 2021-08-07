@@ -181,6 +181,7 @@ public interface FComplexMatrixBasicOps {
      * None of the operands is mutated.
      * 
      * @return the result of the multiplication
+     * @since 1.3
      */
     ComplexMatrixF timesConjugateTransposed();
 
