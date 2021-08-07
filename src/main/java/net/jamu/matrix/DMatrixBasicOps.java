@@ -176,6 +176,15 @@ public interface DMatrixBasicOps {
     MatrixD timesTimes(MatrixD B, MatrixD C);
 
     /**
+     * <code>A * A<sup>T</sup></code> multiplication. This is much more
+     * efficient than the equivalent {@code A.times(A.transpose())}. None of the
+     * operands is mutated.
+     * 
+     * @return the result of the multiplication
+     */
+    MatrixD timesTransposed();
+
+    /**
      * Multiply this matrix {@code A} with a complex matrix {@code B} returning
      * the result of the multiplication {@code A * B} as a complex matrix. None
      * of the operands is mutated.

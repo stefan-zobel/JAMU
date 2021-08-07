@@ -176,6 +176,15 @@ public interface FComplexMatrixBasicOps {
     ComplexMatrixF timesTimes(ComplexMatrixF B, ComplexMatrixF C);
 
     /**
+     * <code>A * A<sup>*</sup></code> multiplication. This is much more
+     * efficient than the equivalent {@code A.times(A.conjugateTranspose())}.
+     * None of the operands is mutated.
+     * 
+     * @return the result of the multiplication
+     */
+    ComplexMatrixF timesConjugateTransposed();
+
+    /**
      * Multiply this matrix {@code A} with a real matrix {@code B} returning
      * the result of the multiplication {@code A * B} as a complex matrix. None
      * of the operands is mutated.
