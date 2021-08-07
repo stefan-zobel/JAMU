@@ -807,7 +807,12 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      */
     @Override
     public MatrixD timesTimes(MatrixD B, MatrixD C) {
-        return mult(B, create(rows, B.numColumns())).mult(C, create(rows, C.numColumns()));
+        if (Matrices.aTimesBfirst(this, B, C)) {
+            return mult(B, create(rows, B.numColumns())).mult(C, create(rows, C.numColumns()));
+        } else {
+            // since 1.2.1
+            return mult(B.mult(C, create(B.numRows(), C.numColumns())), create(rows, C.numColumns()));
+        }
     }
 
     /**

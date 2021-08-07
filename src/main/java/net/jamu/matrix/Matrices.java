@@ -3382,6 +3382,36 @@ public final class Matrices {
         return Blas.getInstance();
     }
 
+    /**
+     * Return {@code true} when the multiplication sequence {@code (AB)C} is
+     * faster than the sequence {@code A(BC)}, otherwise return {@code false}.
+     * 
+     * @param A
+     *            first matrix in the multiplication chain
+     * @param B
+     *            second matrix in the multiplication chain
+     * @param C
+     *            third matrix in the multiplication chain
+     * @return {@code true} when {@code (AB)C} leads to less multiplications,
+     *         otherwise {@code false}
+     */
+    static boolean aTimesBfirst(Dimensions A, Dimensions B, Dimensions C) {
+        long ar = A.numRows();
+        long br = B.numRows();
+        long cr = C.numRows();
+        long bc = B.numColumns();
+        long cc = C.numColumns();
+        // Note: the result is essentially random in case of arithmetic
+        // overflow which perhaps wouldn't matter anyway in the case of such
+        // large matrices
+        long arcc = ar * cc;
+        // how many multiplications for (AB)C
+        long opsAB = (ar * bc * br) + (arcc * cr);
+        // how many multiplications for A(BC)
+        long opsBC = (br * cc * cr) + (arcc * br);
+        return opsAB <= opsBC;
+    }
+
     private static boolean getBooleanPropVal(String prop, boolean defVal) {
         boolean val = defVal;
         try {

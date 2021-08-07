@@ -892,7 +892,12 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixF timesTimes(ComplexMatrixF B, ComplexMatrixF C) {
-        return mult(B, create(rows, B.numColumns())).mult(C, create(rows, C.numColumns()));
+        if (Matrices.aTimesBfirst(this, B, C)) {
+            return mult(B, create(rows, B.numColumns())).mult(C, create(rows, C.numColumns()));
+        } else {
+            // since 1.2.1
+            return mult(B.mult(C, create(B.numRows(), C.numColumns())), create(rows, C.numColumns()));
+        }
     }
 
     /**
