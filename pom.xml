@@ -4,7 +4,7 @@
     <groupId>net.sourceforge.streamsupport</groupId>
     <artifactId>jamu</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.1</version>
     <name>JAMU</name>
     <description>Java Matrix Utilities built on top of Intel MKL</description>
     <url>https://github.com/stefan-zobel/JAMU/</url>
@@ -63,7 +63,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <doclint>none</doclint>
+                            <!--doclint>none</doclint-->
                         </configuration>
                     </execution>
                 </executions>
