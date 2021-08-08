@@ -220,6 +220,25 @@ final class Checks {
         }
     }
 
+    static void checkMultMany(Dimensions A0, Dimensions A1, Dimensions[] Ai) {
+        if (A0.numColumns() != A1.numRows()) {
+            throw new IndexOutOfBoundsException(
+                    "A0.numColumns() != A1.numRows() (" + A0.numColumns() + " != " + A1.numRows() + ")");
+        }
+        if (A1.numColumns() != Ai[0].numRows()) {
+            throw new IndexOutOfBoundsException(
+                    "A1.numColumns() != A2.numRows() (" + A1.numColumns() + " != " + Ai[0].numRows() + ")");
+        }
+        for (int i = 0; i < Ai.length - 1; ++i) {
+            if (Ai[i].numColumns() != Ai[i + 1].numRows()) {
+                int colIdx = i + 2;
+                int rowIdx = colIdx + 1;
+                throw new IndexOutOfBoundsException("A" + colIdx + ".numColumns() != A" + rowIdx + ".numRows() ("
+                        + Ai[i].numColumns() + " != " + Ai[i + 1].numRows() + ")");
+            }
+        }
+    }
+
     static double[] checkJaggedArrayD(double[][] data) {
         int _rows = data.length;
         int _cols = data[0].length;
