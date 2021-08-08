@@ -42,6 +42,10 @@ abstract class UpperPacked {
         return (n * (n + 1)) / 2;
     }
 
+    final int dim() {
+        return n;
+    }
+
     // for debugging only
     public String toString() {
         StringBuilder buf = new StringBuilder();
