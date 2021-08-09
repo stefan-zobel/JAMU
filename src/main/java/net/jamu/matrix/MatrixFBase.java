@@ -906,6 +906,14 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF timesMinus(MatrixF B, MatrixF C) {
+        return multAdd(B, C.scale(-1.0f, create(C.numRows(), C.numColumns())));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF minus(MatrixF B) {
         return add(-1.0f, B, create(rows, cols));
     }

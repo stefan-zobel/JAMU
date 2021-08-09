@@ -973,6 +973,14 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD timesMinus(ComplexMatrixD B, ComplexMatrixD C) {
+        return multAdd(B, C.scale(-1.0, 0.0, create(C.numRows(), C.numColumns())));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD minus(ComplexMatrixD B) {
         return add(-1.0, 0.0, B, create(rows, cols));
     }

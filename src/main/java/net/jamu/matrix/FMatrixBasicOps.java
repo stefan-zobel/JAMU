@@ -236,6 +236,19 @@ public interface FMatrixBasicOps {
     MatrixF timesPlus(MatrixF B, MatrixF C);
 
     /**
+     * {@code A * B - C} convenience multiplication and subtraction. None of
+     * the operands is mutated.
+     * 
+     * @param B
+     *            second multiplicand
+     * @param C
+     *            the subtrahend
+     * @return the result of the two operations
+     * @since 1.3
+     */
+    MatrixF timesMinus(MatrixF B, MatrixF C);
+
+    /**
      * {@code A - B} convenience subtraction. None of the operands is mutated.
      * 
      * @param B

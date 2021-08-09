@@ -236,6 +236,19 @@ public interface DComplexMatrixBasicOps {
     ComplexMatrixD timesPlus(ComplexMatrixD B, ComplexMatrixD C);
 
     /**
+     * {@code A * B - C} convenience multiplication and subtraction. None of
+     * the operands is mutated.
+     * 
+     * @param B
+     *            second multiplicand
+     * @param C
+     *            the subtrahend
+     * @return the result of the two operations
+     * @since 1.3
+     */
+    ComplexMatrixD timesMinus(ComplexMatrixD B, ComplexMatrixD C);
+
+    /**
      * {@code A - B} convenience subtraction. None of the operands is mutated.
      * 
      * @param B
