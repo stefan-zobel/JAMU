@@ -189,6 +189,7 @@ public interface DComplexMatrixBasicOps {
      *            further matrices to right-multiply (the {@code B2, B3, ... Bn}
      *            from above)
      * @return the result of the multiplication chain
+     * @since 1.3
      */
     ComplexMatrixD timesMany(ComplexMatrixD m, ComplexMatrixD... matrices);
 
