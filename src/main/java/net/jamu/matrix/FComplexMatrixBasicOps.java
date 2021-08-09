@@ -177,8 +177,8 @@ public interface FComplexMatrixBasicOps {
     ComplexMatrixF timesTimes(ComplexMatrixF B, ComplexMatrixF C);
 
     /**
-     * {@code A * B1 * B2 * B3 * ... Bn} convenience multiplication. This is
-     * much more efficient than the equivalent
+     * <code>A * B1 * B2 * B3 * &middot;&middot;&middot; * Bn</code> convenience
+     * multiplication. This is much more efficient than the equivalent
      * {@code A.times(B1).times(B2).times(B3) ... .times(Bn)} multiplication as
      * the cheapest sequence for performing these multiplications is determined
      * automatically by this method. None of the operands is mutated.
