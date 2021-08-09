@@ -177,6 +177,22 @@ public interface DMatrixBasicOps {
     MatrixD timesTimes(MatrixD B, MatrixD C);
 
     /**
+     * <code>A * B1 * B2 * B3 * &middot;&middot;&middot; * Bn</code> convenience
+     * multiplication. This is much more efficient than the equivalent
+     * {@code A.times(B1).times(B2).times(B3) ... .times(Bn)} multiplication as
+     * the cheapest sequence for performing these multiplications is determined
+     * automatically by this method. None of the operands is mutated.
+     * 
+     * @param m
+     *            the first matrix to right-multiply (the {@code B1} from above)
+     * @param matrices
+     *            further matrices to right-multiply (the {@code B2, B3, ... Bn}
+     *            from above)
+     * @return the result of the multiplication chain
+     */
+    MatrixD timesMany(MatrixD m, MatrixD... matrices);
+
+    /**
      * <code>A * A<sup>T</sup></code> multiplication. This is much more
      * efficient than the equivalent {@code A.times(A.transpose())}. None of the
      * operands is mutated.

@@ -15,6 +15,7 @@
  */
 package net.jamu.matrix;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -899,6 +900,39 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
             // since 1.2.1
             return mult(B.mult(C, create(B.numRows(), C.numColumns())), create(rows, C.numColumns()));
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD timesMany(ComplexMatrixD m, ComplexMatrixD... matrices) {
+        int len = matrices.length;
+        if (len == 0) {
+            return times(m);
+        }
+        if (len == 1) {
+            return timesTimes(m, matrices[0]);
+        }
+        Checks.checkMultMany(this, m, matrices);
+        UPInts splits = new MatrixChain(this, m, matrices).computeSplits();
+        ArrayList<ComplexMatrixD> chain = MatrixChain.buildList(this, m, matrices);
+        return multiplyMany(0, chain.size() - 1, chain, splits);
+    }
+
+    /*
+     * Recursive function for the actual matrix-chain multiplication, also from
+     * Cormen et al.
+     */
+    private ComplexMatrixD multiplyMany(int i, int j, ArrayList<ComplexMatrixD> chain, UPInts splits) {
+        if (i == j) {
+            // base case
+            return chain.get(i);
+        }
+        int k = splits.get(i, j);
+        ComplexMatrixD X = multiplyMany(i, k, chain, splits);
+        ComplexMatrixD Y = multiplyMany(k + 1, j, chain, splits);
+        return X.mult(Y, create(X.numRows(), Y.numColumns()));
     }
 
     /**
