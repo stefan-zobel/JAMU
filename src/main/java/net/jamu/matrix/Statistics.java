@@ -200,6 +200,226 @@ public final class Statistics {
         return A;
     }
 
+    public static MatrixD zscoreInplace(MatrixD A) {
+        int rows_ = checkNotRowVector(A);
+        int cols_ = A.numColumns();
+        double[] _a = A.getArrayUnsafe();
+        for (int col = 0; col < cols_; ++col) {
+            // overflow resistant implementation
+            double scale = 0.0;
+            double sum = 0.0;
+            double sumsquared = 1.0;
+            // determine mean and sum squared
+            for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
+                double xi = _a[i];
+                if (xi != 0.0) {
+                    sum += xi;
+                    double absxi = Math.abs(xi);
+                    if (scale < absxi) {
+                        double unsquared = scale / absxi;
+                        sumsquared = 1.0 + sumsquared * (unsquared * unsquared);
+                        scale = absxi;
+                    } else {
+                        double unsquared = absxi / scale;
+                        sumsquared = sumsquared + (unsquared * unsquared);
+                    }
+                }
+            }
+            double mean = sum / rows_;
+            double y = computeScaledMean(scale, mean);
+            double stddev = patchDev(scale * Math.sqrt(sumsquared / rows_ - y * y));
+            for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
+                // subtract mean and divide by standard deviation
+                double xi = _a[i];
+                xi = (xi - mean) / stddev;
+                _a[i] = xi;
+            }
+        }
+        return A;
+    }
+
+    public static MatrixF zscoreInplace(MatrixF A) {
+        int rows_ = checkNotRowVector(A);
+        int cols_ = A.numColumns();
+        float[] _a = A.getArrayUnsafe();
+        for (int col = 0; col < cols_; ++col) {
+            // overflow resistant implementation
+            float scale = 0.0f;
+            float sum = 0.0f;
+            float sumsquared = 1.0f;
+            // determine mean and sum squared
+            for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
+                float xi = _a[i];
+                if (xi != 0.0f) {
+                    sum += xi;
+                    float absxi = Math.abs(xi);
+                    if (scale < absxi) {
+                        float unsquared = scale / absxi;
+                        sumsquared = 1.0f + sumsquared * (unsquared * unsquared);
+                        scale = absxi;
+                    } else {
+                        float unsquared = absxi / scale;
+                        sumsquared = sumsquared + (unsquared * unsquared);
+                    }
+                }
+            }
+            float mean = sum / rows_;
+            float y = computeScaledMean(scale, mean);
+            float stddev = patchDev(scale * (float) Math.sqrt(sumsquared / rows_ - y * y));
+            for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
+                // subtract mean and divide by standard deviation
+                float xi = _a[i];
+                xi = (xi - mean) / stddev;
+                _a[i] = xi;
+            }
+        }
+        return A;
+    }
+
+    public static ComplexMatrixD zscoreInplace(ComplexMatrixD A) {
+        int rows_ = checkNotRowVector(A);
+        int cols_ = A.numColumns();
+        double[] _a = A.getArrayUnsafe();
+        for (int col = 0; col < cols_; ++col) {
+            // overflow resistant implementation
+            double reScale = 0.0;
+            double imScale = 0.0;
+            double reSum = 0.0;
+            double imSum = 0.0;
+            double reSumSqr = 1.0;
+            double imSumSqr = 1.0;
+            // determine mean and sum squared
+            for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
+                double xre = _a[i];
+                double xim = _a[i + 1];
+                if (xre != 0.0 || xim != 0.0) {
+                    reSum += xre;
+                    imSum += xim;
+                    double absxre = Math.abs(xre);
+                    double absxim = Math.abs(xim);
+                    if (reScale < absxre) {
+                        double unsquared = reScale / absxre;
+                        reSumSqr = 1.0 + reSumSqr * (unsquared * unsquared);
+                        reScale = absxre;
+                    } else {
+                        double unsquared = absxre / reScale;
+                        reSumSqr = reSumSqr + (unsquared * unsquared);
+                    }
+                    if (imScale < absxim) {
+                        double unsquared = imScale / absxim;
+                        imSumSqr = 1.0 + imSumSqr * (unsquared * unsquared);
+                        imScale = absxim;
+                    } else {
+                        double unsquared = absxim / imScale;
+                        imSumSqr = imSumSqr + (unsquared * unsquared);
+                    }
+                }
+            }
+            //
+            double reMean = reSum / rows_;
+            double imMean = imSum / rows_;
+            double reY = computeScaledMean(reScale, reMean);
+            double imY = computeScaledMean(imScale, imMean);
+            double reStddev = patchDev(reScale * Math.sqrt(reSumSqr / rows_ - reY * reY));
+            double imStddev = patchDev(imScale * Math.sqrt(imSumSqr / rows_ - imY * imY));
+            //
+            for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
+                // subtract mean and divide by standard deviation
+                double xre = _a[i];
+                double xim = _a[i + 1];
+                xre = (xre - reMean) / reStddev;
+                xim = (xim - imMean) / imStddev;
+                _a[i] = xre;
+                _a[i + 1] = xim;
+            }
+        }
+        return A;
+    }
+
+    public static ComplexMatrixF zscoreInplace(ComplexMatrixF A) {
+        int rows_ = checkNotRowVector(A);
+        int cols_ = A.numColumns();
+        float[] _a = A.getArrayUnsafe();
+        for (int col = 0; col < cols_; ++col) {
+            // overflow resistant implementation
+            float reScale = 0.0f;
+            float imScale = 0.0f;
+            float reSum = 0.0f;
+            float imSum = 0.0f;
+            float reSumSqr = 1.0f;
+            float imSumSqr = 1.0f;
+            // determine mean and sum squared
+            for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
+                float xre = _a[i];
+                float xim = _a[i + 1];
+                if (xre != 0.0f || xim != 0.0f) {
+                    reSum += xre;
+                    imSum += xim;
+                    float absxre = Math.abs(xre);
+                    float absxim = Math.abs(xim);
+                    if (reScale < absxre) {
+                        float unsquared = reScale / absxre;
+                        reSumSqr = 1.0f + reSumSqr * (unsquared * unsquared);
+                        reScale = absxre;
+                    } else {
+                        float unsquared = absxre / reScale;
+                        reSumSqr = reSumSqr + (unsquared * unsquared);
+                    }
+                    if (imScale < absxim) {
+                        float unsquared = imScale / absxim;
+                        imSumSqr = 1.0f + imSumSqr * (unsquared * unsquared);
+                        imScale = absxim;
+                    } else {
+                        float unsquared = absxim / imScale;
+                        imSumSqr = imSumSqr + (unsquared * unsquared);
+                    }
+                }
+            }
+            //
+            float reMean = reSum / rows_;
+            float imMean = imSum / rows_;
+            float reY = computeScaledMean(reScale, reMean);
+            float imY = computeScaledMean(imScale, imMean);
+            float reStddev = patchDev(reScale * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
+            float imStddev = patchDev(imScale * (float) Math.sqrt(imSumSqr / rows_ - imY * imY));
+            //
+            for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
+                // subtract mean and divide by standard deviation
+                float xre = _a[i];
+                float xim = _a[i + 1];
+                xre = (xre - reMean) / reStddev;
+                xim = (xim - imMean) / imStddev;
+                _a[i] = xre;
+                _a[i + 1] = xim;
+            }
+        }
+        return A;
+    }
+
+    private static int checkNotRowVector(Dimensions A) {
+        int rows = A.numRows();
+        if (rows == 1) {
+            throw new IllegalArgumentException("Can't compute zscore for a row vector");
+        }
+        return rows;
+    }
+
+    private static double patchDev(double stddev) {
+        return (stddev == 0.0 || Double.isNaN(stddev)) ? 1.0 : stddev;
+    }
+
+    private static float patchDev(float stddev) {
+        return (stddev == 0.0f || Float.isNaN(stddev)) ? 1.0f : stddev;
+    }
+
+    private static double computeScaledMean(double scale, double mean) {
+        return (scale != 0.0) ? mean / scale : mean;
+    }
+
+    private static float computeScaledMean(float scale, float mean) {
+        return (scale != 0.0f) ? mean / scale : mean;
+    }
+
     private Statistics() {
         throw new AssertionError();
     }
