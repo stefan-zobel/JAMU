@@ -196,12 +196,24 @@ public interface DMatrixBasicOps {
     /**
      * <code>A * A<sup>T</sup></code> multiplication. This is much more
      * efficient than the equivalent {@code A.times(A.transpose())}. None of the
-     * operands is mutated.
+     * operands is mutated. For the reversed order multiplication
+     * <code>A<sup>T</sup> * A</code> use {@link #transposedTimes()}.
      * 
      * @return the result of the multiplication
      * @since 1.2.1
      */
     MatrixD timesTransposed();
+
+    /**
+     * <code>A<sup>T</sup> * A</code> multiplication. This is much more
+     * efficient than the equivalent {@code A.transpose().times(A)}. None of the
+     * operands is mutated. For the reversed order multiplication
+     * <code>A * A<sup>T</sup></code> use {@link #timesTransposed()}.
+     * 
+     * @return the result of the multiplication
+     * @since 1.3
+     */
+    MatrixD transposedTimes();
 
     /**
      * Multiply this matrix {@code A} with a complex matrix {@code B} returning

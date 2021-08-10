@@ -946,6 +946,14 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixF conjugateTransposedTimes() {
+        return conjTransAmult(this, create(cols, cols));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixF times(MatrixF B) {
         Checks.checkMult(this, B);
         ComplexMatrixF Bc = Matrices.convertToComplex(B);

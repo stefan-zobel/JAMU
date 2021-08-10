@@ -196,12 +196,24 @@ public interface FComplexMatrixBasicOps {
     /**
      * <code>A * A<sup>*</sup></code> multiplication. This is much more
      * efficient than the equivalent {@code A.times(A.conjugateTranspose())}.
-     * None of the operands is mutated.
+     * None of the operands is mutated. For the reversed order multiplication
+     * <code>A<sup>*</sup> * A</code> use {@link #conjugateTransposedTimes()}.
      * 
      * @return the result of the multiplication
      * @since 1.2.1
      */
     ComplexMatrixF timesConjugateTransposed();
+
+    /**
+     * <code>A<sup>*</sup> * A</code> multiplication. This is much more
+     * efficient than the equivalent {@code A.conjugateTranspose().times(A)}.
+     * None of the operands is mutated. For the reversed order multiplication
+     * <code>A * A<sup>*</sup></code> use {@link #timesConjugateTransposed()}.
+     * 
+     * @return the result of the multiplication
+     * @since 1.3
+     */
+    ComplexMatrixF conjugateTransposedTimes();
 
     /**
      * Multiply this matrix {@code A} with a real matrix {@code B} returning
