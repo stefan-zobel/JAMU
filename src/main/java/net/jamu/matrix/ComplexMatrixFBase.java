@@ -761,33 +761,6 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ComplexMatrixF centerInplace() {
-        float[] _a = a;
-        int rows_ = rows;
-        int cols_ = cols;
-        for (int col = 0; col < cols_; ++col) {
-            float reColSum = 0.0f;
-            float imColSum = 0.0f;
-            float reColMean = 0.0f;
-            float imColMean = 0.0f;
-            for (int idx = 2 * col * rows_; idx < 2 * (col + 1) * rows_; idx += 2) {
-                reColSum += _a[idx];
-                imColSum += _a[idx + 1];
-            }
-            reColMean = reColSum / rows_;
-            imColMean = imColSum / rows_;
-            for (int idx = 2 * col * rows_; idx < 2 * (col + 1) * rows_; idx += 2) {
-                _a[idx] -= reColMean;
-                _a[idx + 1] -= imColMean;
-            }
-        }
-        return this;
-    }
-
-    /**
      * Returns a string representation of this matrix. If the matrix has more
      * than 6 rows and/or more than 6 columns only the first 5 contiguous rows
      * and/or columns are displayed followed by a {@code "......"} marker and

@@ -681,28 +681,6 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MatrixD centerInplace() {
-        double[] _a = a;
-        int rows_ = rows;
-        int cols_ = cols;
-        for (int col = 0; col < cols_; ++col) {
-            double colSum = 0.0;
-            double colMean = 0.0;
-            for (int idx = col * rows_; idx < (col + 1) * rows_; ++idx) {
-                colSum += _a[idx];
-            }
-            colMean = colSum / rows_;
-            for (int idx = col * rows_; idx < (col + 1) * rows_; ++idx) {
-                _a[idx] -= colMean;
-            }
-        }
-        return this;
-    }
-
-    /**
      * Returns a string representation of this matrix. If the matrix has more
      * than 6 rows and/or more than 6 columns only the first 5 contiguous rows
      * and/or columns are displayed followed by a {@code "......"} marker and

@@ -699,17 +699,6 @@ public interface MatrixF extends Dimensions, FMatrixBasicOps {
     MatrixF sanitizeNaNInplace(float nanSurrogate);
 
     /**
-     * Subtracts the mean of each column {@code j} from each value in that
-     * column {@code j}, effectively centering each column around its mean
-     * (de-meaning that column so that its mean is zero). This is a destructive
-     * operation that changes this matrix inplace.
-     * 
-     * @return this matrix de-meaned inplace
-     * @since 1.2
-     */
-    MatrixF centerInplace();
-
-    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array
