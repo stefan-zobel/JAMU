@@ -915,7 +915,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      */
     @Override
     public MatrixD timesMinus(MatrixD B, MatrixD C) {
-        return multAdd(B, C.scale(-1.0, create(C.numRows(), C.numColumns())));
+        return multAdd(B, C.uminus());
     }
 
     /**
