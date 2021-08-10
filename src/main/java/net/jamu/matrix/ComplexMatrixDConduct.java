@@ -25,7 +25,7 @@ import net.frobenius.ComputationTruncatedException;
  * be expressed by more fundamental methods from {@link ComplexMatrixD} leading
  * to more cumbersome code
  */
-public interface DComplexMatrixBasicOps {
+public interface ComplexMatrixDConduct {
 
     /**
      * Creates a column vector copy from this matrix that contains the column at

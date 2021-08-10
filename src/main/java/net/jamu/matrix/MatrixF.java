@@ -23,7 +23,7 @@ import net.frobenius.NotConvergedException;
  * storage layout. The addressing is zero based. All operations throw a
  * {@code NullPointerException} if any of the method arguments is {@code null}.
  */
-public interface MatrixF extends Dimensions, FMatrixBasicOps {
+public interface MatrixF extends Dimensions, MatrixFConduct {
 
     /**
      * Get the single element as a scalar if this matrix is 1-by-1.

@@ -18,14 +18,14 @@ package net.jamu.matrix;
 import net.frobenius.ComputationTruncatedException;
 
 /**
- * Some basic operations for {@link MatrixF} objects expressed such that the
- * operations' resulting {@code MatrixF} doesn't have to be supplied as an
+ * Some basic operations for {@link MatrixD} objects expressed such that the
+ * operations' resulting {@code MatrixD} doesn't have to be supplied as an
  * additional parameter. None of these operations mutate the receiving matrix
  * instance. In some sense these are all convenience methods, which could be
- * expressed by more fundamental methods from {@link MatrixF} leading to more
+ * expressed by more fundamental methods from {@link MatrixD} leading to more
  * cumbersome code
  */
-public interface FMatrixBasicOps {
+public interface MatrixDConduct {
 
     /**
      * Creates a column vector copy from this matrix that contains the column at
@@ -37,7 +37,7 @@ public interface FMatrixBasicOps {
      *         of this matrix
      * @since 1.2
      */
-    MatrixF selectColumn(int col);
+    MatrixD selectColumn(int col);
 
     /**
      * Creates a submatrix copy from this matrix that contains all columns from
@@ -53,7 +53,7 @@ public interface FMatrixBasicOps {
      *         starting from column index {@code colFrom} up to and including
      *         the column with column index {@code colTo}
      */
-    MatrixF selectConsecutiveColumns(int colFrom, int colTo);
+    MatrixD selectConsecutiveColumns(int colFrom, int colTo);
 
     /**
      * Creates a submatrix copy of dimension
@@ -79,7 +79,7 @@ public interface FMatrixBasicOps {
      *         corner {@code (rowTo, colTo)}
      * @since 1.2
      */
-    MatrixF selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo);
+    MatrixD selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo);
 
     /**
      * Appends a column vector which must have dimension
@@ -97,7 +97,7 @@ public interface FMatrixBasicOps {
      *         to the right which contains the contents of the provided
      *         {@code colVector} argument
      */
-    MatrixF appendColumn(MatrixF colVector);
+    MatrixD appendColumn(MatrixD colVector);
 
     /**
      * Appends a matrix which must have dimension {@code this.numRows() x k} to
@@ -115,7 +115,7 @@ public interface FMatrixBasicOps {
      *         {@code matrix} appended to the right
      * @since 1.2
      */
-    MatrixF appendMatrix(MatrixF matrix);
+    MatrixD appendMatrix(MatrixD matrix);
 
     /**
      * {@code A \ B} matrix left division. {@code X = A\B} is the solution to
@@ -133,7 +133,7 @@ public interface FMatrixBasicOps {
      *             quadratic matrix or for a non-quadratic matrix that doesn't
      *             have full rank
      */
-    MatrixF mldivide(MatrixF B);
+    MatrixD mldivide(MatrixD B);
 
     /**
      * {@code A / B} matrix right division. {@code X = A/B} is the solution to
@@ -151,7 +151,7 @@ public interface FMatrixBasicOps {
      *             quadratic matrix or for a non-quadratic matrix that doesn't
      *             have full rank
      */
-    MatrixF mrdivide(MatrixF B);
+    MatrixD mrdivide(MatrixD B);
 
     /**
      * {@code A * B} convenience multiplication. None of the operands is
@@ -161,7 +161,7 @@ public interface FMatrixBasicOps {
      *            second multiplicand
      * @return the result of the multiplication
      */
-    MatrixF times(MatrixF B);
+    MatrixD times(MatrixD B);
 
     /**
      * {@code A * B * C} convenience multiplication. The optimal
@@ -174,7 +174,7 @@ public interface FMatrixBasicOps {
      *            third multiplicand
      * @return the result of the multiplication
      */
-    MatrixF timesTimes(MatrixF B, MatrixF C);
+    MatrixD timesTimes(MatrixD B, MatrixD C);
 
     /**
      * <code>A * B1 * B2 * B3 * &middot;&middot;&middot; * Bn</code> convenience
@@ -191,7 +191,7 @@ public interface FMatrixBasicOps {
      * @return the result of the multiplication chain
      * @since 1.3
      */
-    MatrixF timesMany(MatrixF m, MatrixF... matrices);
+    MatrixD timesMany(MatrixD m, MatrixD... matrices);
 
     /**
      * <code>A * A<sup>T</sup></code> multiplication. This is much more
@@ -202,7 +202,7 @@ public interface FMatrixBasicOps {
      * @return the result of the multiplication
      * @since 1.2.1
      */
-    MatrixF timesTransposed();
+    MatrixD timesTransposed();
 
     /**
      * <code>A<sup>T</sup> * A</code> multiplication. This is much more
@@ -213,7 +213,7 @@ public interface FMatrixBasicOps {
      * @return the result of the multiplication
      * @since 1.3
      */
-    MatrixF transposedTimes();
+    MatrixD transposedTimes();
 
     /**
      * Multiply this matrix {@code A} with a complex matrix {@code B} returning
@@ -224,7 +224,7 @@ public interface FMatrixBasicOps {
      *            second multiplicand (a complex matrix)
      * @return the result of the multiplication with the complex matrix
      */
-    ComplexMatrixF times(ComplexMatrixF B);
+    ComplexMatrixD times(ComplexMatrixD B);
 
     /**
      * {@code A + B} convenience addition. None of the operands is mutated.
@@ -233,7 +233,7 @@ public interface FMatrixBasicOps {
      *            the addend
      * @return the result of the addition
      */
-    MatrixF plus(MatrixF B);
+    MatrixD plus(MatrixD B);
 
     /**
      * {@code A * B + C} convenience multiplication plus addition. None of the
@@ -245,7 +245,7 @@ public interface FMatrixBasicOps {
      *            the addend
      * @return the result of the two operations
      */
-    MatrixF timesPlus(MatrixF B, MatrixF C);
+    MatrixD timesPlus(MatrixD B, MatrixD C);
 
     /**
      * {@code A * B - C} convenience multiplication and subtraction. None of
@@ -258,7 +258,7 @@ public interface FMatrixBasicOps {
      * @return the result of the two operations
      * @since 1.3
      */
-    MatrixF timesMinus(MatrixF B, MatrixF C);
+    MatrixD timesMinus(MatrixD B, MatrixD C);
 
     /**
      * {@code A - B} convenience subtraction. None of the operands is mutated.
@@ -267,7 +267,7 @@ public interface FMatrixBasicOps {
      *            the subtrahend
      * @return the result of the subtraction
      */
-    MatrixF minus(MatrixF B);
+    MatrixD minus(MatrixD B);
 
     /**
      * Unary minus {@code -A} convenience method. None of the operands is
@@ -275,7 +275,7 @@ public interface FMatrixBasicOps {
      * 
      * @return {@code -A}
      */
-    MatrixF uminus();
+    MatrixD uminus();
 
     /**
      * Returns {@code |A|}, i.e. a matrix where all elements
@@ -284,14 +284,14 @@ public interface FMatrixBasicOps {
      * 
      * @return {@code |A|}, the matrix of absolute values of {@code A}
      */
-    MatrixF abs();
+    MatrixD abs();
 
     /**
      * Returns <code>A<sup>T</sup></code>. None of the operands is mutated.
      * 
      * @return the transposed matrix
      */
-    MatrixF transpose();
+    MatrixD transpose();
 
     /**
      * Returns <code>A<sup>-1</sup></code> for quadratic matrices. None of the
@@ -301,7 +301,7 @@ public interface FMatrixBasicOps {
      * @throws IllegalArgumentException
      *             if this matrix is not quadratic
      */
-    MatrixF inverse();
+    MatrixD inverse();
 
     /**
      * Reshapes this matrix into a new matrix of dimension {@code rows x cols}
@@ -339,14 +339,14 @@ public interface FMatrixBasicOps {
      * @throws IllegalArgumentException
      *             if {@code rows x cols != this.numRows() x this.numColumns()}
      */
-    MatrixF reshape(int rows, int cols);
+    MatrixD reshape(int rows, int cols);
 
     /**
      * Convert this matrix to a complex matrix, keeping the real parts with
-     * all imaginary parts set to 0.0f.
+     * all imaginary parts set to 0.0.
      * 
      * @return this matrix converted to a complex matrix (all imaginary parts
-     *         get initialized with 0.0f)
+     *         get initialized with 0.0)
      */
-    ComplexMatrixF toComplexMatrix();
+    ComplexMatrixD toComplexMatrix();
 }

@@ -25,7 +25,7 @@ import net.jamu.complex.Zd;
  * layout. The addressing is zero based. All operations throw a
  * {@code NullPointerException} if any of the method arguments is {@code null}.
  */
-public interface ComplexMatrixD extends Dimensions, DComplexMatrixBasicOps {
+public interface ComplexMatrixD extends Dimensions, ComplexMatrixDConduct {
 
     /**
      * Get the single element as a scalar if this matrix is 1-by-1.
