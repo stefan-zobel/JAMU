@@ -197,6 +197,22 @@ public final class Statistics {
         return A;
     }
 
+    public static MatrixD zscore(MatrixD A) {
+        return zscoreInplace(A.copy());
+    }
+
+    public static MatrixF zscore(MatrixF A) {
+        return zscoreInplace(A.copy());
+    }
+
+    public static ComplexMatrixD zscore(ComplexMatrixD A) {
+        return zscoreInplace(A.copy());
+    }
+
+    public static ComplexMatrixF zscore(ComplexMatrixF A) {
+        return zscoreInplace(A.copy());
+    }
+
     public static MatrixD zscoreInplace(MatrixD A) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
