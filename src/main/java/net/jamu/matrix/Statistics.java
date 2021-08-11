@@ -206,14 +206,16 @@ public final class Statistics {
         double[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
             // overflow resistant implementation
+            int count = 0;
+            double mean = 0.0;
             double scale = 0.0;
-            double sum = 0.0;
             double sumsquared = 1.0;
             // determine mean and sum squared
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
+                ++count;
                 double xi = _a[i];
                 if (xi != 0.0) {
-                    sum += xi;
+                    mean = (count == 1) ? xi : ((((count - 1) * mean) + xi) / count);
                     double absxi = Math.abs(xi);
                     if (scale < absxi) {
                         double unsquared = scale / absxi;
@@ -225,7 +227,6 @@ public final class Statistics {
                     }
                 }
             }
-            double mean = sum / rows_;
             double y = computeScaledMean(scale, mean);
             double stddev = patchDev(scale * Math.sqrt(sumsquared / rows_ - y * y));
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
@@ -244,14 +245,16 @@ public final class Statistics {
         float[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
             // overflow resistant implementation
+            int count = 0;
+            float mean = 0.0f;
             float scale = 0.0f;
-            float sum = 0.0f;
             float sumsquared = 1.0f;
             // determine mean and sum squared
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
+                ++count;
                 float xi = _a[i];
                 if (xi != 0.0f) {
-                    sum += xi;
+                    mean = (count == 1) ? xi : ((((count - 1) * mean) + xi) / count);
                     float absxi = Math.abs(xi);
                     if (scale < absxi) {
                         float unsquared = scale / absxi;
@@ -263,7 +266,6 @@ public final class Statistics {
                     }
                 }
             }
-            float mean = sum / rows_;
             float y = computeScaledMean(scale, mean);
             float stddev = patchDev(scale * (float) Math.sqrt(sumsquared / rows_ - y * y));
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
@@ -282,19 +284,21 @@ public final class Statistics {
         double[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
             // overflow resistant implementation
+            int count = 0;
+            double reMean = 0.0;
+            double imMean = 0.0;
             double reScale = 0.0;
             double imScale = 0.0;
-            double reSum = 0.0;
-            double imSum = 0.0;
             double reSumSqr = 1.0;
             double imSumSqr = 1.0;
             // determine mean and sum squared
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
+                ++count;
                 double xre = _a[i];
                 double xim = _a[i + 1];
                 if (xre != 0.0 || xim != 0.0) {
-                    reSum += xre;
-                    imSum += xim;
+                    reMean = (count == 1) ? xre : ((((count - 1) * reMean) + xre) / count);
+                    imMean = (count == 1) ? xim : ((((count - 1) * imMean) + xim) / count);
                     double absxre = Math.abs(xre);
                     double absxim = Math.abs(xim);
                     if (reScale < absxre) {
@@ -316,8 +320,6 @@ public final class Statistics {
                 }
             }
             //
-            double reMean = reSum / rows_;
-            double imMean = imSum / rows_;
             double reY = computeScaledMean(reScale, reMean);
             double imY = computeScaledMean(imScale, imMean);
             double reStddev = patchDev(reScale * Math.sqrt(reSumSqr / rows_ - reY * reY));
@@ -342,19 +344,21 @@ public final class Statistics {
         float[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
             // overflow resistant implementation
+            int count = 0;
+            float reMean = 0.0f;
+            float imMean = 0.0f;
             float reScale = 0.0f;
             float imScale = 0.0f;
-            float reSum = 0.0f;
-            float imSum = 0.0f;
             float reSumSqr = 1.0f;
             float imSumSqr = 1.0f;
             // determine mean and sum squared
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
+                ++count;
                 float xre = _a[i];
                 float xim = _a[i + 1];
                 if (xre != 0.0f || xim != 0.0f) {
-                    reSum += xre;
-                    imSum += xim;
+                    reMean = (count == 1) ? xre : ((((count - 1) * reMean) + xre) / count);
+                    imMean = (count == 1) ? xim : ((((count - 1) * imMean) + xim) / count);
                     float absxre = Math.abs(xre);
                     float absxim = Math.abs(xim);
                     if (reScale < absxre) {
@@ -376,8 +380,6 @@ public final class Statistics {
                 }
             }
             //
-            float reMean = reSum / rows_;
-            float imMean = imSum / rows_;
             float reY = computeScaledMean(reScale, reMean);
             float imY = computeScaledMean(imScale, imMean);
             float reStddev = patchDev(reScale * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
