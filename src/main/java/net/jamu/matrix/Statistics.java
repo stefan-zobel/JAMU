@@ -16,7 +16,8 @@
 package net.jamu.matrix;
 
 /**
- * Some static utility methods for matrices that are useful in statistics.
+ * Some static utility methods for matrices that may be useful in statistical
+ * applications.
  * 
  * @since 1.3
  */
@@ -93,12 +94,12 @@ public final class Statistics {
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
         for (int col = 0; col < cols_; ++col) {
-            double colSum = 0.0;
+            int count = 0;
             double colMean = 0.0;
             for (int idx = col * rows_; idx < (col + 1) * rows_; ++idx) {
-                colSum += _a[idx];
+                ++count;
+                colMean = (((count - 1) * colMean) + _a[idx]) / count;
             }
-            colMean = colSum / rows_;
             for (int idx = col * rows_; idx < (col + 1) * rows_; ++idx) {
                 _a[idx] -= colMean;
             }
@@ -121,12 +122,12 @@ public final class Statistics {
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
         for (int col = 0; col < cols_; ++col) {
-            float colSum = 0.0f;
+            int count = 0;
             float colMean = 0.0f;
             for (int idx = col * rows_; idx < (col + 1) * rows_; ++idx) {
-                colSum += _a[idx];
+                ++count;
+                colMean = (((count - 1) * colMean) + _a[idx]) / count;
             }
-            colMean = colSum / rows_;
             for (int idx = col * rows_; idx < (col + 1) * rows_; ++idx) {
                 _a[idx] -= colMean;
             }
@@ -149,16 +150,14 @@ public final class Statistics {
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
         for (int col = 0; col < cols_; ++col) {
-            double reColSum = 0.0;
-            double imColSum = 0.0;
+            int count = 0;
             double reColMean = 0.0;
             double imColMean = 0.0;
             for (int idx = 2 * col * rows_; idx < 2 * (col + 1) * rows_; idx += 2) {
-                reColSum += _a[idx];
-                imColSum += _a[idx + 1];
+                ++count;
+                reColMean = (((count - 1) * reColMean) + _a[idx]) / count;
+                imColMean = (((count - 1) * imColMean) + _a[idx + 1]) / count;
             }
-            reColMean = reColSum / rows_;
-            imColMean = imColSum / rows_;
             for (int idx = 2 * col * rows_; idx < 2 * (col + 1) * rows_; idx += 2) {
                 _a[idx] -= reColMean;
                 _a[idx + 1] -= imColMean;
@@ -182,16 +181,14 @@ public final class Statistics {
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
         for (int col = 0; col < cols_; ++col) {
-            float reColSum = 0.0f;
-            float imColSum = 0.0f;
+            int count = 0;
             float reColMean = 0.0f;
             float imColMean = 0.0f;
             for (int idx = 2 * col * rows_; idx < 2 * (col + 1) * rows_; idx += 2) {
-                reColSum += _a[idx];
-                imColSum += _a[idx + 1];
+                ++count;
+                reColMean = (((count - 1) * reColMean) + _a[idx]) / count;
+                imColMean = (((count - 1) * imColMean) + _a[idx + 1]) / count;
             }
-            reColMean = reColSum / rows_;
-            imColMean = imColSum / rows_;
             for (int idx = 2 * col * rows_; idx < 2 * (col + 1) * rows_; idx += 2) {
                 _a[idx] -= reColMean;
                 _a[idx + 1] -= imColMean;
