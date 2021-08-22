@@ -293,6 +293,26 @@ final class Checks {
         }
     }
 
+    static void throwInfiniteOrNan(Dimensions A, int index) {
+        int row = rowIdx(A, index);
+        int col = colIdx(A, index, row);
+        throw new IllegalArgumentException("Infinite or NaN at (" + row + ", " + col + ")");
+    }
+
+    static int rowIdx(Dimensions A, int index) {
+        if (A.isComplex()) {
+            index = index / 2;
+        }
+        return index % A.numRows();
+    }
+
+    static int colIdx(Dimensions A, int index, int rowIdx) {
+        if (A.isComplex()) {
+            index = index / 2;
+        }
+        return (index - rowIdx) % A.numRows();
+    }
+
     static void throwInconsistentRowLengths(int cols, int rowIdx, int rowLength) {
         throw new IllegalArgumentException("All rows must have the same length: " + cols + " (row " + rowIdx
                 + " has length " + rowLength + ")");
