@@ -47,7 +47,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      *            referenced directly
      */
     public MatrixFBase(int rows, int cols, float[] array, boolean doArrayCopy) {
-        super(rows, cols);
+        super(rows, cols, false, Float.TYPE);
         checkArrayLength(array, rows, cols);
         if (doArrayCopy) {
             float[] copy = new float[array.length];

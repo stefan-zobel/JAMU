@@ -47,7 +47,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      *            referenced directly
      */
     public MatrixDBase(int rows, int cols, double[] array, boolean doArrayCopy) {
-        super(rows, cols);
+        super(rows, cols, false, Double.TYPE);
         checkArrayLength(array, rows, cols);
         if (doArrayCopy) {
             double[] copy = new double[array.length];

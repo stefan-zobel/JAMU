@@ -35,7 +35,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     protected final float[] a;
 
     public ComplexMatrixFBase(int rows, int cols, float[] array, boolean doArrayCopy) {
-        super(rows, cols, true);
+        super(rows, cols, true, Float.TYPE);
         checkArrayLength(array, rows, cols);
         if (doArrayCopy) {
             float[] copy = new float[array.length];

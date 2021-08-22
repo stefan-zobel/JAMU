@@ -15,6 +15,8 @@
  */
 package net.jamu.matrix;
 
+import java.util.Objects;
+
 /**
  * Abstract base implementation of the {@code Dimensions} interface. Note that
  * all addressing is zero based and that the numbers of rows and columns must be
@@ -30,25 +32,7 @@ public abstract class DimensionsBase implements Dimensions {
     protected final int rows;
     protected final int cols;
     protected final boolean complex;
-
-    /**
-     * Constructs a new {@link Dimensions} implementation which checks that both
-     * parameters are strictly positive.
-     * 
-     * @param rows
-     *            number of matrix rows
-     * @param cols
-     *            number of matrix columns
-     * @throws IllegalArgumentException
-     *             if any one of the parameters is not strictly positive
-     */
-    public DimensionsBase(int rows, int cols) {
-        checkRows(rows);
-        checkCols(cols);
-        this.rows = rows;
-        this.cols = cols;
-        this.complex = false;
-    }
+    protected final Class<?> type;
 
     /**
      * Constructs a new {@link Dimensions} implementation which checks that both
@@ -61,16 +45,19 @@ public abstract class DimensionsBase implements Dimensions {
      * @param complex
      *            {@code false} if this {@code Dimensions} implementation is a
      *            real matrix, otherwise {@code true}
+     * @param type
+     *            the class instance representing the primitive type
      * @throws IllegalArgumentException
      *             if any one of the parameters is not strictly positive
      * @since 1.3
      */
-    public DimensionsBase(int rows, int cols, boolean complex) {
+    public DimensionsBase(int rows, int cols, boolean complex, Class<?> type) {
         checkRows(rows);
         checkCols(cols);
         this.rows = rows;
         this.cols = cols;
         this.complex = complex;
+        this.type = Objects.requireNonNull(type);
     }
 
     /**
