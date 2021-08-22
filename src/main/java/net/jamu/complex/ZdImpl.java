@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Stefan Zobel
+ * Copyright 2018, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -240,6 +240,10 @@ public final class ZdImpl implements Zd {
     }
 
     public final String toString() {
+        return toString("%.10E");
+    }
+
+    public String toString(String format) {
         double re_ = re();
         double im_ = im();
         // fix negative zero
@@ -253,11 +257,11 @@ public final class ZdImpl implements Zd {
         if (re_ >= 0.0) {
             buf.append("+");
         }
-        buf.append(String.format("%.10E", re_)).append("  ");
+        buf.append(String.format(format, re_)).append("  ");
         if (im_ >= 0.0) {
             buf.append("+");
         }
-        buf.append(String.format("%.10E", im_)).append("i");
+        buf.append(String.format(format, im_)).append("i");
         return buf.toString();
     }
 

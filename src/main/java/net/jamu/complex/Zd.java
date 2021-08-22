@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Stefan Zobel
+ * Copyright 2018, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.jamu.complex;
+
+import java.util.Formatter;
 
 /**
  * A mutable double-precision complex number.
@@ -120,4 +122,16 @@ public interface Zd {
     Zd copy();
 
     String toString();
+
+    /**
+     * Get this complex number as a formatted string.
+     * 
+     * @param format
+     *            a format string in {@link Formatter#format(String, Object...)}
+     *            format string syntax
+     * @return this complex number formatted as specified in the {@code format}
+     *         syntax
+     * @since 1.3
+     */
+    String toString(String format);
 }
