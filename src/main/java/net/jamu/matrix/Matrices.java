@@ -20,6 +20,8 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -3181,6 +3183,126 @@ public final class Matrices {
             idx = i;
         }
         return idx + 1;
+    }
+
+    /**
+     * Returns a copy of matrix {@code A} whose values are rounded to the
+     * specified {@code scale}.
+     * 
+     * @param A
+     *            the matrix to round
+     * @param scale
+     *            if zero or positive, the scale is the number of digits to the
+     *            right of the decimal point. If negative, the unscaled value of
+     *            the number is multiplied by ten to the power of the negation
+     *            of the scale.
+     * @return a copy of matrix {@code A} with values rounded to the specified
+     *         scale.
+     * @throws IllegalArgumentException
+     *             if one of the values in the matrix is infinite or NaN
+     * @since 1.3
+     */
+    public static MatrixD round(MatrixD A, int scale) {
+        double[] _a = A.getArrayUnsafe();
+        double[] _b = new double[_a.length];
+        for (int idx = 0; idx < _a.length; ++idx) {
+            double d = _a[idx];
+            if (Double.isInfinite(d) || Double.isNaN(d)) {
+                Checks.throwInfiniteOrNan(A, idx);
+            }
+            _b[idx] = new BigDecimal(d).setScale(scale, RoundingMode.HALF_EVEN).doubleValue();
+        }
+        return new SimpleMatrixD(A.numRows(), A.numColumns(), _b);
+    }
+
+    /**
+     * Returns a copy of matrix {@code A} whose values are rounded to the
+     * specified {@code scale}.
+     * 
+     * @param A
+     *            the matrix to round
+     * @param scale
+     *            if zero or positive, the scale is the number of digits to the
+     *            right of the decimal point. If negative, the unscaled value of
+     *            the number is multiplied by ten to the power of the negation
+     *            of the scale.
+     * @return a copy of matrix {@code A} with values rounded to the specified
+     *         scale.
+     * @throws IllegalArgumentException
+     *             if one of the values in the matrix is infinite or NaN
+     * @since 1.3
+     */
+    public static MatrixF round(MatrixF A, int scale) {
+        float[] _a = A.getArrayUnsafe();
+        float[] _b = new float[_a.length];
+        for (int idx = 0; idx < _a.length; ++idx) {
+            float f = _a[idx];
+            if (Float.isInfinite(f) || Float.isNaN(f)) {
+                Checks.throwInfiniteOrNan(A, idx);
+            }
+            _b[idx] = new BigDecimal(f).setScale(scale, RoundingMode.HALF_EVEN).floatValue();
+        }
+        return new SimpleMatrixF(A.numRows(), A.numColumns(), _b);
+    }
+
+    /**
+     * Returns a copy of matrix {@code A} whose values are rounded to the
+     * specified {@code scale}.
+     * 
+     * @param A
+     *            the matrix to round
+     * @param scale
+     *            if zero or positive, the scale is the number of digits to the
+     *            right of the decimal point. If negative, the unscaled value of
+     *            the number is multiplied by ten to the power of the negation
+     *            of the scale.
+     * @return a copy of matrix {@code A} with values rounded to the specified
+     *         scale.
+     * @throws IllegalArgumentException
+     *             if one of the values in the matrix is infinite or NaN
+     * @since 1.3
+     */
+    public static ComplexMatrixD round(ComplexMatrixD A, int scale) {
+        double[] _a = A.getArrayUnsafe();
+        double[] _b = new double[_a.length];
+        for (int idx = 0; idx < _a.length; ++idx) {
+            double d = _a[idx];
+            if (Double.isInfinite(d) || Double.isNaN(d)) {
+                Checks.throwInfiniteOrNan(A, idx);
+            }
+            _b[idx] = new BigDecimal(d).setScale(scale, RoundingMode.HALF_EVEN).doubleValue();
+        }
+        return new SimpleComplexMatrixD(A.numRows(), A.numColumns(), _b);
+    }
+
+    /**
+     * Returns a copy of matrix {@code A} whose values are rounded to the
+     * specified {@code scale}.
+     * 
+     * @param A
+     *            the matrix to round
+     * @param scale
+     *            if zero or positive, the scale is the number of digits to the
+     *            right of the decimal point. If negative, the unscaled value of
+     *            the number is multiplied by ten to the power of the negation
+     *            of the scale.
+     * @return a copy of matrix {@code A} with values rounded to the specified
+     *         scale.
+     * @throws IllegalArgumentException
+     *             if one of the values in the matrix is infinite or NaN
+     * @since 1.3
+     */
+    public static ComplexMatrixF round(ComplexMatrixF A, int scale) {
+        float[] _a = A.getArrayUnsafe();
+        float[] _b = new float[_a.length];
+        for (int idx = 0; idx < _a.length; ++idx) {
+            float f = _a[idx];
+            if (Float.isInfinite(f) || Float.isNaN(f)) {
+                Checks.throwInfiniteOrNan(A, idx);
+            }
+            _b[idx] = new BigDecimal(f).setScale(scale, RoundingMode.HALF_EVEN).floatValue();
+        }
+        return new SimpleComplexMatrixF(A.numRows(), A.numColumns(), _b);
     }
 
     private static boolean checkApproxEqualArgs(Dimensions A, Dimensions B, double relTol, double absTol) {
