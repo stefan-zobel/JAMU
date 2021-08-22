@@ -180,6 +180,14 @@ public abstract class DimensionsBase implements Dimensions {
     /**
      * {@inheritDoc}
      */
+    @Override
+    public boolean isDoublePrecision() {
+        return type == Double.TYPE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String asString() {
         return new StringBuilder("(").append(rows).append(" x ").append(cols).append(")").toString();
     }

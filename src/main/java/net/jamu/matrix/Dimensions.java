@@ -16,7 +16,7 @@
 package net.jamu.matrix;
 
 /**
- * Basic matrix properties related to the dimension of a matrix.
+ * Basic matrix properties mostly related to the dimension of a matrix.
  */
 public interface Dimensions {
 
@@ -106,6 +106,15 @@ public interface Dimensions {
      * @since 1.3
      */
     boolean isComplex();
+
+    /**
+     * {@code true} if and only if this matrix holds double precision values.
+     * 
+     * @return {@code true} if this matrix holds double precision values,
+     *         {@code false} if it holds single precision values
+     * @since 1.3
+     */
+    boolean isDoublePrecision();
 
     /**
      * Check that {@code row} and {@code col} are valid (zero-based) indexes for
