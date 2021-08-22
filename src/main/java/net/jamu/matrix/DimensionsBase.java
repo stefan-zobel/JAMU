@@ -33,6 +33,7 @@ public abstract class DimensionsBase implements Dimensions {
     protected final int cols;
     protected final boolean complex;
     protected final Class<?> type;
+    private String formatString;
 
     /**
      * Constructs a new {@link Dimensions} implementation which checks that both
@@ -189,8 +190,31 @@ public abstract class DimensionsBase implements Dimensions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String asString() {
         return new StringBuilder("(").append(rows).append(" x ").append(cols).append(")").toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getFormatString() {
+        if (formatString != null) {
+            return formatString;
+        }
+        if (isDoublePrecision()) {
+            return isComplex() ? "%.10E" : "%.12E";
+        }
+        return isComplex() ? "%.6E" : "%.8E";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFormatString(String formatString) {
+        this.formatString = Objects.requireNonNull(formatString);
     }
 
     protected int idx(int row, int col) {
