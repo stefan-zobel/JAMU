@@ -46,7 +46,8 @@ public abstract class DimensionsBase implements Dimensions {
      *            {@code false} if this {@code Dimensions} implementation is a
      *            real matrix, otherwise {@code true}
      * @param type
-     *            the class instance representing the primitive type
+     *            the class instance representing the primitive type (either
+     *            {@link Float#TYPE} or {@link Double#TYPE})
      * @throws IllegalArgumentException
      *             if any one of the parameters is not strictly positive
      * @since 1.3
