@@ -3371,61 +3371,65 @@ public final class Matrices {
     }
 
     private static void printRowD(int row, int _cols, MatrixD m, StringBuilder buf) {
+        String format = m.getFormatString();
         int col;
         for (col = 0; col < _cols; ++col) {
-            buf.append(String.format(FORMAT_D, m.getUnsafe(row, col)));
+            buf.append(String.format(format, m.getUnsafe(row, col)));
             if (col < _cols - 1) {
                 buf.append(", ");
             }
         }
         if (col == LAST_IDX && _cols < m.numColumns()) {
             buf.append(", ......, ");
-            buf.append(String.format(FORMAT_D, m.getUnsafe(row, m.numColumns() - 1)));
+            buf.append(String.format(format, m.getUnsafe(row, m.numColumns() - 1)));
         }
         buf.append(System.lineSeparator());
     }
 
     private static void printRowF(int row, int _cols, MatrixF m, StringBuilder buf) {
+        String format = m.getFormatString();
         int col;
         for (col = 0; col < _cols; ++col) {
-            buf.append(String.format(FORMAT_F, m.getUnsafe(row, col)));
+            buf.append(String.format(format, m.getUnsafe(row, col)));
             if (col < _cols - 1) {
                 buf.append(", ");
             }
         }
         if (col == LAST_IDX && _cols < m.numColumns()) {
             buf.append(", ......, ");
-            buf.append(String.format(FORMAT_F, m.getUnsafe(row, m.numColumns() - 1)));
+            buf.append(String.format(format, m.getUnsafe(row, m.numColumns() - 1)));
         }
         buf.append(System.lineSeparator());
     }
 
     private static void printRowComplexD(int row, int _cols, ComplexMatrixD m, StringBuilder buf) {
+        String format = m.getFormatString();
         int col;
         for (col = 0; col < _cols; ++col) {
-            buf.append(m.getUnsafe(row, col).toString());
+            buf.append(m.getUnsafe(row, col).toString(format));
             if (col < _cols - 1) {
                 buf.append(", ");
             }
         }
         if (col == LAST_IDX && _cols < m.numColumns()) {
             buf.append(", ......, ");
-            buf.append(m.getUnsafe(row, m.numColumns() - 1).toString());
+            buf.append(m.getUnsafe(row, m.numColumns() - 1).toString(format));
         }
         buf.append(System.lineSeparator());
     }
 
     private static void printRowComplexF(int row, int _cols, ComplexMatrixF m, StringBuilder buf) {
+        String format = m.getFormatString();
         int col;
         for (col = 0; col < _cols; ++col) {
-            buf.append(m.getUnsafe(row, col).toString());
+            buf.append(m.getUnsafe(row, col).toString(format));
             if (col < _cols - 1) {
                 buf.append(", ");
             }
         }
         if (col == LAST_IDX && _cols < m.numColumns()) {
             buf.append(", ......, ");
-            buf.append(m.getUnsafe(row, m.numColumns() - 1).toString());
+            buf.append(m.getUnsafe(row, m.numColumns() - 1).toString(format));
         }
         buf.append(System.lineSeparator());
     }
@@ -3488,8 +3492,6 @@ public final class Matrices {
     private static final int BUF_SIZE = 1 << 18;
     private static final int MAX_ROWCOL = 6;
     private static final int LAST_IDX = MAX_ROWCOL - 1;
-    private static final String FORMAT_F = "%.8E";
-    private static final String FORMAT_D = "%.12E";
     private static final String USE_NETLIB = "net.jamu.matrix.use.java.implementation";
 
     private Matrices() {
