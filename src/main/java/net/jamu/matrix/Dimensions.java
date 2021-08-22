@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Stefan Zobel
+ * Copyright 2019, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public interface Dimensions {
     /**
      * {@code true} if and only if this matrix is a square n-by-n matrix.
      * 
-     * @return {@code true} if this matrix is a quadratic, {@code false}
+     * @return {@code true} if this matrix is a quadratic matrix, {@code false}
      *         otherwise
      */
     boolean isSquareMatrix();
@@ -97,6 +97,15 @@ public interface Dimensions {
      * @return the index of the last column of this matrix
      */
     int endCol();
+
+    /**
+     * {@code true} if and only if this matrix is a complex matrix.
+     * 
+     * @return {@code true} if this matrix is a complex matrix, {@code false}
+     *         otherwise
+     * @since 1.3
+     */
+    boolean isComplex();
 
     /**
      * Check that {@code row} and {@code col} are valid (zero-based) indexes for

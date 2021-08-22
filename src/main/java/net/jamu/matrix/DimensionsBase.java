@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2020 Stefan Zobel
+ * Copyright 2019, 2021 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ public abstract class DimensionsBase implements Dimensions {
 
     protected final int rows;
     protected final int cols;
+    protected final boolean complex;
 
     /**
      * Constructs a new {@link Dimensions} implementation which checks that both
@@ -46,6 +47,30 @@ public abstract class DimensionsBase implements Dimensions {
         checkCols(cols);
         this.rows = rows;
         this.cols = cols;
+        this.complex = false;
+    }
+
+    /**
+     * Constructs a new {@link Dimensions} implementation which checks that both
+     * parameters are strictly positive.
+     * 
+     * @param rows
+     *            number of matrix rows
+     * @param cols
+     *            number of matrix columns
+     * @param complex
+     *            {@code false} if this {@code Dimensions} implementation is a
+     *            real matrix, otherwise {@code true}
+     * @throws IllegalArgumentException
+     *             if any one of the parameters is not strictly positive
+     * @since 1.3
+     */
+    public DimensionsBase(int rows, int cols, boolean complex) {
+        checkRows(rows);
+        checkCols(cols);
+        this.rows = rows;
+        this.cols = cols;
+        this.complex = complex;
     }
 
     /**
@@ -125,24 +150,44 @@ public abstract class DimensionsBase implements Dimensions {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int startRow() {
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int endRow() {
         return numRows() - 1;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int startCol() {
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int endCol() {
         return numColumns() - 1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isComplex() {
+        return complex;
     }
 
     /**
