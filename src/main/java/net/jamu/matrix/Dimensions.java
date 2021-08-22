@@ -15,8 +15,6 @@
  */
 package net.jamu.matrix;
 
-import java.util.Formatter;
-
 /**
  * Basic matrix properties mostly related to the dimension of a matrix.
  */
@@ -164,13 +162,14 @@ public interface Dimensions {
     String getFormatString();
 
     /**
-     * Set a format string in {@link Formatter#format(String, Object...)} format
-     * string syntax to use for the values in the {@link #toString()} rendering
-     * of the matrix.
+     * Set a format string in
+     * {@link java.util.Formatter#format(String, Object...)} format string
+     * syntax to use for the values in the {@code toString()} rendering of the
+     * matrix.
      * 
      * @param formatString
-     *            the format string in {@code Formatter} format string syntax to
-     *            use for value formatting
+     *            the format string in {@code java.util.Formatter} format string
+     *            syntax to use for value formatting
      * @since 1.3
      */
     void setFormatString(String formatString);

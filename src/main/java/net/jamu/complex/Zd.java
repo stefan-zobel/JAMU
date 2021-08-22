@@ -15,8 +15,6 @@
  */
 package net.jamu.complex;
 
-import java.util.Formatter;
-
 /**
  * A mutable double-precision complex number.
  */
@@ -127,8 +125,9 @@ public interface Zd {
      * Get this complex number as a formatted string.
      * 
      * @param format
-     *            a format string in {@link Formatter#format(String, Object...)}
-     *            format string syntax
+     *            a format string in
+     *            {@link java.util.Formatter#format(String, Object...)} format
+     *            string syntax
      * @return this complex number formatted as specified in the {@code format}
      *         syntax
      * @since 1.3
