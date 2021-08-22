@@ -310,7 +310,7 @@ final class Checks {
         if (A.isComplex()) {
             index = index / 2;
         }
-        return (index - rowIdx) % A.numRows();
+        return (index - rowIdx) / A.numRows();
     }
 
     static void throwInconsistentRowLengths(int cols, int rowIdx, int rowLength) {
