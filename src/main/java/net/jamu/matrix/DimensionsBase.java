@@ -36,8 +36,8 @@ public abstract class DimensionsBase implements Dimensions {
     private String formatString;
 
     /**
-     * Constructs a new {@link Dimensions} implementation which checks that both
-     * parameters are strictly positive.
+     * Constructs a new {@link Dimensions} implementation which checks that the
+     * {@code rows} and {@code cols} dimension parameters are strictly positive.
      * 
      * @param rows
      *            number of matrix rows
@@ -50,7 +50,8 @@ public abstract class DimensionsBase implements Dimensions {
      *            the class instance representing the primitive type (either
      *            {@link Float#TYPE} or {@link Double#TYPE})
      * @throws IllegalArgumentException
-     *             if any one of the parameters is not strictly positive
+     *             if any one of the dimension parameters is not strictly
+     *             positive
      * @since 1.3
      */
     public DimensionsBase(int rows, int cols, boolean complex, Class<?> type) {
