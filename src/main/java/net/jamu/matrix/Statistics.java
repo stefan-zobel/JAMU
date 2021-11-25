@@ -197,22 +197,95 @@ public final class Statistics {
         return A;
     }
 
+    /**
+     * Creates a standard-scored copy of matrix {@code A}, i.e., the values in
+     * each column of the copy have the mean of the corresponding column in
+     * {@code A} subtracted and are then scaled to the unit variance of this
+     * column by dividing the differences by the standard deviation of the
+     * column values. The result is the signed number of standard deviations
+     * (z-score) by which the value is above (below) the mean value of what is
+     * being measured in the corresponding column. Matrix {@code A} doesn't get
+     * mutated by this computation.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @return a copy of A that has been z-scored
+     */
     public static MatrixD zscore(MatrixD A) {
         return zscoreInplace(A.copy());
     }
 
+    /**
+     * Creates a standard-scored copy of matrix {@code A}, i.e., the values in
+     * each column of the copy have the mean of the corresponding column in
+     * {@code A} subtracted and are then scaled to the unit variance of this
+     * column by dividing the differences by the standard deviation of the
+     * column values. The result is the signed number of standard deviations
+     * (z-score) by which the value is above (below) the mean value of what is
+     * being measured in the corresponding column. Matrix {@code A} doesn't get
+     * mutated by this computation.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @return a copy of A that has been z-scored
+     */
     public static MatrixF zscore(MatrixF A) {
         return zscoreInplace(A.copy());
     }
 
+    /**
+     * Creates a standard-scored copy of matrix {@code A}, i.e., the values in
+     * each column of the copy have the mean of the corresponding column in
+     * {@code A} subtracted and are then scaled to the unit variance of this
+     * column by dividing the differences by the standard deviation of the
+     * column values. The result is the signed number of standard deviations
+     * (z-score) by which the value is above (below) the mean value of what is
+     * being measured in the corresponding column. Matrix {@code A} doesn't get
+     * mutated by this computation.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @return a copy of A that has been z-scored
+     */
     public static ComplexMatrixD zscore(ComplexMatrixD A) {
         return zscoreInplace(A.copy());
     }
 
+    /**
+     * Creates a standard-scored copy of matrix {@code A}, i.e., the values in
+     * each column of the copy have the mean of the corresponding column in
+     * {@code A} subtracted and are then scaled to the unit variance of this
+     * column by dividing the differences by the standard deviation of the
+     * column values. The result is the signed number of standard deviations
+     * (z-score) by which the value is above (below) the mean value of what is
+     * being measured in the corresponding column. Matrix {@code A} doesn't get
+     * mutated by this computation.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @return a copy of A that has been z-scored
+     */
     public static ComplexMatrixF zscore(ComplexMatrixF A) {
         return zscoreInplace(A.copy());
     }
 
+    /**
+     * Subtracts the mean of each column {@code j} from each value in that
+     * column {@code j} and then divides the difference by the standard
+     * deviation of the values in column {@code j}, effectively expressing the
+     * values in each column as the signed number of standard deviations
+     * (z-score) by which they are above or below the column's mean value. This
+     * is a destructive operation that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @return the matrix {@code A} z-scored inplace
+     */
     public static MatrixD zscoreInplace(MatrixD A) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
@@ -252,6 +325,19 @@ public final class Statistics {
         return A;
     }
 
+    /**
+     * Subtracts the mean of each column {@code j} from each value in that
+     * column {@code j} and then divides the difference by the standard
+     * deviation of the values in column {@code j}, effectively expressing the
+     * values in each column as the signed number of standard deviations
+     * (z-score) by which they are above or below the column's mean value. This
+     * is a destructive operation that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @return the matrix {@code A} z-scored inplace
+     */
     public static MatrixF zscoreInplace(MatrixF A) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
@@ -291,6 +377,19 @@ public final class Statistics {
         return A;
     }
 
+    /**
+     * Subtracts the mean of each column {@code j} from each value in that
+     * column {@code j} and then divides the difference by the standard
+     * deviation of the values in column {@code j}, effectively expressing the
+     * values in each column as the signed number of standard deviations
+     * (z-score) by which they are above or below the column's mean value. This
+     * is a destructive operation that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @return the matrix {@code A} z-scored inplace
+     */
     public static ComplexMatrixD zscoreInplace(ComplexMatrixD A) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
@@ -351,6 +450,19 @@ public final class Statistics {
         return A;
     }
 
+    /**
+     * Subtracts the mean of each column {@code j} from each value in that
+     * column {@code j} and then divides the difference by the standard
+     * deviation of the values in column {@code j}, effectively expressing the
+     * values in each column as the signed number of standard deviations
+     * (z-score) by which they are above or below the column's mean value. This
+     * is a destructive operation that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @return the matrix {@code A} z-scored inplace
+     */
     public static ComplexMatrixF zscoreInplace(ComplexMatrixF A) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
