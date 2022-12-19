@@ -1,5 +1,4 @@
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/stefan-zobel/JAMU.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/stefan-zobel/JAMU/alerts/)
-[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/stefan-zobel/JAMU.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/stefan-zobel/JAMU/context:java)
+[![CodeQL](https://github.com/stefan-zobel/JAMU/actions/workflows/codeql.yml/badge.svg)](https://github.com/stefan-zobel/JAMU/actions/workflows/codeql.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.streamsupport/jamu/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.streamsupport/jamu)
 [![javadoc.io](https://javadoc.io/badge2/net.sourceforge.streamsupport/jamu/javadoc.svg)](https://javadoc.io/doc/net.sourceforge.streamsupport/jamu)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
