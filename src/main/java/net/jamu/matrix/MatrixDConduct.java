@@ -205,6 +205,19 @@ public interface MatrixDConduct {
     MatrixD timesTransposed();
 
     /**
+     * <code>A * B<sup>T</sup></code> multiplication. This is much more
+     * efficient than the equivalent {@code A.times(B.transpose())}. None of the
+     * operands is mutated. For the reversed order multiplication
+     * <code>A<sup>T</sup> * B</code> use {@link #transposedTimes(MatrixD)}.
+     * 
+     * @param B
+     *            second multiplicand
+     * @return the result of the multiplication
+     * @since 1.3.1
+     */
+    MatrixD timesTransposed(MatrixD B);
+
+    /**
      * <code>A<sup>T</sup> * A</code> multiplication. This is much more
      * efficient than the equivalent {@code A.transpose().times(A)}. None of the
      * operands is mutated. For the reversed order multiplication

@@ -839,6 +839,14 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD timesTransposed(MatrixD B) {
+        return transBmult(B, create(rows, B.numRows()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD transposedTimes() {
         return transAmult(this, create(cols, cols));
     }
