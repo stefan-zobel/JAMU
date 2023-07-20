@@ -920,6 +920,14 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD timesConjugateTransposed(ComplexMatrixD B) {
+        return conjTransBmult(B, create(rows, B.numRows()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD conjugateTransposedTimes() {
         return conjTransAmult(this, create(cols, cols));
     }

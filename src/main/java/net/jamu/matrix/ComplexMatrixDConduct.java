@@ -205,6 +205,20 @@ public interface ComplexMatrixDConduct {
     ComplexMatrixD timesConjugateTransposed();
 
     /**
+     * <code>A * B<sup>*</sup></code> multiplication. This is much more
+     * efficient than the equivalent {@code A.times(B.conjugateTranspose())}.
+     * None of the operands is mutated. For the reversed order multiplication
+     * <code>A<sup>*</sup> * B</code> use
+     * {@link #conjugateTransposedTimes(ComplexMatrixD)}.
+     * 
+     * @param B
+     *            second multiplicand
+     * @return the result of the multiplication
+     * @since 1.3.1
+     */
+    ComplexMatrixD timesConjugateTransposed(ComplexMatrixD B);
+
+    /**
      * <code>A<sup>*</sup> * A</code> multiplication. This is much more
      * efficient than the equivalent {@code A.conjugateTranspose().times(A)}.
      * None of the operands is mutated. For the reversed order multiplication
