@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2021 Stefan Zobel
+ * Copyright 2019, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -858,6 +858,9 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      */
     @Override
     public MatrixF transpose() {
+        if (rows == 1 || cols == 1) {
+            return create(cols, rows, Arrays.copyOf(a, a.length));
+        }
         return trans(create(cols, rows));
     }
 

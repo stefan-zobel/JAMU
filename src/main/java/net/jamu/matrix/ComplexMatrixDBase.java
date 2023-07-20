@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, 2021 Stefan Zobel
+ * Copyright 2020, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1010,6 +1010,9 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixD transpose() {
+        if (rows == 1 || cols == 1) {
+            return create(cols, rows, Arrays.copyOf(a, a.length));
+        }
         return trans(create(cols, rows));
     }
 
