@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2021 Stefan Zobel
+ * Copyright 2019, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2302,6 +2302,82 @@ public final class Matrices {
             throw new IllegalArgumentException("column array length must be > 0");
         }
         return new SimpleComplexMatrixF(column.length, 1, ZArrayUtil.complexToPrimitiveArray(column));
+    }
+
+    /**
+     * Create a {@code 1 x row.length} row vector from the provided array which
+     * must have at least length {@code 1} and contains the entries of the new
+     * row vector.
+     * 
+     * @param row
+     *            array containing the values of the elements of the vector to
+     *            be created. Must not be {@code null} and must have length
+     *            {@code > 0}.
+     * @return a {@code 1 x row.length} MatrixD row vector
+     * @since 1.3.1
+     */
+    public static MatrixD rowVectorD(double[] row) {
+        if (Objects.requireNonNull(row).length == 0) {
+            throw new IllegalArgumentException("row array length must be > 0");
+        }
+        return new SimpleMatrixD(1, row.length, Arrays.copyOf(row, row.length));
+    }
+
+    /**
+     * Create a {@code 1 x row.length} row vector from the provided array which
+     * must have at least length {@code 1} and contains the entries of the new
+     * row vector.
+     * 
+     * @param row
+     *            array containing the values of the elements of the vector to
+     *            be created. Must not be {@code null} and must have length
+     *            {@code > 0}.
+     * @return a {@code 1 x row.length} MatrixF row vector
+     * @since 1.3.1
+     */
+    public static MatrixF rowVectorF(float[] row) {
+        if (Objects.requireNonNull(row).length == 0) {
+            throw new IllegalArgumentException("row array length must be > 0");
+        }
+        return new SimpleMatrixF(1, row.length, Arrays.copyOf(row, row.length));
+    }
+
+    /**
+     * Create a {@code 1 x row.length} row vector from the provided array which
+     * must have at least length {@code 1} and contains the entries of the new
+     * row vector.
+     * 
+     * @param row
+     *            array containing the values of the elements of the vector to
+     *            be created. Must not be {@code null} and must have length
+     *            {@code > 0}.
+     * @return a {@code 1 x row.length} ComplexMatrixD row vector
+     * @since 1.3.1
+     */
+    public static ComplexMatrixD rowVectorComplexD(Zd[] row) {
+        if (Objects.requireNonNull(row).length == 0) {
+            throw new IllegalArgumentException("row array length must be > 0");
+        }
+        return new SimpleComplexMatrixD(1, row.length, ZArrayUtil.complexToPrimitiveArray(row));
+    }
+
+    /**
+     * Create a {@code 1 x row.length} row vector from the provided array which
+     * must have at least length {@code 1} and contains the entries of the new
+     * row vector.
+     * 
+     * @param row
+     *            array containing the values of the elements of the vector to
+     *            be created. Must not be {@code null} and must have length
+     *            {@code > 0}.
+     * @return a {@code 1 x row.length} ComplexMatrixF row vector
+     * @since 1.3.1
+     */
+    public static ComplexMatrixF rowVectorComplexF(Zf[] row) {
+        if (Objects.requireNonNull(row).length == 0) {
+            throw new IllegalArgumentException("row array length must be > 0");
+        }
+        return new SimpleComplexMatrixF(1, row.length, ZArrayUtil.complexToPrimitiveArray(row));
     }
 
     /**
