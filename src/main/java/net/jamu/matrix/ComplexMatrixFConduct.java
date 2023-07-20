@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, 2021 Stefan Zobel
+ * Copyright 2020, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -214,6 +214,20 @@ public interface ComplexMatrixFConduct {
      * @since 1.3
      */
     ComplexMatrixF conjugateTransposedTimes();
+
+    /**
+     * <code>A<sup>*</sup> * B</code> multiplication. This is much more
+     * efficient than the equivalent {@code A.conjugateTranspose().times(B)}.
+     * None of the operands is mutated. For the reversed order multiplication
+     * <code>A * B<sup>*</sup></code> use
+     * {@link #timesConjugateTransposed(ComplexMatrixF)}.
+     * 
+     * @param B
+     *            second multiplicand
+     * @return the result of the multiplication
+     * @since 1.3.1
+     */
+    ComplexMatrixF conjugateTransposedTimes(ComplexMatrixF B);
 
     /**
      * Multiply this matrix {@code A} with a real matrix {@code B} returning
