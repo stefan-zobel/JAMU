@@ -3499,6 +3499,124 @@ public final class Matrices {
         return s;
     }
 
+    /**
+     * Returns a {@code A.numRows() x 1} matrix that contains the column sums of
+     * matrix {@code A}.
+     * 
+     * @param A
+     *            the matrix whose columns should be summated
+     * @return a new matrix of dimension {@code A.numRows() x 1} that contains
+     *         the column sums of matrix {@code A}
+     * @since 1.3.1
+     */
+    public static MatrixD sumColumns(MatrixD A) {
+        if (A.numColumns() == 1) {
+            return A.copy();
+        }
+        MatrixD s = createD(A.numRows(), 1);
+        double[] _a = A.getArrayUnsafe();
+        int rows_ = A.numRows();
+        int cols_ = A.numColumns();
+        for (int row = 0; row < rows_; ++row) {
+            double sum = 0.0;
+            for (int col = 0; col < cols_; ++col) {
+                sum += _a[col * rows_ + row];
+            }
+            s.setUnsafe(row, 0, sum);
+        }
+        return s;
+    }
+
+    /**
+     * Returns a {@code A.numRows() x 1} matrix that contains the column sums of
+     * matrix {@code A}.
+     * 
+     * @param A
+     *            the matrix whose columns should be summated
+     * @return a new matrix of dimension {@code A.numRows() x 1} that contains
+     *         the column sums of matrix {@code A}
+     * @since 1.3.1
+     */
+    public static MatrixF sumColumns(MatrixF A) {
+        if (A.numColumns() == 1) {
+            return A.copy();
+        }
+        MatrixF s = createF(A.numRows(), 1);
+        float[] _a = A.getArrayUnsafe();
+        int rows_ = A.numRows();
+        int cols_ = A.numColumns();
+        for (int row = 0; row < rows_; ++row) {
+            double sum = 0.0;
+            for (int col = 0; col < cols_; ++col) {
+                sum += _a[col * rows_ + row];
+            }
+            s.setUnsafe(row, 0, (float) sum);
+        }
+        return s;
+    }
+
+    /**
+     * Returns a {@code A.numRows() x 1} matrix that contains the column sums of
+     * matrix {@code A}.
+     * 
+     * @param A
+     *            the matrix whose columns should be summated
+     * @return a new matrix of dimension {@code A.numRows() x 1} that contains
+     *         the column sums of matrix {@code A}
+     * @since 1.3.1
+     */
+    public static ComplexMatrixD sumColumns(ComplexMatrixD A) {
+        if (A.numColumns() == 1) {
+            return A.copy();
+        }
+        ComplexMatrixD s = createComplexD(A.numRows(), 1);
+        double[] _a = A.getArrayUnsafe();
+        int rows_ = A.numRows();
+        int cols_ = A.numColumns();
+        for (int row = 0; row < rows_; ++row) {
+            double sum_r = 0.0;
+            double sum_i = 0.0;
+            for (int col = 0; col < cols_; ++col) {
+                int idx = 2 * (col * rows_ + row);
+                sum_r += _a[idx];
+                sum_i += _a[idx + 1];
+            }
+            s.setUnsafe(row, 0, sum_r, sum_i);
+        }
+        return s;
+    }
+
+    /**
+     * Returns a {@code A.numRows() x 1} matrix that contains the column sums of
+     * matrix {@code A}.
+     * 
+     * @param A
+     *            the matrix whose columns should be summated
+     * @return a new matrix of dimension {@code A.numRows() x 1} that contains
+     *         the column sums of matrix {@code A}
+     * @since 1.3.1
+     */
+    public static ComplexMatrixF sumColumns(ComplexMatrixF A) {
+        if (A.numColumns() == 1) {
+            return A.copy();
+        }
+        ComplexMatrixF s = createComplexF(A.numRows(), 1);
+        float[] _a = A.getArrayUnsafe();
+        int rows_ = A.numRows();
+        int cols_ = A.numColumns();
+        for (int row = 0; row < rows_; ++row) {
+            double sum_r = 0.0;
+            double sum_i = 0.0;
+            for (int col = 0; col < cols_; ++col) {
+                int idx = 2 * (col * rows_ + row);
+                sum_r += _a[idx];
+                sum_i += _a[idx + 1];
+            }
+            s.setUnsafe(row, 0, (float) sum_r, (float) sum_i);
+        }
+        return s;
+    }
+
     private static boolean checkApproxEqualArgs(Dimensions A, Dimensions B, double relTol, double absTol) {
         if (relTol < 0.0 || Double.isNaN(relTol) || Double.isInfinite(relTol)) {
             throw new IllegalArgumentException("illegal relTol : " + relTol);
