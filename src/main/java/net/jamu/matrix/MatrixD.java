@@ -659,7 +659,7 @@ public interface MatrixD extends Dimensions, MatrixDConduct {
     double trace();
 
     /**
-     * Set all elements <code>|x<sub>ij</sub>| <= k * 2<sup>-53</sup></code>
+     * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-53</sup></code>
      * ({@code k} times the machine epsilon for doubles) to {@code 0.0} where
      * {@code k} is a positive integer {@code >= 1}.
      * 

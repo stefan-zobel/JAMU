@@ -24,8 +24,8 @@ import net.jamu.complex.ZfImpl;
  * LU decomposition of a general m-by-n single precision complex matrix
  * {@code A = P * L * U} using partial pivoting with row interchanges where
  * {@code P} is a permutation matrix, {@code L} is a lower triangular (lower
- * trapezoidal if m > n) matrix with unit diagonal elements and {@code U} is an
- * upper triangular (upper trapezoidal if m < n) matrix.
+ * trapezoidal if m &gt; n) matrix with unit diagonal elements and {@code U} is an
+ * upper triangular (upper trapezoidal if m &lt; n) matrix.
  * <p>
  * Note that this implementation returns {@code null} for {@code P} when no row
  * interchanges are necessary (in that case, if the caller wants to consistently
@@ -65,10 +65,10 @@ public final class LudComplexF {
     }
 
     /**
-     * The lower triangular (lower trapezoidal if m > n) factor {@code L} in the
+     * The lower triangular (lower trapezoidal if m &gt; n) factor {@code L} in the
      * product {@code A = P * L * U}.
      * 
-     * @return the lower triangular (lower trapezoidal if m > n) factor
+     * @return the lower triangular (lower trapezoidal if m &gt; n) factor
      *         {@code L} of the {@code LU} decomposition
      */
     public ComplexMatrixF getL() {
@@ -86,10 +86,10 @@ public final class LudComplexF {
     }
 
     /**
-     * The upper triangular (upper trapezoidal if m < n) factor {@code U} in the
+     * The upper triangular (upper trapezoidal if m &lt; n) factor {@code U} in the
      * product {@code A = P * L * U}.
      * 
-     * @return the upper triangular (upper trapezoidal if m < n) factor
+     * @return the upper triangular (upper trapezoidal if m &lt; n) factor
      *         {@code U} of the {@code LU} decomposition
      */
     public ComplexMatrixF getU() {

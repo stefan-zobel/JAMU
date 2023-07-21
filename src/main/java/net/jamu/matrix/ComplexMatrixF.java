@@ -728,7 +728,7 @@ public interface ComplexMatrixF extends Dimensions, ComplexMatrixFConduct {
     Zf trace();
 
     /**
-     * Set all elements <code>|x<sub>ij</sub>| <= k * 2<sup>-24</sup></code>
+     * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-24</sup></code>
      * ({@code k} times the machine epsilon for floats) to {@code 0.0f} where
      * {@code k} is a positive integer {@code >= 1}. Both the real and the
      * imaginary parts are set to {@code 0.0f}.
