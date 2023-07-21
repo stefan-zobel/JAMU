@@ -601,6 +601,28 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD hadamard(ComplexMatrixD B, ComplexMatrixD out) {
+        Checks.checkEqualDimension(this, B);
+        Checks.checkEqualDimension(this, out);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        double[] _c = out.getArrayUnsafe();
+        ZdImpl a = new ZdImpl(0.0);
+        ZdImpl b = new ZdImpl(0.0);
+        for (int i = 0; i < _a.length; i += 2) {
+            a.set(_a[i], _a[i + 1]);
+            b.set(_b[i], _b[i + 1]);
+            a.mul(b);
+            _c[i] = a.re();
+            _c[i + 1] = a.im();
+        }
+        return out;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double[][] toJaggedArray() {
         int _rows = rows;
         int _cols = cols;
@@ -938,6 +960,14 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
     @Override
     public ComplexMatrixD conjugateTransposedTimes(ComplexMatrixD B) {
         return conjTransAmult(B, create(cols, B.numColumns()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixD hadamard(ComplexMatrixD B) {
+        return hadamard(B, create(rows, cols));
     }
 
     /**

@@ -339,6 +339,17 @@ public interface ComplexMatrixDConduct {
     ComplexMatrixD inverse();
 
     /**
+     * Hadamard product {@code A} &SmallCircle; {@code B} (also known as
+     * element-wise product) of this matrix (A) and B.
+     * 
+     * @param B
+     *            the matrix this matrix is multiplied with
+     * @return the result of the Hadamard multiplication
+     * @since 1.3.1
+     */
+    ComplexMatrixD hadamard(ComplexMatrixD B);
+
+    /**
      * Reshapes this matrix into a new matrix of dimension {@code rows x cols}
      * where the elements in this matrix are read in Fortran-style column-major
      * order. For example, the {@code 3 x 2} matrix {@code A}

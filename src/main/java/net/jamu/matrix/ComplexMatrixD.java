@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, 2021 Stefan Zobel
+ * Copyright 2020, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -636,6 +636,19 @@ public interface ComplexMatrixD extends Dimensions, ComplexMatrixDConduct {
      *             if this matrix is not quadratic
      */
     ComplexMatrixD expm();
+
+    /**
+     * Hadamard product {@code C = A} &SmallCircle; {@code B} (also known as
+     * element-wise product) of this matrix (A) and B.
+     * 
+     * @param B
+     *            the matrix this matrix is multiplied with
+     * @param out
+     *            output matrix for the result of the multiplication
+     * @return {@code out}
+     * @since 1.3.1
+     */
+    ComplexMatrixD hadamard(ComplexMatrixD B, ComplexMatrixD out);
 
     /**
      * Computes the singular value decomposition of this matrix.
