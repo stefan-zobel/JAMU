@@ -22,6 +22,10 @@ public final class ZArrayUtil {
 
     /**
      * Convert even length float[] array to corresponding {@link Zf} array.
+     * 
+     * @param a
+     *            even length float[] array to convert
+     * @return the resulting Zf[] array
      */
     public static Zf[] primitiveToComplexArray(float[] a) {
         if (a == null || a.length == 0) {
@@ -38,6 +42,10 @@ public final class ZArrayUtil {
 
     /**
      * Convert even length double[] array to corresponding {@link Zd} array.
+     * 
+     * @param a
+     *            even length double[] array to convert
+     * @return the resulting Zd[] array
      */
     public static Zd[] primitiveToComplexArray(double[] a) {
         if (a == null || a.length == 0) {
@@ -55,6 +63,12 @@ public final class ZArrayUtil {
     /**
      * Convert two float[] arrays separately containing the real and imaginary
      * part to corresponding {@link Zf} array.
+     * 
+     * @param re
+     *            real parts
+     * @param im
+     *            imaginary parts
+     * @return the resulting Zf[] array
      */
     public static Zf[] primitiveToComplexArray(float[] re, float[] im) {
         if (re == null || re.length == 0 || im == null || im.length == 0) {
@@ -74,6 +88,12 @@ public final class ZArrayUtil {
     /**
      * Convert two double[] arrays separately containing the real and imaginary
      * part to corresponding {@link Zd} array.
+     * 
+     * @param re
+     *            real parts
+     * @param im
+     *            imaginary parts
+     * @return the resulting Zd[] array
      */
     public static Zd[] primitiveToComplexArray(double[] re, double[] im) {
         if (re == null || re.length == 0 || im == null || im.length == 0) {
@@ -92,6 +112,10 @@ public final class ZArrayUtil {
 
     /**
      * Convert {@link Zf} array to an even length float[] array.
+     * 
+     * @param c
+     *            complex array to convert
+     * @return resulting even length float[] array
      */
     public static float[] complexToPrimitiveArray(Zf[] c) {
         if (c == null || c.length == 0) {
@@ -111,6 +135,10 @@ public final class ZArrayUtil {
 
     /**
      * Convert {@link Zd} array to an even length double[] array.
+     * 
+     * @param c
+     *            complex array to convert
+     * @return resulting even length double[] array
      */
     public static double[] complexToPrimitiveArray(Zd[] c) {
         if (c == null || c.length == 0) {
@@ -130,6 +158,10 @@ public final class ZArrayUtil {
 
     /**
      * Filter real parts from an even length float[] array.
+     * 
+     * @param a
+     *            float[] array to filter
+     * @return the real parts
      */
     public static float[] filterRealParts(float[] a) {
         if (a == null || a.length == 0) {
@@ -145,6 +177,10 @@ public final class ZArrayUtil {
 
     /**
      * Filter real parts from an even length double[] array.
+     * 
+     * @param a
+     *            double[] array to filter
+     * @return the real parts
      */
     public static double[] filterRealParts(double[] a) {
         if (a == null || a.length == 0) {
@@ -160,6 +196,10 @@ public final class ZArrayUtil {
 
     /**
      * Filter imaginary parts from an even length float[] array.
+     * 
+     * @param a
+     *            float[] array to filter
+     * @return the imaginary parts
      */
     public static float[] filterImaginaryParts(float[] a) {
         if (a == null || a.length == 0) {
@@ -176,6 +216,10 @@ public final class ZArrayUtil {
 
     /**
      * Filter imaginary parts from an even length double[] array.
+     * 
+     * @param a
+     *            double[] array to filter
+     * @return the imaginary parts
      */
     public static double[] filterImaginaryParts(double[] a) {
         if (a == null || a.length == 0) {
@@ -194,6 +238,10 @@ public final class ZArrayUtil {
      * Compute the L2 norm of an even length double[] vector (can also be used
      * for the computation of the Frobenius norm of complex matrices stored in
      * either column-major or row-major layout).
+     * 
+     * @param a
+     *            an even length double[] vector
+     * @return the L2 norm of the vector
      */
     public static double l2norm(double[] a) {// vectorization prospect
         if (a == null || a.length == 0) {
@@ -230,6 +278,10 @@ public final class ZArrayUtil {
      * Compute the L2 norm of an even length float[] vector (can also be used
      * for the computation of the Frobenius norm of complex matrices stored in
      * either column-major or row-major layout).
+     * 
+     * @param a
+     *            an even length float[] vector
+     * @return the L2 norm of the vector
      */
     public static float l2norm(float[] a) {
         if (a == null || a.length == 0) {

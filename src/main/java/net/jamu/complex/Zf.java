@@ -70,7 +70,7 @@ public interface Zf {
     /**
      * Multiplication with a real number.
      * 
-     * @param alpha
+     * @param alpha the multiplicand
      * @return the result of the multiplication
      */
     Zf scale(float alpha);
