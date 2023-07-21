@@ -539,6 +539,22 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD hadamard(MatrixD B, MatrixD out) {
+        Checks.checkEqualDimension(this, B);
+        Checks.checkEqualDimension(this, out);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        double[] _c = out.getArrayUnsafe();
+        for (int i = 0; i < _a.length; ++i) {
+            _c[i] = _a[i] * _b[i];
+        }
+        return out;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double normF() {
         // overflow resistant implementation
         double scale = 0.0;
@@ -857,6 +873,14 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     @Override
     public MatrixD transposedTimes(MatrixD B) {
         return transAmult(B, create(cols, B.numColumns()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD hadamard(MatrixD B) {
+        return hadamard(B, create(rows, cols));
     }
 
     /**

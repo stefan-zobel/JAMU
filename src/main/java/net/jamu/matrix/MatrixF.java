@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2021 Stefan Zobel
+ * Copyright 2019, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -602,6 +602,19 @@ public interface MatrixF extends Dimensions, MatrixFConduct {
      *             if this matrix is not quadratic
      */
     MatrixF expm();
+
+    /**
+     * Hadamard product {@code C = A} &SmallCircle; {@code B} (also known as
+     * element-wise product) of this matrix (A) and B.
+     * 
+     * @param B
+     *            the matrix this matrix is multiplied with
+     * @param out
+     *            output matrix for the result of the multiplication
+     * @return {@code out}
+     * @since 1.3.1
+     */
+    MatrixF hadamard(MatrixF B, MatrixF out);
 
     /**
      * Copy into a jagged array.
