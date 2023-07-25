@@ -16,16 +16,27 @@
 package net.jamu.matrix;
 
 /**
- * Basic tensor properties mostly related to the dimension of a tensor.
+ * A {@code TensorD} is a 3-dimensional stack of 2-dimensional dense matrices of
+ * primitive doubles with column-major storage layout. A Tensor of
+ * {@code depth = 1} is a single matrix. The addressing is zero based. All
+ * operations throw a {@code NullPointerException} if any of the method
+ * arguments is {@code null}.
  * 
  * @since 1.4.0
  */
-public interface TensorDimensions extends Dimensions {
+public class TensorD extends TensorBase {
+
+    protected double[] a;
 
     /**
-     * Returns the depth (&gt;= 1) of this tensor.
+     * TODO
      * 
-     * @return the depth of this tensor
-     */   
-    public int numDepth();
+     * @param rows
+     * @param cols
+     * @param depth
+     */
+    public TensorD(int rows, int cols, int depth) {
+        super(rows, cols, depth);
+        a = new double[length];
+    }
 }
