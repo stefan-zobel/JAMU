@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Stefan Zobel
+ * Copyright 2021, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ final class MatrixChain {
 
     private final long[] d;
 
-    MatrixChain(Dimensions A0, Dimensions A1, Dimensions[] Ai) {
+    MatrixChain(MatrixDimensions A0, MatrixDimensions A1, MatrixDimensions[] Ai) {
         long[] dims = new long[Ai.length + 3];
         dims[0] = A0.numRows();
         dims[1] = A0.numColumns();

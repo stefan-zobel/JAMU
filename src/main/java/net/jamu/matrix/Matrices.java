@@ -3617,7 +3617,7 @@ public final class Matrices {
         return s;
     }
 
-    private static boolean checkApproxEqualArgs(Dimensions A, Dimensions B, double relTol, double absTol) {
+    private static boolean checkApproxEqualArgs(MatrixDimensions A, MatrixDimensions B, double relTol, double absTol) {
         if (relTol < 0.0 || Double.isNaN(relTol) || Double.isInfinite(relTol)) {
             throw new IllegalArgumentException("illegal relTol : " + relTol);
         }
@@ -3637,7 +3637,7 @@ public final class Matrices {
         return tol;
     }
 
-    /* package */ static String toString(Dimensions dim) {
+    /* package */ static String toString(MatrixDimensions dim) {
         StringBuilder buf = new StringBuilder();
         buf.append(dim.asString()).append(System.lineSeparator());
         int _cols = dim.numColumns() <= MAX_ROWCOL ? dim.numColumns() : LAST_IDX;
@@ -3773,7 +3773,7 @@ public final class Matrices {
      * @return {@code true} when {@code (AB)C} leads to less multiplications,
      *         otherwise {@code false}
      */
-    static boolean aTimesBfirst(Dimensions A, Dimensions B, Dimensions C) {
+    static boolean aTimesBfirst(MatrixDimensions A, MatrixDimensions B, MatrixDimensions C) {
         long ar = A.numRows();
         long br = B.numRows();
         long cr = C.numRows();
