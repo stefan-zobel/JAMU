@@ -73,26 +73,39 @@ public abstract class TensorBase implements TensorDimensions {
         return rows * cols;
     }
 
-    /**
-     * TODO: add to TensorDimensions interface ?
-     * 
-     * @param row
-     * @param col
-     * @param depthIdx
-     */
-    public void checkIndex(int row, int col, int depthIdx) { // protected
-                                                                // static?
+    protected int startIdx(int layer) {
+        checkLayer(layer);
+        return stride() * layer;
+    }
+
+    protected int idx(int row, int col, int layer) {
+        return layer * stride() + col * rows + row;
+    }
+
+    protected void checkIndex(int row, int col, int layer) {
+        checkRow(row);
+        checkCol(col);
+        checkLayer(layer);
+    }
+
+    protected void checkRow(int row) {
         if (row < 0 || row >= rows) {
             throw new IllegalArgumentException(
                     "Illegal row index " + row + " in (" + rows + " x " + cols + " x " + depth + ") tensor");
         }
+    }
+
+    protected void checkCol(int col) {
         if (col < 0 || col >= cols) {
             throw new IllegalArgumentException(
                     "Illegal column index " + col + " in (" + rows + " x " + cols + " x " + depth + ") tensor");
         }
-        if (depthIdx < 0 || depthIdx >= depth) {
+    }
+
+    protected void checkLayer(int layer) {
+        if (layer < 0 || layer >= depth) {
             throw new IllegalArgumentException(
-                    "Illegal depth index " + depthIdx + " in (" + rows + " x " + cols + " x " + depth + ") tensor");
+                    "Illegal layer index " + layer + " in (" + rows + " x " + cols + " x " + depth + ") tensor");
         }
     }
 
