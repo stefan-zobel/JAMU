@@ -33,10 +33,49 @@ public class TensorD extends TensorBase {
      * 
      * @param rows
      * @param cols
+     */
+    public TensorD(int rows, int cols) {
+        this(rows, cols, 1);
+    }
+
+    /**
+     * TODO
+     * 
+     * @param rows
+     * @param cols
      * @param depth
      */
     public TensorD(int rows, int cols, int depth) {
         super(rows, cols, depth);
         a = new double[length];
+    }
+
+    /**
+     * TODO
+     * 
+     * @param B
+     * @return
+     */
+    public TensorD append(MatrixD B) {
+        Checks.checkEqualDimension(this, B);
+        double[] tmp = growAndCopyForAppend(B);
+        double[] _b = B.getArrayUnsafe();
+        System.arraycopy(_b, 0, tmp, length, _b.length);
+        a = tmp;
+        length = tmp.length;
+        return this;
+    }
+
+    private double[] growAndCopyForAppend(Dimensions B) {
+        return copyForAppend(new double[checkNewArrayLength(B)]);
+    }
+
+    private double[] growAndCopyForAppend(int rows, int cols) {
+        return copyForAppend(new double[checkNewArrayLength(rows, cols)]);
+    }
+
+    private double[] copyForAppend(double[] newArray) {
+        System.arraycopy(a, 0, newArray, 0, length);
+        return newArray;
     }
 }

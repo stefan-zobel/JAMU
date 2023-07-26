@@ -33,10 +33,49 @@ public class TensorF extends TensorBase {
      * 
      * @param rows
      * @param cols
+     */
+    public TensorF(int rows, int cols) {
+        this(rows, cols, 1);
+    }
+
+    /**
+     * TODO
+     * 
+     * @param rows
+     * @param cols
      * @param depth
      */
     public TensorF(int rows, int cols, int depth) {
         super(rows, cols, depth);
         a = new float[length];
+    }
+
+    /**
+     * TODO
+     * 
+     * @param B
+     * @return
+     */
+    public TensorF append(MatrixF B) {
+        Checks.checkEqualDimension(this, B);
+        float[] tmp = growAndCopyForAppend(B);
+        float[] _b = B.getArrayUnsafe();
+        System.arraycopy(_b, 0, tmp, length, _b.length);
+        a = tmp;
+        length = tmp.length;
+        return this;
+    }
+
+    private float[] growAndCopyForAppend(Dimensions B) {
+        return copyForAppend(new float[checkNewArrayLength(B)]);
+    }
+
+    private float[] growAndCopyForAppend(int rows, int cols) {
+        return copyForAppend(new float[checkNewArrayLength(rows, cols)]);
+    }
+
+    private float[] copyForAppend(float[] newArray) {
+        System.arraycopy(a, 0, newArray, 0, length);
+        return newArray;
     }
 }

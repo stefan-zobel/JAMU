@@ -60,8 +60,17 @@ public abstract class TensorBase implements TensorDimensions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int numDepth() {
         return depth;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int stride() {
+        return rows * cols;
     }
 
     /**
@@ -71,7 +80,8 @@ public abstract class TensorBase implements TensorDimensions {
      * @param col
      * @param depthIdx
      */
-    public void checkIndex(int row, int col, int depthIdx) {
+    public void checkIndex(int row, int col, int depthIdx) { // protected
+                                                                // static?
         if (row < 0 || row >= rows) {
             throw new IllegalArgumentException(
                     "Illegal row index " + row + " in (" + rows + " x " + cols + " x " + depth + ") tensor");
@@ -84,6 +94,22 @@ public abstract class TensorBase implements TensorDimensions {
             throw new IllegalArgumentException(
                     "Illegal depth index " + depthIdx + " in (" + rows + " x " + cols + " x " + depth + ") tensor");
         }
+    }
+
+    protected int checkNewArrayLength(Dimensions B) {
+        return checkNewArrayLength(B.numRows(), B.numColumns());
+    }
+
+    protected int checkNewArrayLength(int rows, int cols) {
+        long newLength = length + ((long) rows * (long) cols);
+        if (newLength <= 0L || newLength >= (long) Integer.MAX_VALUE) {
+            throw new IllegalArgumentException(
+                    "A length of " + newLength + " exceeds the maximal possible length (= 2147483647) of an array");
+        }
+        if (newLength % stride() != 0L) {
+            throw new IllegalArgumentException("A new length of " + newLength + " is not a multiple of " + stride());
+        }
+        return (int) newLength;
     }
 
     protected static int checkArrayLength(int rows, int cols, int depth) {

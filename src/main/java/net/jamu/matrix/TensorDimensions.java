@@ -26,6 +26,14 @@ public interface TensorDimensions extends Dimensions {
      * Returns the depth (&gt;= 1) of this tensor.
      * 
      * @return the depth of this tensor
-     */   
+     */
     public int numDepth();
+
+    /**
+     * Returns the offset (in number of array elements) from the start of one
+     * matrix to the start of the next matrix.
+     * 
+     * @return the offset to the next matrix
+     */
+    public int stride();
 }
