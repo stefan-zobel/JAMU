@@ -200,6 +200,77 @@ public class TensorF extends TensorBase {
     }
 
     /**
+     * {@code C = alpha * A * B + C} where {@code A} is this tensor. On exit,
+     * the tensor {@code C} is overwritten by the result of the operation.
+     * 
+     * @param alpha
+     *            scalar scale factor for the multiplication
+     * @param B
+     *            tensor to be multiplied from the right
+     * @param C
+     *            the tensor to add on input, contains the result of the
+     *            operation on output
+     * @return {@code C}
+     */
+    public TensorF multAdd(float alpha, TensorF B, TensorF C) {
+        // XXX
+        return null;
+    }
+
+    /**
+     * {@code C = A * B + C} where {@code A} is this tensor. On exit, the tensor
+     * {@code C} is overwritten by the result of the operation.
+     * 
+     * @param B
+     *            tensor to be multiplied from the right
+     * @param C
+     *            the tensor to add on input, contains the result of the
+     *            operation on output
+     * @return {@code C}
+     */
+    public TensorF multAdd(TensorF B, TensorF C) {
+        return multAdd(1.0f, B, C);
+    }
+
+    /**
+     * {@code C = alpha * A * B} where {@code A} is this tensor.
+     * 
+     * @param alpha
+     *            scalar scale factor for the multiplication
+     * @param B
+     *            tensor to be multiplied from the right
+     * @param C
+     *            output tensor for the result of the multiplication
+     * @return {@code C}
+     */
+    public TensorF mult(float alpha, TensorF B, TensorF C) {
+        return multAdd(alpha, B, C.zeroInplace());
+    }
+
+    /**
+     * {@code C = A * B} where {@code A} is this tensor.
+     * 
+     * @param B
+     *            tensor to be multiplied from the right
+     * @param C
+     *            output tensor for the result of the multiplication
+     * @return {@code C}
+     */
+    public TensorF mult(TensorF B, TensorF C) {
+        return mult(1.0f, B, C);
+    }
+
+    /**
+     * Set all elements of this tensor to {@code 0.0} mutating this tensor.
+     * 
+     * @return this tensor (mutated)
+     */
+    public TensorF zeroInplace() {
+        Arrays.fill(a, 0.0f);
+        return this;
+    }
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array
