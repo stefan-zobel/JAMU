@@ -23,7 +23,8 @@ package net.jamu.matrix;
 public interface TensorDimensions extends Dimensions {
 
     /**
-     * Returns the depth (&gt;= 1) of this tensor.
+     * Returns the depth (&gt;= 1) (i.e., the number of matrices) of this
+     * tensor.
      * 
      * @return the depth of this tensor
      */

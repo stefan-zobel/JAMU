@@ -28,11 +28,16 @@ public abstract class TensorBase implements TensorDimensions {
     protected int length;
 
     /**
-     * TODO
+     * Constructs a new {@link TensorDimensions} implementation which checks
+     * that the {@code rows}, {@code cols} and {@code depth} dimension
+     * parameters are strictly positive.
      * 
      * @param rows
+     *            number of matrix rows
      * @param cols
+     *            number of matrix columns
      * @param depth
+     *            number of matrices in the tensor
      */
     public TensorBase(int rows, int cols, int depth) {
         this.rows = DimensionsBase.checkRows(rows);
