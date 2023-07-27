@@ -17,6 +17,9 @@ package net.jamu.matrix;
 
 import java.util.Arrays;
 
+import net.dedekind.blas.Blas;
+import net.frobenius.TTrans;
+
 /**
  * A {@code TensorD} is a 3-dimensional stack of 2-dimensional dense matrices of
  * primitive doubles with column-major storage layout. A Tensor of
@@ -27,6 +30,8 @@ import java.util.Arrays;
  * @since 1.4.0
  */
 public class TensorD extends TensorBase {
+
+    private static final double BETA = 1.0;
 
     protected double[] a;
 
@@ -213,8 +218,28 @@ public class TensorD extends TensorBase {
      * @return {@code C}
      */
     public TensorD multAdd(double alpha, TensorD B, TensorD C) {
+        Checks.checkMultAdd(this, B, C);
+        int _depth = Math.min(Math.min(this.depth, B.depth), C.depth);
+        int stride_a = this.stride();
+        int stride_b = B.stride();
+        int stride_c = C.stride();
         // XXX
-        return null;
+        // prototype implementation
+        Blas blas = Matrices.getBlas();
+        int aOffset = 0;
+        int bOffset = 0;
+        int cOffset = 0;
+        for (int i = 0; i < _depth; ++i) {
+            blas.dgemm(TTrans.NO_TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
+                    aOffset, Math.max(1, rows), B.getArrayUnsafe(), bOffset, Math.max(1, B.numRows()), BETA,
+                    C.getArrayUnsafe(), cOffset, Math.max(1, C.numRows()));
+            aOffset += stride_a;
+            bOffset += stride_b;
+            cOffset += stride_c;
+        }
+        // prototype implementation
+        // XXX
+        return C;
     }
 
     /**
