@@ -229,14 +229,9 @@ public class TensorF extends TensorBase {
         int aOffset = 0;
         int bOffset = 0;
         int cOffset = 0;
-        for (int i = 0; i < _depth; ++i) {
-            blas.sgemm(TTrans.NO_TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
-                    aOffset, Math.max(1, rows), B.getArrayUnsafe(), bOffset, Math.max(1, B.numRows()), BETA,
-                    C.getArrayUnsafe(), cOffset, Math.max(1, C.numRows()));
-            aOffset += stride_a;
-            bOffset += stride_b;
-            cOffset += stride_c;
-        }
+        blas.sgemm_multi(TTrans.NO_TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
+                aOffset, Math.max(1, rows), B.getArrayUnsafe(), bOffset, Math.max(1, B.numRows()), BETA,
+                C.getArrayUnsafe(), cOffset, Math.max(1, C.numRows()), _depth, stride_a, stride_b, stride_c);
         // prototype implementation
         // XXX
         return C;

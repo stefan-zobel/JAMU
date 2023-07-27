@@ -239,6 +239,7 @@ public class TensorD extends TensorBase {
         }
         // prototype implementation
         // XXX
+        // TODO: cap C when it is too long???
         return C;
     }
 
