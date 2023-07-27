@@ -234,6 +234,7 @@ public class TensorF extends TensorBase {
                 C.getArrayUnsafe(), cOffset, Math.max(1, C.numRows()), _depth, stride_a, stride_b, stride_c);
         // prototype implementation
         // XXX
+        // TODO: cap C when it is too long???
         return C;
     }
 
