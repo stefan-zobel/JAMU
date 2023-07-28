@@ -277,8 +277,13 @@ public class TensorD extends TensorBase {
      * @return {@code C}
      */
     public TensorD transBmultAdd(double alpha, TensorD B, TensorD C) {
-        // XXX
-        return null;
+        Checks.checkTransBmultAdd(this, B, C);
+        int _depth = Math.min(Math.min(this.depth, B.depth), C.depth);
+        Blas blas = Matrices.getBlas();
+        blas.dgemm_multi(TTrans.NO_TRANS.val(), TTrans.TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a, OFFS,
+                Math.max(1, rows), B.getArrayUnsafe(), OFFS, Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(), OFFS,
+                Math.max(1, C.numRows()), _depth, this.stride(), B.stride(), C.stride());
+        return C;
     }
 
     /**
