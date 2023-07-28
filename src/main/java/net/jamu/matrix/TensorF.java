@@ -287,6 +287,85 @@ public class TensorF extends TensorBase {
     }
 
     /**
+     * <code>C = alpha * A<sup>T</sup> * B<sup>T</sup> + C</code> where
+     * {@code A} is this tensor. On exit, the tensor {@code C} is overwritten by
+     * the result of the operation. If there is a mismatch between the depths of
+     * the participating tensors the shortest depth is chosen to reduce the
+     * operation to a common denominator (in which case the excess layers of the
+     * longer tensors are left untouched).
+     * 
+     * @param alpha
+     *            scalar scale factor for the multiplication
+     * @param B
+     *            tensor whose transpose is to be multiplied from the right
+     * @param C
+     *            the tensor to add on input, contains the result of the
+     *            operation on output
+     * @return {@code C}
+     */
+    public TensorF transABmultAdd(float alpha, TensorF B, TensorF C) {
+        // XXX
+        return null;
+    }
+
+    /**
+     * <code>C = A<sup>T</sup> * B<sup>T</sup> + C</code> where {@code A} is
+     * this tensor. On exit, the tensor {@code C} is overwritten by the result
+     * of the operation. If there is a mismatch between the depths of the
+     * participating tensors the shortest depth is chosen to reduce the
+     * operation to a common denominator (in which case the excess layers of the
+     * longer tensors are left untouched).
+     * 
+     * @param B
+     *            tensor whose transpose is to be multiplied from the right
+     * @param C
+     *            the tensor to add on input, contains the result of the
+     *            operation on output
+     * @return {@code C}
+     */
+    public TensorF transABmultAdd(TensorF B, TensorF C) {
+        return transABmultAdd(1.0f, B, C);
+    }
+
+    /**
+     * <code>C = alpha * A<sup>T</sup> * B<sup>T</sup></code> where {@code A} is
+     * this tensor. On exit, the tensor {@code C} is overwritten by the result
+     * of the operation. If there is a mismatch between the depths of the
+     * participating tensors the shortest depth is chosen to reduce the
+     * operation to a common denominator (in which case the excess layers of the
+     * longer tensors are left untouched).
+     * 
+     * @param alpha
+     *            scalar scale factor for the multiplication
+     * @param B
+     *            tensor whose transpose is to be multiplied from the right
+     * @param C
+     *            output tensor for the result of the multiplication
+     * @return {@code C}
+     */
+    public TensorF transABmult(float alpha, TensorF B, TensorF C) {
+        return transABmultAdd(alpha, B, C.zeroInplace());
+    }
+
+    /**
+     * <code>C = A<sup>T</sup> * B<sup>T</sup></code> where {@code A} is this
+     * tensor. On exit, the tensor {@code C} is overwritten by the result of the
+     * operation. If there is a mismatch between the depths of the participating
+     * tensors the shortest depth is chosen to reduce the operation to a common
+     * denominator (in which case the excess layers of the longer tensors are
+     * left untouched).
+     * 
+     * @param B
+     *            tensor whose transpose is to be multiplied from the right
+     * @param C
+     *            output tensor for the result of the multiplication
+     * @return {@code C}
+     */
+    public TensorF transABmult(TensorF B, TensorF C) {
+        return transABmult(1.0f, B, C);
+    }
+
+    /**
      * <code>C = A * B<sup>T</sup> + C</code> where {@code A} is this tensor. On
      * exit, the tensor {@code C} is overwritten by the result of the operation.
      * If there is a mismatch between the depths of the participating tensors
