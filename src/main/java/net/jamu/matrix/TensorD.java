@@ -32,6 +32,7 @@ import net.frobenius.TTrans;
 public class TensorD extends TensorBase {
 
     private static final double BETA = 1.0;
+    private static final int OFFS = 0;
 
     protected double[] a;
 
@@ -206,7 +207,11 @@ public class TensorD extends TensorBase {
 
     /**
      * {@code C = alpha * A * B + C} where {@code A} is this tensor. On exit,
-     * the tensor {@code C} is overwritten by the result of the operation.
+     * the tensor {@code C} is overwritten by the result of the operation. If
+     * there is a mismatch between the depths of the participating tensors the
+     * shortest depth is chosen to reduce the operation to a common denominator
+     * (in which case the excess layers of the longer tensors are left
+     * untouched).
      * 
      * @param alpha
      *            scalar scale factor for the multiplication
@@ -220,27 +225,19 @@ public class TensorD extends TensorBase {
     public TensorD multAdd(double alpha, TensorD B, TensorD C) {
         Checks.checkMultAdd(this, B, C);
         int _depth = Math.min(Math.min(this.depth, B.depth), C.depth);
-        int stride_a = this.stride();
-        int stride_b = B.stride();
-        int stride_c = C.stride();
-        // XXX
-        // prototype implementation
         Blas blas = Matrices.getBlas();
-        int aOffset = 0;
-        int bOffset = 0;
-        int cOffset = 0;
         blas.dgemm_multi(TTrans.NO_TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
-                aOffset, Math.max(1, rows), B.getArrayUnsafe(), bOffset, Math.max(1, B.numRows()), BETA,
-                C.getArrayUnsafe(), cOffset, Math.max(1, C.numRows()), _depth, stride_a, stride_b, stride_c);
-        // prototype implementation
-        // XXX
-        // TODO: cap C when it is too long???
+                OFFS, Math.max(1, rows), B.getArrayUnsafe(), OFFS, Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
+                OFFS, Math.max(1, C.numRows()), _depth, this.stride(), B.stride(), C.stride());
         return C;
     }
 
     /**
      * {@code C = A * B + C} where {@code A} is this tensor. On exit, the tensor
-     * {@code C} is overwritten by the result of the operation.
+     * {@code C} is overwritten by the result of the operation. If there is a
+     * mismatch between the depths of the participating tensors the shortest
+     * depth is chosen to reduce the operation to a common denominator (in which
+     * case the excess layers of the longer tensors are left untouched).
      * 
      * @param B
      *            tensor to be multiplied from the right
@@ -254,7 +251,10 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * {@code C = alpha * A * B} where {@code A} is this tensor.
+     * {@code C = alpha * A * B} where {@code A} is this tensor. If there is a
+     * mismatch between the depths of the participating tensors the shortest
+     * depth is chosen to reduce the operation to a common denominator (in which
+     * case the excess layers of the longer tensors are left untouched).
      * 
      * @param alpha
      *            scalar scale factor for the multiplication
@@ -269,7 +269,10 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * {@code C = A * B} where {@code A} is this tensor.
+     * {@code C = A * B} where {@code A} is this tensor. If there is a mismatch
+     * between the depths of the participating tensors the shortest depth is
+     * chosen to reduce the operation to a common denominator (in which case the
+     * excess layers of the longer tensors are left untouched).
      * 
      * @param B
      *            tensor to be multiplied from the right
