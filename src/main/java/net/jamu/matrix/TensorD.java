@@ -233,6 +233,85 @@ public class TensorD extends TensorBase {
     }
 
     /**
+     * <code>C = alpha * A<sup>T</sup> * B + C</code> where {@code A} is this
+     * tensor. On exit, the tensor {@code C} is overwritten by the result of the
+     * operation. If there is a mismatch between the depths of the participating
+     * tensors the shortest depth is chosen to reduce the operation to a common
+     * denominator (in which case the excess layers of the longer tensors are
+     * left untouched).
+     * 
+     * @param alpha
+     *            scalar scale factor for the multiplication
+     * @param B
+     *            tensor to be multiplied from the right
+     * @param C
+     *            the tensor to add on input, contains the result of the
+     *            operation on output
+     * @return {@code C}
+     */
+    public TensorD transAmultAdd(double alpha, TensorD B, TensorD C) {
+        // XXX
+        return null;
+    }
+
+    /**
+     * <code>C = A<sup>T</sup> * B + C</code> where {@code A} is this tensor. On
+     * exit, the tensor {@code C} is overwritten by the result of the operation.
+     * If there is a mismatch between the depths of the participating tensors
+     * the shortest depth is chosen to reduce the operation to a common
+     * denominator (in which case the excess layers of the longer tensors are
+     * left untouched).
+     * 
+     * @param B
+     *            tensor to be multiplied from the right
+     * @param C
+     *            the tensor to add on input, contains the result of the
+     *            operation on output
+     * @return {@code C}
+     */
+    public TensorD transAmultAdd(TensorD B, TensorD C) {
+        return transAmultAdd(1.0, B, C);
+    }
+
+    /**
+     * <code>C = alpha * A<sup>T</sup> * B</code> where {@code A} is this
+     * tensor. On exit, the tensor {@code C} is overwritten by the result of the
+     * operation. If there is a mismatch between the depths of the participating
+     * tensors the shortest depth is chosen to reduce the operation to a common
+     * denominator (in which case the excess layers of the longer tensors are
+     * left untouched).
+     * 
+     * @param alpha
+     *            scalar scale factor for the multiplication
+     * @param B
+     *            tensor to be multiplied from the right
+     * @param C
+     *            output tensor for the result of the multiplication
+     * @return {@code C}
+     */
+    public TensorD transAmult(double alpha, TensorD B, TensorD C) {
+        return transAmultAdd(alpha, B, C.zeroInplace());
+    }
+
+    /**
+     * <code>C = A<sup>T</sup> * B</code> where {@code A} is this tensor. On
+     * exit, the tensor {@code C} is overwritten by the result of the operation.
+     * If there is a mismatch between the depths of the participating tensors
+     * the shortest depth is chosen to reduce the operation to a common
+     * denominator (in which case the excess layers of the longer tensors are
+     * left untouched).
+     * 
+     * @param B
+     *            tensor to be multiplied from the right
+     * @param C
+     *            output tensor for the result of the multiplication
+     * @return {@code C}
+     */
+    public TensorD transAmult(TensorD B, TensorD C) {
+        return transAmult(1.0, B, C);
+    }
+
+    /**
      * {@code C = A * B + C} where {@code A} is this tensor. On exit, the tensor
      * {@code C} is overwritten by the result of the operation. If there is a
      * mismatch between the depths of the participating tensors the shortest
