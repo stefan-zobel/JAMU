@@ -78,6 +78,18 @@ public class TensorD extends TensorBase {
     }
 
     /**
+     * Create a new {@code TensorF} from the passed {@code TensorF}. The
+     * underlying storage of the argument gets copied.
+     * 
+     * @param A
+     *            the tensor from which the new tensor should be constructed
+     */
+    public TensorD(TensorD A) {
+        super(A.rows, A.cols, A.depth);
+        a = Arrays.copyOf(A.a, A.a.length);
+    }
+
+    /**
      * Set the value at {@code (row, col)} in the matrix at position
      * {@code layer} to {@code val}.
      * 
@@ -553,6 +565,19 @@ public class TensorD extends TensorBase {
      */
     public double[] getArrayUnsafe() {
         return a;
+    }
+
+    /**
+     * Create a copy of this tensor. The underlying storage gets copied.
+     * 
+     * @return a copy of this tensor
+     */
+    public TensorD copy() {
+        return new TensorD(this);
+    }
+
+    private TensorD create(int rows, int cols, int depth) {
+        return new TensorD(rows, cols, depth);
     }
 
     private double[] growAndCopyForAppend(Dimensions B) {
