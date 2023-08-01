@@ -649,6 +649,18 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD clampInplace(double min, double max) {
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = Math.min(Math.max(_a[i], min), max);
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD zeroizeSubEpsilonInplace(int k) {
         if (k < 1) {
             throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);

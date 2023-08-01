@@ -672,6 +672,18 @@ public interface MatrixF extends MatrixDimensions, MatrixFConduct {
     float trace();
 
     /**
+     * Clamps all elements in this matrix into the range {@code [min, max]}.
+     * 
+     * @param min
+     *            lower-bound of the range to be clamped to
+     * @param max
+     *            upper-bound of the range to be clamped to
+     * @return this matrix clamped in-place
+     * @since 1.4.0
+     */
+    MatrixF clampInplace(float min, float max);
+
+    /**
      * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-24</sup></code>
      * ({@code k} times the machine epsilon for floats) to {@code 0.0f} where
      * {@code k} is a positive integer {@code >= 1}.

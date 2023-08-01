@@ -672,6 +672,18 @@ public interface MatrixD extends MatrixDimensions, MatrixDConduct {
     double trace();
 
     /**
+     * Clamps all elements in this matrix into the range {@code [min, max]}.
+     * 
+     * @param min
+     *            lower-bound of the range to be clamped to
+     * @param max
+     *            upper-bound of the range to be clamped to
+     * @return this matrix clamped in-place
+     * @since 1.4.0
+     */
+    MatrixD clampInplace(double min, double max);
+
+    /**
      * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-53</sup></code>
      * ({@code k} times the machine epsilon for doubles) to {@code 0.0} where
      * {@code k} is a positive integer {@code >= 1}.
