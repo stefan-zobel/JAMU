@@ -559,6 +559,27 @@ public class TensorF extends TensorBase {
     }
 
     /**
+     * {@code A = alpha * A}
+     * 
+     * @param alpha
+     *            scaling factor
+     * @return this tensor (mutated)
+     */
+    public TensorF scaleInplace(float alpha) {
+        if (alpha == 0.0) {
+            return zeroInplace();
+        }
+        if (alpha == 1.0) {
+            return this;
+        }
+        float[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] *= alpha;
+        }
+        return this;
+    }
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array
