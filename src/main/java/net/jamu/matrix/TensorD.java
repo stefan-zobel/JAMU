@@ -580,6 +580,23 @@ public class TensorD extends TensorBase {
     }
 
     /**
+     * Clamps all elements in this tensor into the range {@code [min, max]}.
+     * 
+     * @param min
+     *            lower-bound of the range to be clamped to
+     * @param max
+     *            upper-bound of the range to be clamped to
+     * @return this tensor clamped in-place
+     */
+    public TensorD clampInplace(double min, double max) {
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = Math.min(Math.max(_a[i], min), max);
+        }
+        return this;
+    }
+
+    /**
      * Get the reference to the internal backing array without copying.
      * 
      * @return the reference to the internal backing array
