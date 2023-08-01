@@ -649,6 +649,18 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF clampInplace(float min, float max) {
+        float[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = Math.min(Math.max(_a[i], min), max);
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF zeroizeSubEpsilonInplace(int k) {
         if (k < 1) {
             throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);
