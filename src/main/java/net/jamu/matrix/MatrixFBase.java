@@ -901,13 +901,13 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     @Override
     public MatrixF hadamardTransposed(MatrixF B) {
         Checks.checkTrans(this, B);
-        MatrixF C = create(this.rows, this.cols);
+        int _rows = rows;
+        int _cols = cols;
+        MatrixF C = create(_rows, _cols);
         float[] _a = a;
         float[] _b = B.getArrayUnsafe();
         float[] _c = C.getArrayUnsafe();
         DimensionsBase bdb = (DimensionsBase) B;
-        int _cols = cols;
-        int _rows = rows;
         for (int col = 0; col < _cols; ++col) {
             for (int row = 0; row < _rows; ++row) {
                 int idx = idx(row, col);
