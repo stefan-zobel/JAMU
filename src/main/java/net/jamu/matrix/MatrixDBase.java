@@ -921,6 +921,28 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD transposedHadamard(MatrixD B) {
+        Checks.checkTrans(this, B);
+        int _rows = B.numRows();
+        int _cols = B.numColumns();
+        MatrixD C = create(_rows, _cols);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        double[] _c = C.getArrayUnsafe();
+        DimensionsBase bdb = (DimensionsBase) B;
+        for (int col = 0; col < _cols; ++col) {
+            for (int row = 0; row < _rows; ++row) {
+                int idx = bdb.idx(row, col);
+                _c[idx] = _b[idx] * _a[idx(col, row)];
+            }
+        }
+        return C;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD times(ComplexMatrixD B) {
         Checks.checkMult(this, B);
         ComplexMatrixD Ac = Matrices.convertToComplex(this);
