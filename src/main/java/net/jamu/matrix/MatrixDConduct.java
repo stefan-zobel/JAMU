@@ -154,7 +154,7 @@ public interface MatrixDConduct {
     MatrixD mrdivide(MatrixD B);
 
     /**
-     * {@code A * B} convenience multiplication. None of the operands is
+     * {@code A * B} convenience multiplication. None of the operands are
      * mutated.
      * 
      * @param B
@@ -166,7 +166,7 @@ public interface MatrixDConduct {
     /**
      * {@code A * B * C} convenience multiplication. The optimal
      * parenthesization of the involved product of 3 matrices will be determined
-     * automatically. None of the operands is mutated.
+     * automatically. None of the operands are mutated.
      * 
      * @param B
      *            second multiplicand
@@ -181,7 +181,7 @@ public interface MatrixDConduct {
      * multiplication. This is much more efficient than the equivalent
      * {@code A.times(B1).times(B2).times(B3) ... .times(Bn)} multiplication as
      * the cheapest sequence for performing these multiplications is determined
-     * automatically by this method. None of the operands is mutated.
+     * automatically by this method. None of the operands are mutated.
      * 
      * @param m
      *            the first matrix to right-multiply (the {@code B1} from above)
@@ -196,7 +196,7 @@ public interface MatrixDConduct {
     /**
      * <code>A * A<sup>T</sup></code> multiplication. This is much more
      * efficient than the equivalent {@code A.times(A.transpose())}. None of the
-     * operands is mutated. For the reversed order multiplication
+     * operands are mutated. For the reversed order multiplication
      * <code>A<sup>T</sup> * A</code> use {@link #transposedTimes()}.
      * 
      * @return the result of the multiplication
@@ -207,7 +207,7 @@ public interface MatrixDConduct {
     /**
      * <code>A * B<sup>T</sup></code> multiplication. This is much more
      * efficient than the equivalent {@code A.times(B.transpose())}. None of the
-     * operands is mutated. For the reversed order multiplication
+     * operands are mutated. For the reversed order multiplication
      * <code>A<sup>T</sup> * B</code> use {@link #transposedTimes(MatrixD)}.
      * 
      * @param B
@@ -220,7 +220,7 @@ public interface MatrixDConduct {
     /**
      * <code>A<sup>T</sup> * A</code> multiplication. This is much more
      * efficient than the equivalent {@code A.transpose().times(A)}. None of the
-     * operands is mutated. For the reversed order multiplication
+     * operands are mutated. For the reversed order multiplication
      * <code>A * A<sup>T</sup></code> use {@link #timesTransposed()}.
      * 
      * @return the result of the multiplication
@@ -231,7 +231,7 @@ public interface MatrixDConduct {
     /**
      * <code>A<sup>T</sup> * B</code> multiplication. This is much more
      * efficient than the equivalent {@code A.transpose().times(B)}. None of the
-     * operands is mutated. For the reversed order multiplication
+     * operands are mutated. For the reversed order multiplication
      * <code>A * B<sup>T</sup></code> use {@link #timesTransposed(MatrixD)}.
      * 
      * @param B
@@ -244,7 +244,7 @@ public interface MatrixDConduct {
     /**
      * Multiply this matrix {@code A} with a complex matrix {@code B} returning
      * the result of the multiplication {@code A * B} as a complex matrix. None
-     * of the operands is mutated.
+     * of the operands are mutated.
      * 
      * @param B
      *            second multiplicand (a complex matrix)
@@ -253,7 +253,7 @@ public interface MatrixDConduct {
     ComplexMatrixD times(ComplexMatrixD B);
 
     /**
-     * {@code A + B} convenience addition. None of the operands is mutated.
+     * {@code A + B} convenience addition. None of the operands are mutated.
      * 
      * @param B
      *            the addend
@@ -263,7 +263,7 @@ public interface MatrixDConduct {
 
     /**
      * {@code A * B + C} convenience multiplication plus addition. None of the
-     * operands is mutated.
+     * operands are mutated.
      * 
      * @param B
      *            second multiplicand
@@ -275,7 +275,7 @@ public interface MatrixDConduct {
 
     /**
      * {@code A * B - C} convenience multiplication and subtraction. None of
-     * the operands is mutated.
+     * the operands are mutated.
      * 
      * @param B
      *            second multiplicand
@@ -287,7 +287,7 @@ public interface MatrixDConduct {
     MatrixD timesMinus(MatrixD B, MatrixD C);
 
     /**
-     * {@code A - B} convenience subtraction. None of the operands is mutated.
+     * {@code A - B} convenience subtraction. None of the operands are mutated.
      * 
      * @param B
      *            the subtrahend
@@ -296,7 +296,7 @@ public interface MatrixDConduct {
     MatrixD minus(MatrixD B);
 
     /**
-     * Unary minus {@code -A} convenience method. None of the operands is
+     * Unary minus {@code -A} convenience method. None of the operands are
      * mutated.
      * 
      * @return {@code -A}
@@ -306,14 +306,14 @@ public interface MatrixDConduct {
     /**
      * Returns {@code |A|}, i.e. a matrix where all elements
      * <code>a<sub>ij</sub></code> have been replaced by their absolute value
-     * <code>|a<sub>ij</sub>|</code>. None of the operands is mutated.
+     * <code>|a<sub>ij</sub>|</code>. None of the operands are mutated.
      * 
      * @return {@code |A|}, the matrix of absolute values of {@code A}
      */
     MatrixD abs();
 
     /**
-     * Returns <code>A<sup>T</sup></code>. None of the operands is mutated.
+     * Returns <code>A<sup>T</sup></code>. None of the operands are mutated.
      * 
      * @return the transposed matrix
      */
@@ -321,7 +321,7 @@ public interface MatrixDConduct {
 
     /**
      * Returns <code>A<sup>-1</sup></code> for quadratic matrices. None of the
-     * operands is mutated.
+     * operands are mutated.
      * 
      * @return the inverse of this matrix if it is quadratic
      * @throws IllegalArgumentException
@@ -366,7 +366,7 @@ public interface MatrixDConduct {
      * The new shape must be compatible with the original shape in the sense
      * that {@code rows x cols == this.numRows() x this.numColumns()} is
      * required, otherwise an {@code IllegalArgumentException} is thrown. None
-     * of the operands is mutated.
+     * of the operands are mutated.
      * 
      * @param rows
      *            the desired number of rows of the reshaped matrix
