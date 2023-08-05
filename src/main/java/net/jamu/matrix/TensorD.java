@@ -608,7 +608,7 @@ public class TensorD extends TensorBase {
 
     /**
      * <code>A * B<sup>T</sup></code> multiplication. None of the operands is
-     * mutated.If there is a mismatch between the depths of the participating
+     * mutated. If there is a mismatch between the depths of the participating
      * tensors the shortest depth is chosen to reduce the operation to a common
      * denominator (in which case the excess layers of the longer tensor are
      * left untouched). For the reversed order multiplication
@@ -620,6 +620,22 @@ public class TensorD extends TensorBase {
      */
     public TensorD timesTransposed(TensorD B) {
         return transBmult(B, create(this.rows, B.numRows(), Math.min(this.depth, B.depth)));
+    }
+
+    /**
+     * <code>A<sup>T</sup> * B</code> multiplication. None of the operands is
+     * mutated. If there is a mismatch between the depths of the participating
+     * tensors the shortest depth is chosen to reduce the operation to a common
+     * denominator (in which case the excess layers of the longer tensor are
+     * left untouched). For the reversed order multiplication
+     * <code>A * B<sup>T</sup></code> use {@link #timesTransposed(TensorD)}.
+     * 
+     * @param B
+     *            second multiplicand
+     * @return the result of the multiplication
+     */
+    public TensorD transposedTimes(TensorD B) {
+        return transAmult(B, create(this.cols, B.numColumns(), Math.min(this.depth, B.depth)));
     }
 
     /**
