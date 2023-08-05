@@ -607,6 +607,22 @@ public class TensorF extends TensorBase {
     }
 
     /**
+     * <code>A * B<sup>T</sup></code> multiplication. None of the operands is
+     * mutated.If there is a mismatch between the depths of the participating
+     * tensors the shortest depth is chosen to reduce the operation to a common
+     * denominator (in which case the excess layers of the longer tensor are
+     * left untouched). For the reversed order multiplication
+     * <code>A<sup>T</sup> * B</code> use {@link #transposedTimes(TensorF)}.
+     * 
+     * @param B
+     *            second multiplicand
+     * @return the result of the multiplication
+     */
+    public TensorF timesTransposed(TensorF B) {
+        return transBmult(B, create(this.rows, B.numRows(), Math.min(this.depth, B.depth)));
+    }
+
+    /**
      * Set all elements of this tensor to {@code 0.0} mutating this tensor.
      * 
      * @return this tensor (mutated)
@@ -680,9 +696,9 @@ public class TensorF extends TensorBase {
         return copyForAppend(new float[checkNewArrayLength(B)]);
     }
 
-    private float[] growAndCopyForAppend(int rows, int cols) {
-        return copyForAppend(new float[checkNewArrayLength(rows, cols)]);
-    }
+//    private float[] growAndCopyForAppend(int rows, int cols) {
+//        return copyForAppend(new float[checkNewArrayLength(rows, cols)]);
+//    }
 
     private float[] copyForAppend(float[] newArray) {
         System.arraycopy(a, 0, newArray, 0, length);
