@@ -78,7 +78,7 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * Create a new {@code TensorF} from the passed {@code TensorF}. The
+     * Create a new {@code TensorD} from the passed {@code TensorD}. The
      * underlying storage of the argument gets copied.
      * 
      * @param A
