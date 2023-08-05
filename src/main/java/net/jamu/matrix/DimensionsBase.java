@@ -218,7 +218,7 @@ public abstract class DimensionsBase implements MatrixDimensions {
         this.formatString = Objects.requireNonNull(formatString);
     }
 
-    protected int idx(int row, int col) {
+    protected final int idx(int row, int col) {
         return col * rows + row;
     }
 

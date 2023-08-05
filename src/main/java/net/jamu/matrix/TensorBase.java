@@ -74,7 +74,7 @@ public abstract class TensorBase implements TensorDimensions {
      * {@inheritDoc}
      */
     @Override
-    public int stride() {
+    public final int stride() {
         return rows * cols;
     }
 
@@ -83,7 +83,7 @@ public abstract class TensorBase implements TensorDimensions {
         return stride() * layer;
     }
 
-    protected int idx(int row, int col, int layer) {
+    protected final int idx(int row, int col, int layer) {
         return layer * stride() + col * rows + row;
     }
 
