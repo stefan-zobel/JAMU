@@ -899,6 +899,28 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF hadamardTransposed(MatrixF B) {
+        Checks.checkTrans(this, B);
+        MatrixF C = create(this.rows, this.cols);
+        float[] _a = a;
+        float[] _b = B.getArrayUnsafe();
+        float[] _c = C.getArrayUnsafe();
+        DimensionsBase bdb = (DimensionsBase) B;
+        int _cols = cols;
+        int _rows = rows;
+        for (int col = 0; col < _cols; ++col) {
+            for (int row = 0; row < _rows; ++row) {
+                int idx = idx(row, col);
+                _c[idx] = _a[idx] * _b[bdb.idx(col, row)];
+            }
+        }
+        return C;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixF times(ComplexMatrixF B) {
         Checks.checkMult(this, B);
         ComplexMatrixF Ac = Matrices.convertToComplex(this);

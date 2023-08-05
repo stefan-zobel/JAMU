@@ -341,6 +341,18 @@ public interface MatrixFConduct {
     MatrixF hadamard(MatrixF B);
 
     /**
+     * <code>A</code> &SmallCircle; <code>B<sup>T</sup></code> Hadamard
+     * multiplication (also known as element-wise product) between this matrix
+     * ({@code A}) and the transpose of {@code B} (<code>B<sup>T</sup></code>).
+     * 
+     * @param B
+     *            the matrix whose transpose is multiplied with this matrix
+     * @return the result of the Hadamard multiplication
+     * @since 1.4.0
+     */
+    MatrixF hadamardTransposed(MatrixF B);
+
+    /**
      * Reshapes this matrix into a new matrix of dimension {@code rows x cols}
      * where the elements in this matrix are read in Fortran-style column-major
      * order. For example, the {@code 3 x 2} matrix {@code A}
