@@ -580,7 +580,7 @@ public class TensorD extends TensorBase {
      * element-wise product) of this tensor (A) and B. If there is a mismatch
      * between the depths of the participating tensors the shortest depth is
      * chosen to reduce the operation to a common denominator (in which case the
-     * excess layers of the longer tensors are left untouched).
+     * excess layers of the longer tensor are left untouched).
      * 
      * @param B
      *            the tensor this tensor is multiplied with
@@ -589,6 +589,21 @@ public class TensorD extends TensorBase {
     public TensorD hadamard(TensorD B) {
         Checks.checkEqualDimension(this, B);
         return hadamard(B, create(rows, cols, Math.min(this.depth, B.depth)));
+    }
+
+    /**
+     * {@code A * B} convenience multiplication. None of the operands is
+     * mutated. If there is a mismatch between the depths of the participating
+     * tensors the shortest depth is chosen to reduce the operation to a common
+     * denominator (in which case the excess layers of the longer tensor are
+     * left untouched).
+     * 
+     * @param B
+     *            second multiplicand
+     * @return the result of the multiplication
+     */
+    public TensorD times(TensorD B) {
+        return mult(B, create(this.rows, B.numColumns(), Math.min(this.depth, B.depth)));
     }
 
     /**
@@ -605,7 +620,7 @@ public class TensorD extends TensorBase {
      * {@code A = alpha * A}
      * 
      * @param alpha
-     *            scaling factor
+     *            the scaling factor to apply
      * @return this tensor (mutated)
      */
     public TensorD scaleInplace(double alpha) {
