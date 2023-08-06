@@ -626,6 +626,40 @@ public class TensorD extends TensorBase {
     }
 
     /**
+     * <code>A<sup>T</sup></code> &SmallCircle; <code>B</code> Hadamard
+     * multiplication (also known as element-wise product) between this tensor
+     * ({@code A}) transposed (<code>A<sup>T</sup></code>) and {@code B}. If
+     * there is a mismatch between the depths of the participating tensors the
+     * shortest depth is chosen to reduce the operation to a common denominator
+     * (in which case the excess layers of the longer tensor are left
+     * untouched).
+     * 
+     * @param B
+     *            the tensor which is multiplied with this tensor transposed
+     * @return the result of the Hadamard multiplication
+     */
+    public TensorD transposedHadamard(TensorD B) {
+        Checks.checkTrans(this, B);
+        int _rows = B.numRows();
+        int _cols = B.numColumns();
+        int _depth = Math.min(this.depth, B.depth);
+        TensorD C = create(_rows, _cols, _depth);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        double[] _c = C.getArrayUnsafe();
+        TensorBase btb = (TensorBase) B;
+        for (int layer = 0; layer < _depth; ++layer) {
+            for (int col = 0; col < _cols; ++col) {
+                for (int row = 0; row < _rows; ++row) {
+                    int idx = btb.idx(row, col, layer);
+                    _c[idx] = _b[idx] * _a[idx(col, row, layer)];
+                }
+            }
+        }
+        return C;
+    }
+
+    /**
      * {@code A * B} convenience multiplication. None of the operands are
      * mutated. If there is a mismatch between the depths of the participating
      * tensors the shortest depth is chosen to reduce the operation to a common
