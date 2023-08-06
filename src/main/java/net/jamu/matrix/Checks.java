@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2021 Stefan Zobel
+ * Copyright 2019, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -293,20 +293,20 @@ final class Checks {
         }
     }
 
-    static void throwInfiniteOrNan(Dimensions A, int index) {
+    static void throwInfiniteOrNan(MatrixDimensions A, int index) {
         int row = rowIdx(A, index);
         int col = colIdx(A, index, row);
         throw new IllegalArgumentException("Infinite or NaN at (" + row + ", " + col + ")");
     }
 
-    static int rowIdx(Dimensions A, int index) {
+    static int rowIdx(MatrixDimensions A, int index) {
         if (A.isComplex()) {
             index = index / 2;
         }
         return index % A.numRows();
     }
 
-    static int colIdx(Dimensions A, int index, int rowIdx) {
+    static int colIdx(MatrixDimensions A, int index, int rowIdx) {
         if (A.isComplex()) {
             index = index / 2;
         }

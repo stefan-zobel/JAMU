@@ -16,21 +16,25 @@
 package net.jamu.matrix;
 
 /**
- * Basic properties of a matrix or a tensor related to its dimensions.
+ * Basic tensor properties mostly related to the dimension of a tensor.
+ * 
+ * @since 1.4.0
  */
-public interface Dimensions {
+public interface TensorDimensions extends Dimensions {
 
     /**
-     * Returns the number of columns (&gt;= 1) of this matrix or tensor.
+     * Returns the depth (&gt;= 1) (i.e., the number of matrices) of this
+     * tensor.
      * 
-     * @return the number of matrix or tensor columns
+     * @return the depth of this tensor
      */
-    int numColumns();
+    public int numDepth();
 
     /**
-     * Returns the number of rows (&gt;= 1) of this matrix or tensor.
+     * Returns the offset (in number of array elements) from the start of one
+     * matrix to the start of the next matrix.
      * 
-     * @return the number of matrix or tensor rows
+     * @return the offset to the next matrix
      */
-    int numRows();
+    public int stride();
 }

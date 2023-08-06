@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Stefan Zobel
+ * Copyright 2021, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -523,7 +523,7 @@ public final class Statistics {
         return A;
     }
 
-    private static int checkNotRowVector(Dimensions A) {
+    private static int checkNotRowVector(MatrixDimensions A) {
         int rows = A.numRows();
         if (rows == 1) {
             throw new IllegalArgumentException("Can't compute zscore for a row vector");

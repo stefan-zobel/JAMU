@@ -649,6 +649,18 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD clampInplace(double min, double max) {
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = Math.min(Math.max(_a[i], min), max);
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD zeroizeSubEpsilonInplace(int k) {
         if (k < 1) {
             throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);
@@ -881,6 +893,50 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     @Override
     public MatrixD hadamard(MatrixD B) {
         return hadamard(B, create(rows, cols));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD hadamardTransposed(MatrixD B) {
+        Checks.checkTrans(this, B);
+        int _rows = rows;
+        int _cols = cols;
+        MatrixD C = create(_rows, _cols);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        double[] _c = C.getArrayUnsafe();
+        DimensionsBase bdb = (DimensionsBase) B;
+        for (int col = 0; col < _cols; ++col) {
+            for (int row = 0; row < _rows; ++row) {
+                int idx = idx(row, col);
+                _c[idx] = _a[idx] * _b[bdb.idx(col, row)];
+            }
+        }
+        return C;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD transposedHadamard(MatrixD B) {
+        Checks.checkTrans(this, B);
+        int _rows = B.numRows();
+        int _cols = B.numColumns();
+        MatrixD C = create(_rows, _cols);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        double[] _c = C.getArrayUnsafe();
+        DimensionsBase bdb = (DimensionsBase) B;
+        for (int col = 0; col < _cols; ++col) {
+            for (int row = 0; row < _rows; ++row) {
+                int idx = bdb.idx(row, col);
+                _c[idx] = _b[idx] * _a[idx(col, row)];
+            }
+        }
+        return C;
     }
 
     /**

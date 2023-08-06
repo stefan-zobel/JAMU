@@ -23,7 +23,7 @@ import net.frobenius.NotConvergedException;
  * storage layout. The addressing is zero based. All operations throw a
  * {@code NullPointerException} if any of the method arguments is {@code null}.
  */
-public interface MatrixD extends Dimensions, MatrixDConduct {
+public interface MatrixD extends MatrixDimensions, MatrixDConduct {
 
     /**
      * Get the single element as a scalar if this matrix is 1-by-1.
@@ -670,6 +670,18 @@ public interface MatrixD extends Dimensions, MatrixDConduct {
      *             if this matrix is not quadratic
      */
     double trace();
+
+    /**
+     * Clamps all elements in this matrix into the range {@code [min, max]}.
+     * 
+     * @param min
+     *            lower-bound of the range to be clamped to
+     * @param max
+     *            upper-bound of the range to be clamped to
+     * @return this matrix clamped in-place
+     * @since 1.4.0
+     */
+    MatrixD clampInplace(double min, double max);
 
     /**
      * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-53</sup></code>

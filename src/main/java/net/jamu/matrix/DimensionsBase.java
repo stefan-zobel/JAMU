@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2021 Stefan Zobel
+ * Copyright 2019, 2023 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package net.jamu.matrix;
 import java.util.Objects;
 
 /**
- * Abstract base implementation of the {@code Dimensions} interface. Note that
+ * Abstract base implementation of the {@code MatrixDimensions} interface. Note that
  * all addressing is zero based and that the numbers of rows and columns must be
  * strictly positive.
  */
-public abstract class DimensionsBase implements Dimensions {
+public abstract class DimensionsBase implements MatrixDimensions {
 
     /** The IEEE 754 machine epsilon from Cephes: (2^-53) */
     protected static final double MACH_EPS_DBL = 1.11022302462515654042e-16;
@@ -36,7 +36,7 @@ public abstract class DimensionsBase implements Dimensions {
     private String formatString;
 
     /**
-     * Constructs a new {@link Dimensions} implementation which checks that the
+     * Constructs a new {@link MatrixDimensions} implementation which checks that the
      * {@code rows} and {@code cols} dimension parameters are strictly positive.
      * 
      * @param rows
@@ -44,7 +44,7 @@ public abstract class DimensionsBase implements Dimensions {
      * @param cols
      *            number of matrix columns
      * @param complex
-     *            {@code false} if this {@code Dimensions} implementation is a
+     *            {@code false} if this {@code MatrixDimensions} implementation is a
      *            real matrix, otherwise {@code true}
      * @param type
      *            the class instance representing the primitive type (either
@@ -218,7 +218,7 @@ public abstract class DimensionsBase implements Dimensions {
         this.formatString = Objects.requireNonNull(formatString);
     }
 
-    protected int idx(int row, int col) {
+    protected final int idx(int row, int col) {
         return col * rows + row;
     }
 
