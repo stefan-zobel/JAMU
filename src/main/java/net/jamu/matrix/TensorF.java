@@ -16,6 +16,7 @@
 package net.jamu.matrix;
 
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 
 import net.dedekind.blas.Blas;
 import net.frobenius.TTrans;
@@ -772,6 +773,24 @@ public class TensorF extends TensorBase {
         return new TensorF(this);
     }
 
+    /**
+     * Randomly permutes the matrices in this tensor in place using a default
+     * source of randomness. All permutations occur with approximately equal
+     * probability.
+     * 
+     * @return this tensor with matrices randomly permuted
+     */
+    public TensorF shuffle() {
+        int _stride = stride();
+        float[] _a = a;
+        float[] tmp = new float[_stride];
+        ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        for (int i = depth; i > 1; --i) {
+            swap((i - 1) * _stride, _a, tmp, _stride, rnd.nextInt(i) * _stride);
+        }
+        return this;
+    }
+
     private TensorF create(int rows, int cols, int depth) {
         return new TensorF(rows, cols, depth);
     }
@@ -787,5 +806,13 @@ public class TensorF extends TensorBase {
     private float[] copyForAppend(float[] newArray) {
         System.arraycopy(a, 0, newArray, 0, length);
         return newArray;
+    }
+
+    private static void swap(int aoff1, float[] a, float[] tmp, int len, int aoff2) {
+        if (aoff1 != aoff2) {
+            System.arraycopy(a, aoff1, tmp, 0, len);
+            System.arraycopy(a, aoff2, a, aoff1, len);
+            System.arraycopy(tmp, 0, a, aoff2, len);
+        }
     }
 }
