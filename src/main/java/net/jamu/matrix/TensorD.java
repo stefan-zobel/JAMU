@@ -16,6 +16,7 @@
 package net.jamu.matrix;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import net.dedekind.blas.Blas;
@@ -779,12 +780,30 @@ public class TensorD extends TensorBase {
      * probability.
      * 
      * @return this tensor with matrices randomly permuted
+     * @since 1.4.1
      */
     public TensorD shuffle() {
+        return shuffle(null);
+    }
+
+    /**
+     * Randomly permutes the matrices in this tensor in place using a default
+     * source of randomness seeded by the given {@code seed}. All permutations
+     * occur with approximately equal probability.
+     * 
+     * @param seed the initial seed to use for the PRNG
+     * @return this tensor with matrices randomly permuted
+     * @since 1.4.1
+     */
+    public TensorD shuffle(long seed) {
+        return shuffle(new Random(seed));
+    }
+
+    private TensorD shuffle(Random rng) {
         int _stride = stride();
         double[] _a = a;
         double[] tmp = new double[_stride];
-        ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
         for (int i = depth; i > 1; --i) {
             swap((i - 1) * _stride, _a, tmp, _stride, rnd.nextInt(i) * _stride);
         }
