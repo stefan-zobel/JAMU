@@ -772,6 +772,73 @@ public class TensorF extends TensorBase {
         return new TensorF(this);
     }
 
+    /**
+     * Randomly permutes the matrices in this tensor in place using a default
+     * source of randomness. All permutations occur with approximately equal
+     * probability.
+     * 
+     * @return this tensor with matrices randomly permuted
+     * @since 1.4.1
+     */
+    public TensorF shuffle() {
+        return shuffle(null);
+    }
+
+    /**
+     * Randomly permutes the matrices in this tensor in place using a default
+     * source of randomness seeded by the given {@code seed}. All permutations
+     * occur with approximately equal probability.
+     * 
+     * @param seed the initial seed to use for the PRNG
+     * @return this tensor with matrices randomly permuted
+     * @since 1.4.1
+     */
+    public TensorF shuffle(long seed) {
+        return shuffle(new XoShiRo256StarStar(seed));
+    }
+
+    /**
+     * Rescales all elements in this tensor into the range
+     * {@code [lowerBound, upperBound]}.
+     * 
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return this tensor with all elements rescaled in-place
+     */
+    public TensorF rescaleInplace(float lowerBound, float upperBound) {
+        float[] _a = a;
+        float _min = Float.MAX_VALUE;
+        float _max = -Float.MAX_VALUE;
+        for (int i = 0; i < _a.length; ++i) {
+            float x = a[i];
+            if (x < _min) {
+                _min = x;
+            }
+            if (x > _max) {
+                _max = x;
+            }
+        }
+        float scale = upperBound - lowerBound;
+        float dataScale = (_min == _max) ? Float.MIN_NORMAL : (_max - _min);
+        for (int i = 0; i < _a.length; ++i) {
+            a[i] = lowerBound + (((a[i] - _min) * scale) / dataScale);
+        }
+        return this;
+    }
+
+    private TensorF shuffle(XoShiRo256StarStar rng) {
+        int _stride = stride();
+        float[] _a = a;
+        float[] tmp = new float[_stride];
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        for (int i = depth; i > 1; --i) {
+            swap((i - 1) * _stride, _a, tmp, _stride, rnd.nextInt(i) * _stride);
+        }
+        return this;
+    }
+
     private TensorF create(int rows, int cols, int depth) {
         return new TensorF(rows, cols, depth);
     }
@@ -787,5 +854,13 @@ public class TensorF extends TensorBase {
     private float[] copyForAppend(float[] newArray) {
         System.arraycopy(a, 0, newArray, 0, length);
         return newArray;
+    }
+
+    private static void swap(int aoff1, float[] a, float[] tmp, int len, int aoff2) {
+        if (aoff1 != aoff2) {
+            System.arraycopy(a, aoff1, tmp, 0, len);
+            System.arraycopy(a, aoff2, a, aoff1, len);
+            System.arraycopy(tmp, 0, a, aoff2, len);
+        }
     }
 }

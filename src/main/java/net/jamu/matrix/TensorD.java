@@ -772,6 +772,73 @@ public class TensorD extends TensorBase {
         return new TensorD(this);
     }
 
+    /**
+     * Randomly permutes the matrices in this tensor in place using a default
+     * source of randomness. All permutations occur with approximately equal
+     * probability.
+     * 
+     * @return this tensor with matrices randomly permuted
+     * @since 1.4.1
+     */
+    public TensorD shuffle() {
+        return shuffle(null);
+    }
+
+    /**
+     * Randomly permutes the matrices in this tensor in place using a default
+     * source of randomness seeded by the given {@code seed}. All permutations
+     * occur with approximately equal probability.
+     * 
+     * @param seed the initial seed to use for the PRNG
+     * @return this tensor with matrices randomly permuted
+     * @since 1.4.1
+     */
+    public TensorD shuffle(long seed) {
+        return shuffle(new XoShiRo256StarStar(seed));
+    }
+
+    /**
+     * Rescales all elements in this tensor into the range
+     * {@code [lowerBound, upperBound]}.
+     * 
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return this tensor with all elements rescaled in-place
+     */
+    public TensorD rescaleInplace(double lowerBound, double upperBound) {
+        double[] _a = a;
+        double _min = Double.MAX_VALUE;
+        double _max = -Double.MAX_VALUE;
+        for (int i = 0; i < _a.length; ++i) {
+            double x = a[i];
+            if (x < _min) {
+                _min = x;
+            }
+            if (x > _max) {
+                _max = x;
+            }
+        }
+        double scale = upperBound - lowerBound;
+        double dataScale = (_min == _max) ? Double.MIN_NORMAL : (_max - _min);
+        for (int i = 0; i < _a.length; ++i) {
+            a[i] = lowerBound + (((a[i] - _min) * scale) / dataScale);
+        }
+        return this;
+    }
+
+    private TensorD shuffle(XoShiRo256StarStar rng) {
+        int _stride = stride();
+        double[] _a = a;
+        double[] tmp = new double[_stride];
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        for (int i = depth; i > 1; --i) {
+            swap((i - 1) * _stride, _a, tmp, _stride, rnd.nextInt(i) * _stride);
+        }
+        return this;
+    }
+
     private TensorD create(int rows, int cols, int depth) {
         return new TensorD(rows, cols, depth);
     }
@@ -787,5 +854,13 @@ public class TensorD extends TensorBase {
     private double[] copyForAppend(double[] newArray) {
         System.arraycopy(a, 0, newArray, 0, length);
         return newArray;
+    }
+
+    private static void swap(int aoff1, double[] a, double[] tmp, int len, int aoff2) {
+        if (aoff1 != aoff2) {
+            System.arraycopy(a, aoff1, tmp, 0, len);
+            System.arraycopy(a, aoff2, a, aoff1, len);
+            System.arraycopy(tmp, 0, a, aoff2, len);
+        }
     }
 }
