@@ -802,9 +802,9 @@ public class TensorF extends TensorBase {
      * {@code [lowerBound, upperBound]}.
      * 
      * @param lowerBound
-     *            the minimum value for an element after rescaling
+     *            the minimum value of an element after rescaling
      * @param upperBound
-     *            the maximum value for an element after rescaling
+     *            the maximum value of an element after rescaling
      * @return this tensor with all elements rescaled in-place
      */
     public TensorF rescaleInplace(float lowerBound, float upperBound) {
