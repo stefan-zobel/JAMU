@@ -16,8 +16,6 @@
 package net.jamu.matrix;
 
 import java.util.Arrays;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import net.dedekind.blas.Blas;
 import net.frobenius.TTrans;
@@ -796,14 +794,45 @@ public class TensorD extends TensorBase {
      * @since 1.4.1
      */
     public TensorD shuffle(long seed) {
-        return shuffle(new Random(seed));
+        return shuffle(new XoShiRo256StarStar(seed));
     }
 
-    private TensorD shuffle(Random rng) {
+    /**
+     * Rescales all elements in this tensor into the range
+     * {@code [lowerBound, upperBound]}.
+     * 
+     * @param lowerBound
+     *            the minimum value for an element after rescaling
+     * @param upperBound
+     *            the maximum value for an element after rescaling
+     * @return this tensor with all elements rescaled in-place
+     */
+    public TensorD rescaleInplace(double lowerBound, double upperBound) {
+        double[] _a = a;
+        double _min = Double.MAX_VALUE;
+        double _max = -Double.MAX_VALUE;
+        for (int i = 0; i < _a.length; ++i) {
+            double x = a[i];
+            if (x < _min) {
+                _min = x;
+            }
+            if (x > _max) {
+                _max = x;
+            }
+        }
+        double scale = upperBound - lowerBound;
+        double dataScale = (_min == _max) ? Double.MIN_NORMAL : (_max - _min);
+        for (int i = 0; i < _a.length; ++i) {
+            a[i] = lowerBound + (((a[i] - _min) * scale) / dataScale);
+        }
+        return this;
+    }
+
+    private TensorD shuffle(XoShiRo256StarStar rng) {
         int _stride = stride();
         double[] _a = a;
         double[] tmp = new double[_stride];
-        Random rnd = (rng == null) ? ThreadLocalRandom.current() : rng;
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
         for (int i = depth; i > 1; --i) {
             swap((i - 1) * _stride, _a, tmp, _stride, rnd.nextInt(i) * _stride);
         }

@@ -31,7 +31,7 @@ import java.util.Random;
  * @since 1.4.1
  */
 @SuppressWarnings("serial")
-public final class XoShiRo256StarStar extends Random {
+final class XoShiRo256StarStar extends Random {
 
     private static final double DOUBLE_NORM = 1.0 / (1L << 53);
     // the golden ratio scaled to 64 bits
