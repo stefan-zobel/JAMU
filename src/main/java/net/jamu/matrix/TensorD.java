@@ -806,6 +806,7 @@ public class TensorD extends TensorBase {
      * @param upperBound
      *            the maximum value of an element after rescaling
      * @return this tensor with all elements rescaled in-place
+     * @since 1.4.1
      */
     public TensorD rescaleInplace(double lowerBound, double upperBound) {
         double[] _a = a;

@@ -806,6 +806,7 @@ public class TensorF extends TensorBase {
      * @param upperBound
      *            the maximum value of an element after rescaling
      * @return this tensor with all elements rescaled in-place
+     * @since 1.4.1
      */
     public TensorF rescaleInplace(float lowerBound, float upperBound) {
         float[] _a = a;
