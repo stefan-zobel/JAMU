@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stefan Zobel
+ * Copyright 2023, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -751,6 +751,19 @@ public class TensorD extends TensorBase {
             _a[i] = f.apply(_a[i]);
         }
         return this;
+    }
+
+    /**
+     * Returns {@code f(A)} where the scalar function {@code f} is applied to
+     * each element on a copy of {@code A}.
+     * 
+     * @param f
+     *            the scalar function to apply to each element on a copy of this
+     *            tensor
+     * @return a copy of this tensor where f has been applied to each element
+     */
+    public TensorD map(DFunction f) {
+        return new TensorD(this).mapInplace(f);
     }
 
     /**
