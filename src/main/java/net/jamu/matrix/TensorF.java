@@ -738,6 +738,22 @@ public class TensorF extends TensorBase {
     }
 
     /**
+     * {@code A = f(A)} where the scalar function {@code f} is applied to each
+     * element of {@code A}.
+     * 
+     * @param f
+     *            the scalar function to apply to each element of this tensor
+     * @return this tensor (mutated)
+     */
+    public TensorF mapInplace(FFunction f) {
+        float[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = f.apply(_a[i]);
+        }
+        return this;
+    }
+
+    /**
      * Clamps all elements in this tensor into the range {@code [min, max]}.
      * 
      * @param min
