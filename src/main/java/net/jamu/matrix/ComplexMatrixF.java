@@ -638,7 +638,7 @@ public interface ComplexMatrixF extends MatrixDimensions, ComplexMatrixFConduct 
     ComplexMatrixF expm();
 
     /**
-     * Hadamard product {@code C = A} &SmallCircle; {@code B} (also known as
+     * Hadamard product {@code C = A} \u2218 {@code B} (also known as
      * element-wise product) of this matrix (A) and B.
      * 
      * @param B

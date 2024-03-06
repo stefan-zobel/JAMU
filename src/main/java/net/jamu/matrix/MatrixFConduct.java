@@ -330,7 +330,7 @@ public interface MatrixFConduct {
     MatrixF inverse();
 
     /**
-     * Hadamard product {@code A} &SmallCircle; {@code B} (also known as
+     * Hadamard product {@code A} \u2218 {@code B} (also known as
      * element-wise product) of this matrix (A) and B.
      * 
      * @param B
@@ -341,7 +341,7 @@ public interface MatrixFConduct {
     MatrixF hadamard(MatrixF B);
 
     /**
-     * <code>A</code> &SmallCircle; <code>B<sup>T</sup></code> Hadamard
+     * <code>A</code> \u2218 <code>B<sup>T</sup></code> Hadamard
      * multiplication (also known as element-wise product) between this matrix
      * ({@code A}) and the transpose of {@code B} (<code>B<sup>T</sup></code>).
      * 
@@ -353,7 +353,7 @@ public interface MatrixFConduct {
     MatrixF hadamardTransposed(MatrixF B);
 
     /**
-     * <code>A<sup>T</sup></code> &SmallCircle; <code>B</code> Hadamard
+     * <code>A<sup>T</sup></code> \u2218 <code>B</code> Hadamard
      * multiplication (also known as element-wise product) between this matrix
      * ({@code A}) transposed (<code>A<sup>T</sup></code>) and {@code B}.
      * 

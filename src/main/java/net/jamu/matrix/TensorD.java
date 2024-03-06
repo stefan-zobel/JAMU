@@ -549,7 +549,7 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * Hadamard product {@code C = A} &SmallCircle; {@code B} (also known as
+     * Hadamard product {@code C = A} \u2218 {@code B} (also known as
      * element-wise product) of this tensor (A) and B. If there is a mismatch
      * between the depths of the participating tensors the shortest depth is
      * chosen to reduce the operation to a common denominator (in which case the
@@ -576,7 +576,7 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * Hadamard product {@code A} &SmallCircle; {@code B} (also known as
+     * Hadamard product {@code A} \u2218 {@code B} (also known as
      * element-wise product) of this tensor (A) and B. If there is a mismatch
      * between the depths of the participating tensors the shortest depth is
      * chosen to reduce the operation to a common denominator (in which case the
@@ -592,7 +592,7 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * <code>A</code> &SmallCircle; <code>B<sup>T</sup></code> Hadamard
+     * <code>A</code> \u2218 <code>B<sup>T</sup></code> Hadamard
      * multiplication (also known as element-wise product) between this tensor
      * ({@code A}) and the transpose of {@code B} (<code>B<sup>T</sup></code>).
      * If there is a mismatch between the depths of the participating tensors
@@ -626,7 +626,7 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * <code>A<sup>T</sup></code> &SmallCircle; <code>B</code> Hadamard
+     * <code>A<sup>T</sup></code> \u2218 <code>B</code> Hadamard
      * multiplication (also known as element-wise product) between this tensor
      * ({@code A}) transposed (<code>A<sup>T</sup></code>) and {@code B}. If
      * there is a mismatch between the depths of the participating tensors the

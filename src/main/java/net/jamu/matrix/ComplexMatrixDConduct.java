@@ -339,7 +339,7 @@ public interface ComplexMatrixDConduct {
     ComplexMatrixD inverse();
 
     /**
-     * Hadamard product {@code A} &SmallCircle; {@code B} (also known as
+     * Hadamard product {@code A} \u2218 {@code B} (also known as
      * element-wise product) of this matrix (A) and B.
      * 
      * @param B
