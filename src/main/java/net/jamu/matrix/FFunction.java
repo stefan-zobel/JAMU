@@ -18,6 +18,8 @@ package net.jamu.matrix;
 /**
  * Represents a function that accepts one {@code float} argument and produces a
  * {@code float} result.
+ *
+ * @since 1.4.2
  */
 @FunctionalInterface
 public interface FFunction {

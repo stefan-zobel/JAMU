@@ -744,6 +744,8 @@ public class TensorD extends TensorBase {
      * @param f
      *            the scalar function to apply to each element of this tensor
      * @return this tensor (mutated)
+     * 
+     * @since 1.4.2
      */
     public TensorD mapInplace(DFunction f) {
         double[] _a = a;
@@ -761,6 +763,8 @@ public class TensorD extends TensorBase {
      *            the scalar function to apply to each element on a copy of this
      *            tensor
      * @return a copy of this tensor where f has been applied to each element
+     * 
+     * @since 1.4.2
      */
     public TensorD map(DFunction f) {
         return new TensorD(this).mapInplace(f);

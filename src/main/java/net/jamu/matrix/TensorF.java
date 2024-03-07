@@ -744,6 +744,8 @@ public class TensorF extends TensorBase {
      * @param f
      *            the scalar function to apply to each element of this tensor
      * @return this tensor (mutated)
+     * 
+     * @since 1.4.2
      */
     public TensorF mapInplace(FFunction f) {
         float[] _a = a;
@@ -761,6 +763,8 @@ public class TensorF extends TensorBase {
      *            the scalar function to apply to each element on a copy of this
      *            tensor
      * @return a copy of this tensor where f has been applied to each element
+     * 
+     * @since 1.4.2
      */
     public TensorF map(FFunction f) {
         return new TensorF(this).mapInplace(f);
