@@ -1043,6 +1043,14 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF map(FFunction f) {
+        return copy().mapInplace(f);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF reshape(int rows, int cols) {
         Checks.checkCompatibleDimension(this, rows, cols);
         return create(rows, cols, Arrays.copyOf(a, a.length));
