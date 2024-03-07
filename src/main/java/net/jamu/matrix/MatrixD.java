@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2023 Stefan Zobel
+ * Copyright 2019, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -682,6 +682,17 @@ public interface MatrixD extends MatrixDimensions, MatrixDConduct {
      * @since 1.4.0
      */
     MatrixD clampInplace(double min, double max);
+
+    /**
+     * {@code A = f(A)} where the scalar function {@code f} is applied to each
+     * element of {@code A}.
+     * 
+     * @param f
+     *            the scalar function to apply to each element of this matrix
+     * @return this matrix (mutated)
+     * @since 1.4.2
+     */
+    MatrixD mapInplace(DFunction f);
 
     /**
      * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-53</sup></code>

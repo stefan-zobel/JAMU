@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2023 Stefan Zobel
+ * Copyright 2019, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -653,6 +653,18 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         double[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
             _a[i] = Math.min(Math.max(_a[i], min), max);
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD mapInplace(DFunction f) {
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = f.apply(_a[i]);
         }
         return this;
     }
