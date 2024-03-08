@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stefan Zobel
+ * Copyright 2023, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -549,7 +549,7 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * Hadamard product {@code C = A} &SmallCircle; {@code B} (also known as
+     * Hadamard product {@code C = A} \u2218 {@code B} (also known as
      * element-wise product) of this tensor (A) and B. If there is a mismatch
      * between the depths of the participating tensors the shortest depth is
      * chosen to reduce the operation to a common denominator (in which case the
@@ -576,7 +576,7 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * Hadamard product {@code A} &SmallCircle; {@code B} (also known as
+     * Hadamard product {@code A} \u2218 {@code B} (also known as
      * element-wise product) of this tensor (A) and B. If there is a mismatch
      * between the depths of the participating tensors the shortest depth is
      * chosen to reduce the operation to a common denominator (in which case the
@@ -592,7 +592,7 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * <code>A</code> &SmallCircle; <code>B<sup>T</sup></code> Hadamard
+     * <code>A</code> \u2218 <code>B<sup>T</sup></code> Hadamard
      * multiplication (also known as element-wise product) between this tensor
      * ({@code A}) and the transpose of {@code B} (<code>B<sup>T</sup></code>).
      * If there is a mismatch between the depths of the participating tensors
@@ -626,7 +626,7 @@ public class TensorD extends TensorBase {
     }
 
     /**
-     * <code>A<sup>T</sup></code> &SmallCircle; <code>B</code> Hadamard
+     * <code>A<sup>T</sup></code> \u2218 <code>B</code> Hadamard
      * multiplication (also known as element-wise product) between this tensor
      * ({@code A}) transposed (<code>A<sup>T</sup></code>) and {@code B}. If
      * there is a mismatch between the depths of the participating tensors the
@@ -735,6 +735,37 @@ public class TensorD extends TensorBase {
             _a[i] *= alpha;
         }
         return this;
+    }
+
+    /**
+     * {@code A = f(A)} where the scalar function {@code f} is applied to each
+     * element of {@code A}.
+     * 
+     * @param f
+     *            the scalar function to apply to each element of this tensor
+     * @return this tensor (mutated)
+     * @since 1.4.2
+     */
+    public TensorD mapInplace(DFunction f) {
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = f.apply(_a[i]);
+        }
+        return this;
+    }
+
+    /**
+     * Returns {@code f(A)} where the scalar function {@code f} is applied to
+     * each element on a copy of {@code A}.
+     * 
+     * @param f
+     *            the scalar function to apply to each element on a copy of this
+     *            tensor
+     * @return a copy of this tensor where f has been applied to each element
+     * @since 1.4.2
+     */
+    public TensorD map(DFunction f) {
+        return new TensorD(this).mapInplace(f);
     }
 
     /**

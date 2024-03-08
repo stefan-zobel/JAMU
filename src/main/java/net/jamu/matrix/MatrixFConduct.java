@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, 2023 Stefan Zobel
+ * Copyright 2020, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -330,7 +330,7 @@ public interface MatrixFConduct {
     MatrixF inverse();
 
     /**
-     * Hadamard product {@code A} &SmallCircle; {@code B} (also known as
+     * Hadamard product {@code A} \u2218 {@code B} (also known as
      * element-wise product) of this matrix (A) and B.
      * 
      * @param B
@@ -341,7 +341,7 @@ public interface MatrixFConduct {
     MatrixF hadamard(MatrixF B);
 
     /**
-     * <code>A</code> &SmallCircle; <code>B<sup>T</sup></code> Hadamard
+     * <code>A</code> \u2218 <code>B<sup>T</sup></code> Hadamard
      * multiplication (also known as element-wise product) between this matrix
      * ({@code A}) and the transpose of {@code B} (<code>B<sup>T</sup></code>).
      * 
@@ -353,7 +353,7 @@ public interface MatrixFConduct {
     MatrixF hadamardTransposed(MatrixF B);
 
     /**
-     * <code>A<sup>T</sup></code> &SmallCircle; <code>B</code> Hadamard
+     * <code>A<sup>T</sup></code> \u2218 <code>B</code> Hadamard
      * multiplication (also known as element-wise product) between this matrix
      * ({@code A}) transposed (<code>A<sup>T</sup></code>) and {@code B}.
      * 
@@ -363,6 +363,18 @@ public interface MatrixFConduct {
      * @since 1.4.0
      */
     MatrixF transposedHadamard(MatrixF B);
+
+    /**
+     * Returns {@code f(A)} where the scalar function {@code f} is applied to
+     * each element on a copy of {@code A}.
+     * 
+     * @param f
+     *            the scalar function to apply to each element on a copy of this
+     *            matrix
+     * @return a copy of this matrix where f has been applied to each element
+     * @since 1.4.2
+     */
+    MatrixF map(FFunction f);
 
     /**
      * Reshapes this matrix into a new matrix of dimension {@code rows x cols}

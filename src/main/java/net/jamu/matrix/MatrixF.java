@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2023 Stefan Zobel
+ * Copyright 2019, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -604,7 +604,7 @@ public interface MatrixF extends MatrixDimensions, MatrixFConduct {
     MatrixF expm();
 
     /**
-     * Hadamard product {@code C = A} &SmallCircle; {@code B} (also known as
+     * Hadamard product {@code C = A} \u2218 {@code B} (also known as
      * element-wise product) of this matrix (A) and B.
      * 
      * @param B
@@ -682,6 +682,17 @@ public interface MatrixF extends MatrixDimensions, MatrixFConduct {
      * @since 1.4.0
      */
     MatrixF clampInplace(float min, float max);
+
+    /**
+     * {@code A = f(A)} where the scalar function {@code f} is applied to each
+     * element of {@code A}.
+     * 
+     * @param f
+     *            the scalar function to apply to each element of this matrix
+     * @return this matrix (mutated)
+     * @since 1.4.2
+     */
+    MatrixF mapInplace(FFunction f);
 
     /**
      * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-24</sup></code>

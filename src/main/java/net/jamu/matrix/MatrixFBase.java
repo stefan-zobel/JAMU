@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2023 Stefan Zobel
+ * Copyright 2019, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -661,6 +661,18 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF mapInplace(FFunction f) {
+        float[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = f.apply(_a[i]);
+        }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF zeroizeSubEpsilonInplace(int k) {
         if (k < 1) {
             throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);
@@ -1025,6 +1037,14 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
             }
         }
         return m;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixF map(FFunction f) {
+        return copy().mapInplace(f);
     }
 
     /**
