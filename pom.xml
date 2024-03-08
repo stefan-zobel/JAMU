@@ -4,7 +4,7 @@
     <groupId>net.sourceforge.streamsupport</groupId>
     <artifactId>jamu</artifactId>
     <packaging>jar</packaging>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.4.2</version>
     <name>JAMU</name>
     <description>Java Matrix Utilities built on top of Intel MKL</description>
     <url>https://github.com/stefan-zobel/JAMU/</url>
