@@ -19,6 +19,8 @@ package net.jamu.matrix;
  * Abstract base implementation of the {@code TensorDimensions} interface. Note
  * that all addressing is zero based and that the numbers of rows and columns
  * and the depth must be strictly positive.
+ * 
+ * @since 1.4.0
  */
 public abstract class TensorBase implements TensorDimensions {
 
