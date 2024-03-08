@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2023 Stefan Zobel
+ * Copyright 2019, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3497,6 +3497,34 @@ public final class Matrices {
             s.setUnsafe(0, col, (float) sum_r, (float) sum_i);
         }
         return s;
+    }
+
+    /**
+     * Returns a {@code 1 x A.numColumns()} matrix that contains the average of
+     * the row sums of matrix {@code A}.
+     * 
+     * @param A
+     *            the matrix whose average of the rows sums should be computed
+     * @return a new matrix of dimension {@code 1 x A.numColumns()} that
+     *         contains the average of the row sums of matrix {@code A}
+     * @since 1.4.2
+     */
+    public static MatrixD rowsAverage(MatrixD A) {
+        return sumRows(A).scaleInplace(A.numRows());
+    }
+
+    /**
+     * Returns a {@code 1 x A.numColumns()} matrix that contains the average of
+     * the row sums of matrix {@code A}.
+     * 
+     * @param A
+     *            the matrix whose average of the rows sums should be computed
+     * @return a new matrix of dimension {@code 1 x A.numColumns()} that
+     *         contains the average of the row sums of matrix {@code A}
+     * @since 1.4.2
+     */
+    public static MatrixF rowsAverage(MatrixF A) {
+        return sumRows(A).scaleInplace(A.numRows());
     }
 
     /**
