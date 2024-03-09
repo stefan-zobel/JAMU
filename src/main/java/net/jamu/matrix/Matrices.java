@@ -3510,7 +3510,7 @@ public final class Matrices {
      * @since 1.4.2
      */
     public static MatrixD rowsAverage(MatrixD A) {
-        return sumRows(A).scaleInplace(A.numRows());
+        return sumRows(A).scaleInplace(1.0 / A.numRows());
     }
 
     /**
@@ -3524,7 +3524,7 @@ public final class Matrices {
      * @since 1.4.2
      */
     public static MatrixF rowsAverage(MatrixF A) {
-        return sumRows(A).scaleInplace(A.numRows());
+        return sumRows(A).scaleInplace(1.0f / A.numRows());
     }
 
     /**
@@ -3656,7 +3656,7 @@ public final class Matrices {
      * @since 1.4.2
      */
     public static MatrixD colsAverage(MatrixD A) {
-        return sumColumns(A).scaleInplace(A.numColumns());
+        return sumColumns(A).scaleInplace(1.0 / A.numColumns());
     }
 
     /**
@@ -3670,7 +3670,7 @@ public final class Matrices {
      * @since 1.4.2
      */
     public static MatrixF colsAverage(MatrixF A) {
-        return sumColumns(A).scaleInplace(A.numColumns());
+        return sumColumns(A).scaleInplace(1.0f / A.numColumns());
     }
 
     private static boolean checkApproxEqualArgs(MatrixDimensions A, MatrixDimensions B, double relTol, double absTol) {
