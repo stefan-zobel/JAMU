@@ -701,13 +701,13 @@ public interface MatrixD extends MatrixDimensions, MatrixDConduct {
      * {@code B} column vector) gets added to this matrix inplace. If
      * {@code B}'s dimension is the same as the dimension of this matrix this
      * operation behaves exactly like {@link #addInplace(MatrixF)}. Any other
-     * dimension of {@code B} is a mismatch and results in an
-     * IllegalArgumentException.
+     * dimension of {@code B} is treated as a mismatch and results in an
+     * IndexOutOfBoundsException.
      * 
      * @param B
      *            a column vector with dimension {@code (this.numRows() x 1)}
      * @return this matrix (mutated)
-     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
      *             if the dimension of {@code B} doesn't match in the sense
      *             described above
      * @since 1.4.4

@@ -176,6 +176,31 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD addBroadcastedVectorInplace(MatrixD B) {
+        Checks.checkSameRows(this, B);
+        if (this.numColumns() == B.numColumns()) {
+            return addInplace(B);
+        }
+        if (B.numColumns() == 1) {
+            double[] _a = a;
+            double[] _b = B.getArrayUnsafe();
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                for (int row = 0; row < rows_; ++row) {
+                    _a[idx(row, col)] += _b[row];
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameColsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD mult(MatrixD B, MatrixD C) {
         return mult(1.0, B, C);
     }
