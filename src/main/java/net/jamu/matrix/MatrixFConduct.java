@@ -377,6 +377,27 @@ public interface MatrixFConduct {
     MatrixF map(FFunction f);
 
     /**
+     * If {@code B} is a column vector with the same number of rows as this
+     * matrix a "stretched" version of {@code B} with a compatible number of
+     * columns (where the "additional" columns are simple copies of the original
+     * {@code B} column vector) gets added to a copy of this matrix. If
+     * {@code B}'s dimension is the same as the dimension of this matrix this
+     * operation behaves exactly like {@link #plus(MatrixF)}. Any other
+     * dimension of {@code B} is treated as a mismatch and results in an
+     * IndexOutOfBoundsException.
+     * 
+     * @param B
+     *            a column vector with dimension {@code (this.numRows() x 1)}
+     * @return a copy of this matrix where the column vector {@code B} has been
+     *         added as described above
+     * @throws IndexOutOfBoundsException
+     *             if the dimension of {@code B} doesn't match in the sense
+     *             described above
+     * @since 1.4.4
+     */
+    MatrixF plusBroadcastedVector(MatrixF B);
+
+    /**
      * Reshapes this matrix into a new matrix of dimension {@code rows x cols}
      * where the elements in this matrix are read in Fortran-style column-major
      * order. For example, the {@code 3 x 2} matrix {@code A}
