@@ -700,7 +700,7 @@ public interface MatrixD extends MatrixDimensions, MatrixDConduct {
      * columns (where the "additional" columns are simple copies of the original
      * {@code B} column vector) gets added to this matrix inplace. If
      * {@code B}'s dimension is the same as the dimension of this matrix this
-     * operation behaves exactly like {@link #addInplace(MatrixF)}. Any other
+     * operation behaves exactly like {@link #addInplace(MatrixD)}. Any other
      * dimension of {@code B} is treated as a mismatch and results in an
      * IndexOutOfBoundsException.
      * 
