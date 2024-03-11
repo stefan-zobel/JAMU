@@ -179,8 +179,7 @@ final class Checks {
 
     static void checkSameCols(Dimensions A, Dimensions B) {
         if (A.numColumns() != B.numColumns()) {
-            throw new IndexOutOfBoundsException(
-                    "A.numColumns() != B.numColumns() (" + A.numColumns() + " != " + B.numColumns() + ")");
+            throw getSameColsException(A, B);
         }
     }
 
@@ -316,6 +315,11 @@ final class Checks {
     static void throwInconsistentRowLengths(int cols, int rowIdx, int rowLength) {
         throw new IllegalArgumentException("All rows must have the same length: " + cols + " (row " + rowIdx
                 + " has length " + rowLength + ")");
+    }
+
+    static IndexOutOfBoundsException getSameColsException(Dimensions A, Dimensions B) {
+        return new IndexOutOfBoundsException(
+                "A.numColumns() != B.numColumns() (" + A.numColumns() + " != " + B.numColumns() + ")");
     }
 
     private Checks() {
