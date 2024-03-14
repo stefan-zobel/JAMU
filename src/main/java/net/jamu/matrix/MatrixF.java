@@ -340,6 +340,22 @@ public interface MatrixF extends MatrixDimensions, MatrixFConduct {
     MatrixF setInplace(MatrixF other);
 
     /**
+     * Overwrite the content of the column indexed by {@code colIdx} with the
+     * content of the column vector {@code colVector} where {@code colVector}
+     * must have dimension {@code this.numRows() x 1}.
+     * 
+     * @param colIdx
+     *            index of the column that will be overwritten by the content of
+     *            {@code colVector}
+     * @param colVector
+     *            a column vector that has the same number of rows as this
+     *            matrix
+     * @return this matrix (mutated)
+     * @since 1.4.4
+     */
+    MatrixF setColumnInplace(int colIdx, MatrixF colVector);
+
+    /**
      * Let {@code this} be a m-by-n matrix and let {@code B} be a j-by-k matrix.
      * Set the entries on and above the main diagonal in {@code this} matrix
      * from the corresponding entries of the {@code B} matrix and set the

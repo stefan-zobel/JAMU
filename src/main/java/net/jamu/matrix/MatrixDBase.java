@@ -423,6 +423,16 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD setColumnInplace(int colIdx, MatrixD colVector) {
+        checkIndex(0, colIdx);
+        Checks.checkCommensurateColVector(this, colVector);
+        return setSubmatrixInplace(0, colIdx, colVector, 0, 0, colVector.endRow(), 0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD setSubmatrixInplace(int r0, int c0, MatrixD B, int rb0, int cb0, int rb1, int cb1) {
         B.checkSubmatrixIndexes(rb0, cb0, rb1, cb1);
         checkIndex(r0, c0);
