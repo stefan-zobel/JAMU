@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, 2023 Stefan Zobel
+ * Copyright 2021, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -521,6 +521,106 @@ public final class Statistics {
             }
         }
         return A;
+    }
+
+    /**
+     * Randomly permutes the columns in matrix {@code A} in place using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability.
+     * 
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @return the matrix argument with columns randomly permuted in place
+     * @since 1.4.4
+     */
+    public static MatrixD shuffeColumnsInplace(MatrixD A) {
+        return shuffeColumnsInplace(A, null);
+    }
+
+    /**
+     * Randomly permutes the columns in matrix {@code A} in place using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability.
+     * 
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @return the matrix argument with columns randomly permuted in place
+     * @since 1.4.4
+     */
+    public static MatrixF shuffeColumnsInplace(MatrixF A) {
+        return shuffeColumnsInplace(A, null);
+    }
+
+    /**
+     * Randomly permutes the columns in matrix {@code A} in place using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability.
+     * 
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return the matrix argument with columns randomly permuted in place
+     * @since 1.4.4
+     */
+    public static MatrixD shuffeColumnsInplace(MatrixD A, long seed) {
+        return shuffeColumnsInplace(A, new XoShiRo256StarStar(seed));
+    }
+
+    /**
+     * Randomly permutes the columns in matrix {@code A} in place using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability.
+     * 
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return the matrix argument with columns randomly permuted in place
+     * @since 1.4.4
+     */
+    public static MatrixF shuffeColumnsInplace(MatrixF A, long seed) {
+        return shuffeColumnsInplace(A, new XoShiRo256StarStar(seed));
+    }
+
+    private static MatrixD shuffeColumnsInplace(MatrixD A, XoShiRo256StarStar rng) {
+        int rows = A.numRows();
+        int cols = A.numColumns();
+        double[] a = A.getArrayUnsafe();
+        double[] tmp = new double[rows];
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        for (int i = cols; i > 1; --i) {
+            swap((i - 1) * rows, a, tmp, rows, rnd.nextInt(i) * rows);
+        }
+        return A;
+    }
+
+    private static MatrixF shuffeColumnsInplace(MatrixF A, XoShiRo256StarStar rng) {
+        int rows = A.numRows();
+        int cols = A.numColumns();
+        float[] a = A.getArrayUnsafe();
+        float[] tmp = new float[rows];
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        for (int i = cols; i > 1; --i) {
+            swap((i - 1) * rows, a, tmp, rows, rnd.nextInt(i) * rows);
+        }
+        return A;
+    }
+
+    private static void swap(int aoff1, double[] a, double[] tmp, int len, int aoff2) {
+        if (aoff1 != aoff2) {
+            System.arraycopy(a, aoff1, tmp, 0, len);
+            System.arraycopy(a, aoff2, a, aoff1, len);
+            System.arraycopy(tmp, 0, a, aoff2, len);
+        }
+    }
+
+    private static void swap(int aoff1, float[] a, float[] tmp, int len, int aoff2) {
+        if (aoff1 != aoff2) {
+            System.arraycopy(a, aoff1, tmp, 0, len);
+            System.arraycopy(a, aoff2, a, aoff1, len);
+            System.arraycopy(tmp, 0, a, aoff2, len);
+        }
     }
 
     private static int checkNotRowVector(MatrixDimensions A) {
