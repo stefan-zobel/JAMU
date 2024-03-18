@@ -533,8 +533,8 @@ public final class Statistics {
      * @return the matrix argument with columns randomly permuted in place
      * @since 1.4.4
      */
-    public static MatrixD shuffeColumnsInplace(MatrixD A) {
-        return shuffeColumnsInplace(A, null);
+    public static MatrixD shuffleColumnsInplace(MatrixD A) {
+        return shuffleColumnsInplace(A, null);
     }
 
     /**
@@ -547,8 +547,8 @@ public final class Statistics {
      * @return the matrix argument with columns randomly permuted in place
      * @since 1.4.4
      */
-    public static MatrixF shuffeColumnsInplace(MatrixF A) {
-        return shuffeColumnsInplace(A, null);
+    public static MatrixF shuffleColumnsInplace(MatrixF A) {
+        return shuffleColumnsInplace(A, null);
     }
 
     /**
@@ -563,8 +563,8 @@ public final class Statistics {
      * @return the matrix argument with columns randomly permuted in place
      * @since 1.4.4
      */
-    public static MatrixD shuffeColumnsInplace(MatrixD A, long seed) {
-        return shuffeColumnsInplace(A, new XoShiRo256StarStar(seed));
+    public static MatrixD shuffleColumnsInplace(MatrixD A, long seed) {
+        return shuffleColumnsInplace(A, new XoShiRo256StarStar(seed));
     }
 
     /**
@@ -579,11 +579,11 @@ public final class Statistics {
      * @return the matrix argument with columns randomly permuted in place
      * @since 1.4.4
      */
-    public static MatrixF shuffeColumnsInplace(MatrixF A, long seed) {
-        return shuffeColumnsInplace(A, new XoShiRo256StarStar(seed));
+    public static MatrixF shuffleColumnsInplace(MatrixF A, long seed) {
+        return shuffleColumnsInplace(A, new XoShiRo256StarStar(seed));
     }
 
-    private static MatrixD shuffeColumnsInplace(MatrixD A, XoShiRo256StarStar rng) {
+    private static MatrixD shuffleColumnsInplace(MatrixD A, XoShiRo256StarStar rng) {
         int rows = A.numRows();
         int cols = A.numColumns();
         double[] a = A.getArrayUnsafe();
@@ -595,7 +595,7 @@ public final class Statistics {
         return A;
     }
 
-    private static MatrixF shuffeColumnsInplace(MatrixF A, XoShiRo256StarStar rng) {
+    private static MatrixF shuffleColumnsInplace(MatrixF A, XoShiRo256StarStar rng) {
         int rows = A.numRows();
         int cols = A.numColumns();
         float[] a = A.getArrayUnsafe();
