@@ -340,6 +340,22 @@ public interface MatrixF extends MatrixDimensions, MatrixFConduct {
     MatrixF setInplace(MatrixF other);
 
     /**
+     * Overwrite the content of the column indexed by {@code colIdx} with the
+     * content of the column vector {@code colVector} where {@code colVector}
+     * must have dimension {@code this.numRows() x 1}.
+     * 
+     * @param colIdx
+     *            index of the column that will be overwritten by the content of
+     *            {@code colVector}
+     * @param colVector
+     *            a column vector that has the same number of rows as this
+     *            matrix
+     * @return this matrix (mutated)
+     * @since 1.4.4
+     */
+    MatrixF setColumnInplace(int colIdx, MatrixF colVector);
+
+    /**
      * Let {@code this} be a m-by-n matrix and let {@code B} be a j-by-k matrix.
      * Set the entries on and above the main diagonal in {@code this} matrix
      * from the corresponding entries of the {@code B} matrix and set the
@@ -693,6 +709,26 @@ public interface MatrixF extends MatrixDimensions, MatrixFConduct {
      * @since 1.4.2
      */
     MatrixF mapInplace(FFunction f);
+
+    /**
+     * If {@code B} is a column vector with the same number of rows as this
+     * matrix a "stretched" version of {@code B} with a compatible number of
+     * columns (where the "additional" columns are simple copies of the original
+     * {@code B} column vector) gets added to this matrix inplace. If
+     * {@code B}'s dimension is the same as the dimension of this matrix this
+     * operation behaves exactly like {@link #addInplace(MatrixF)}. Any other
+     * dimension of {@code B} is treated as a mismatch and results in an
+     * IndexOutOfBoundsException.
+     * 
+     * @param B
+     *            a column vector with dimension {@code (this.numRows() x 1)}
+     * @return this matrix (mutated)
+     * @throws IndexOutOfBoundsException
+     *             if the dimension of {@code B} doesn't match in the sense
+     *             described above
+     * @since 1.4.4
+     */
+    MatrixF addBroadcastedVectorInplace(MatrixF B);
 
     /**
      * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-24</sup></code>

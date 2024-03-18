@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, 2023 Stefan Zobel
+ * Copyright 2020, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -433,6 +433,16 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
             cb++;
         }
         return B;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ComplexMatrixF setColumnInplace(int colIdx, ComplexMatrixF colVector) {
+        checkIndex(0, colIdx);
+        Checks.checkCommensurateColVector(this, colVector);
+        return setSubmatrixInplace(0, colIdx, colVector, 0, 0, colVector.endRow(), 0);
     }
 
     /**

@@ -176,6 +176,31 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF addBroadcastedVectorInplace(MatrixF B) {
+        Checks.checkSameRows(this, B);
+        if (this.numColumns() == B.numColumns()) {
+            return addInplace(B);
+        }
+        if (B.numColumns() == 1) {
+            float[] _a = a;
+            float[] _b = B.getArrayUnsafe();
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                for (int row = 0; row < rows_; ++row) {
+                    _a[idx(row, col)] += _b[row];
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameColsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF mult(MatrixF B, MatrixF C) {
         return mult(1.0f, B, C);
     }
@@ -392,6 +417,16 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
             cb++;
         }
         return B;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixF setColumnInplace(int colIdx, MatrixF colVector) {
+        checkIndex(0, colIdx);
+        Checks.checkCommensurateColVector(this, colVector);
+        return setSubmatrixInplace(0, colIdx, colVector, 0, 0, colVector.endRow(), 0);
     }
 
     /**
@@ -1045,6 +1080,14 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     @Override
     public MatrixF map(FFunction f) {
         return copy().mapInplace(f);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixF plusBroadcastedVector(MatrixF B) {
+        return copy().addBroadcastedVectorInplace(B);
     }
 
     /**

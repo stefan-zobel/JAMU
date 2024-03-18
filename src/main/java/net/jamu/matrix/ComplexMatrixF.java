@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, 2023 Stefan Zobel
+ * Copyright 2020, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -384,6 +384,22 @@ public interface ComplexMatrixF extends MatrixDimensions, ComplexMatrixFConduct 
      * @return this matrix (mutated)
      */
     ComplexMatrixF setInplace(ComplexMatrixF other);
+
+    /**
+     * Overwrite the content of the column indexed by {@code colIdx} with the
+     * content of the column vector {@code colVector} where {@code colVector}
+     * must have dimension {@code this.numRows() x 1}.
+     * 
+     * @param colIdx
+     *            index of the column that will be overwritten by the content of
+     *            {@code colVector}
+     * @param colVector
+     *            a column vector that has the same number of rows as this
+     *            matrix
+     * @return this matrix (mutated)
+     * @since 1.4.4
+     */
+    ComplexMatrixF setColumnInplace(int colIdx, ComplexMatrixF colVector);
 
     /**
      * Let {@code this} be a m-by-n matrix and let {@code B} be a j-by-k matrix.

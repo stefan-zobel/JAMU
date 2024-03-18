@@ -409,6 +409,68 @@ public final class Matrices {
     }
 
     /**
+     * Create a {@code (1, 1)} MatrixD matrix holding the given {@code scalar}.
+     * 
+     * @param scalar
+     *            the scalar value in the created {@code 1 x 1} matrix
+     * @return a scalar MatrixD matrix of dimension {@code (1, 1)} with the
+     *         given {@code scalar} value
+     * @since 1.4.4
+     */
+    public static MatrixD scalarD(double scalar) {
+        return new SimpleMatrixD(1, 1, new double[] { scalar });
+    }
+
+    /**
+     * Create a {@code (1, 1)} MatrixF matrix holding the given {@code scalar}.
+     * 
+     * @param scalar
+     *            the scalar value in the created {@code 1 x 1} matrix
+     * @return a scalar MatrixF matrix of dimension {@code (1, 1)} with the
+     *         given {@code scalar} value
+     * @since 1.4.4
+     */
+    public static MatrixF scalarF(float scalar) {
+        return new SimpleMatrixF(1, 1, new float[] { scalar });
+    }
+
+    /**
+     * Create a {@code (1, 1)} ComplexMatrixD matrix holding the given complex
+     * scalar {@code (reVal, imVal)}.
+     * 
+     * @param reVal
+     *            real part of the complex scalar in the created {@code 1 x 1}
+     *            matrix
+     * @param imVal
+     *            imaginary part of the complex scalar in the created
+     *            {@code 1 x 1} matrix
+     * @return a scalar ComplexMatrixD matrix of dimension {@code (1, 1)} with
+     *         the given complex scalar {@code (reVal, imVal)} value
+     * @since 1.4.4
+     */
+    public static ComplexMatrixD scalarComplexD(double reVal, double imVal) {
+        return new SimpleComplexMatrixD(1, 1, new double[] { reVal, imVal });
+    }
+
+    /**
+     * Create a {@code (1, 1)} ComplexMatrixF matrix holding the given complex
+     * scalar {@code (reVal, imVal)}.
+     * 
+     * @param reVal
+     *            real part of the complex scalar in the created {@code 1 x 1}
+     *            matrix
+     * @param imVal
+     *            imaginary part of the complex scalar in the created
+     *            {@code 1 x 1} matrix
+     * @return a scalar ComplexMatrixF matrix of dimension {@code (1, 1)} with
+     *         the given complex scalar {@code (reVal, imVal)} value
+     * @since 1.4.4
+     */
+    public static ComplexMatrixF scalarComplexF(float reVal, float imVal) {
+        return new SimpleComplexMatrixF(1, 1, new float[] { reVal, imVal });
+    }
+
+    /**
      * Create a quadratic diagonal matrix whose main diagonal contains the
      * entries provided in the {@code diagonal} array.
      * 
