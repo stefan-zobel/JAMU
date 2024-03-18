@@ -607,15 +607,7 @@ public final class Statistics {
         return A;
     }
 
-    private static void swap(int aoff1, double[] a, double[] tmp, int len, int aoff2) {
-        if (aoff1 != aoff2) {
-            System.arraycopy(a, aoff1, tmp, 0, len);
-            System.arraycopy(a, aoff2, a, aoff1, len);
-            System.arraycopy(tmp, 0, a, aoff2, len);
-        }
-    }
-
-    private static void swap(int aoff1, float[] a, float[] tmp, int len, int aoff2) {
+    private static void swap(int aoff1, Object a, Object tmp, int len, int aoff2) {
         if (aoff1 != aoff2) {
             System.arraycopy(a, aoff1, tmp, 0, len);
             System.arraycopy(a, aoff2, a, aoff1, len);
