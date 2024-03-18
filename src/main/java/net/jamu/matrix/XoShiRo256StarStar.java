@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stefan Zobel
+ * Copyright 2023, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package net.jamu.matrix;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.SplittableRandom;
 
 /**
  * 256-bit {@code xoshiro256**} pseudo random generator suggested by
@@ -289,8 +290,7 @@ final class XoShiRo256StarStar extends Random {
     }
 
     private void init(long nextSeed) {
-        SecureRandom rnd = getSecureRandom();
-        rnd.setSeed(nextSeed);
+        SplittableRandom rnd = new SplittableRandom(nextSeed);
         x0 = rnd.nextLong();
         x1 = rnd.nextLong();
         x2 = rnd.nextLong();
