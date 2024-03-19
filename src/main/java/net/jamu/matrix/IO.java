@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Stefan Zobel
+ * Copyright 2020, 2024 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,7 @@ final class IO {
         os.write(BIG_ENDIAN);
         os.write(datatype);
         putIntB(rows, bytes, os);
-        os.write(bytes, 0, 4);
         putIntB(cols, bytes, os);
-        os.write(bytes, 0, 4);
         return 10L;
     }
 
@@ -50,9 +48,7 @@ final class IO {
         os.write(LITTLE_ENDIAN);
         os.write(datatype);
         putIntL(rows, bytes, os);
-        os.write(bytes, 0, 4);
         putIntL(cols, bytes, os);
-        os.write(bytes, 0, 4);
         return 10L;
     }
 
