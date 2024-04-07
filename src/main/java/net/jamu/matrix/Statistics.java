@@ -24,6 +24,46 @@ package net.jamu.matrix;
 public final class Statistics {
 
     /**
+     * Holder for the first two moments of a {@code MatrixD}.
+     * @since 1.4.6
+     */
+    public static class MomentsD {
+        public double mean;
+        public double variance;
+
+        /**
+         * For use as an out parameter.
+         */
+        public MomentsD() {
+        }
+
+        public MomentsD(double mean, double variance) {
+            this.mean = mean;
+            this.variance = variance;
+        }
+    }
+
+    /**
+     * Holder for the first two moments of a {@code MatrixF}.
+     * @since 1.4.6
+     */
+    public static class MomentsF {
+        public float mean;
+        public float variance;
+
+        /**
+         * For use as an out parameter.
+         */
+        public MomentsF() {
+        }
+
+        public MomentsF(float mean, float variance) {
+            this.mean = mean;
+            this.variance = variance;
+        }
+    }
+
+    /**
      * Creates a mean-centered copy of matrix {@code A}, i.e., the values in
      * each column of the copy have the mean of the corresponding column in
      * {@code A} subtracted creating a new matrix that is a de-meaned version of
