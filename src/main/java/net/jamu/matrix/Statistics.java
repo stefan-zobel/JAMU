@@ -24,12 +24,13 @@ package net.jamu.matrix;
 public final class Statistics {
 
     /**
-     * Holder for the first two moments of a {@code MatrixD}.
+     * Holder for the first two moments of {@code MatrixD} columns or rows.
+     * 
      * @since 1.4.6
      */
     public static class MomentsD {
-        public double mean;
-        public double variance;
+        public MatrixD means;
+        public MatrixD variances;
 
         /**
          * For use as an out parameter.
@@ -37,19 +38,20 @@ public final class Statistics {
         public MomentsD() {
         }
 
-        public MomentsD(double mean, double variance) {
-            this.mean = mean;
-            this.variance = variance;
+        public MomentsD(MatrixD means, MatrixD variances) {
+            this.means = means;
+            this.variances = variances;
         }
     }
 
     /**
-     * Holder for the first two moments of a {@code MatrixF}.
+     * Holder for the first two moments of {@code MatrixF} columns or rows.
+     * 
      * @since 1.4.6
      */
     public static class MomentsF {
-        public float mean;
-        public float variance;
+        public MatrixF means;
+        public MatrixF variances;
 
         /**
          * For use as an out parameter.
@@ -57,9 +59,9 @@ public final class Statistics {
         public MomentsF() {
         }
 
-        public MomentsF(float mean, float variance) {
-            this.mean = mean;
-            this.variance = variance;
+        public MomentsF(MatrixF means, MatrixF variances) {
+            this.means = means;
+            this.variances = variances;
         }
     }
 
@@ -327,8 +329,40 @@ public final class Statistics {
      * @return the matrix {@code A} z-scored inplace
      */
     public static MatrixD zscoreInplace(MatrixD A) {
+        return zscoreInplace(A, null);
+    }
+
+    /**
+     * Subtracts the mean of each column {@code j} from each value in that
+     * column {@code j} and then divides the difference by the standard
+     * deviation of the values in column {@code j}, effectively expressing the
+     * values in each column as the signed number of standard deviations
+     * (z-score) by which they are above or below the column's mean value.
+     * Optionally fills in the first two moments for each column as a row vector
+     * in the {@code moments} argument if that is not {@code null}. This is a
+     * destructive operation that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @param moments
+     *            optional holder object for the first two moments of each
+     *            column, may be {@code null}
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixD zscoreInplace(MatrixD A, MomentsD moments) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
+        if (moments != null) {
+            if (moments.means == null || !(moments.means.isRowVector() && moments.means.numColumns() == cols_)) {
+                moments.means = Matrices.createD(1, cols_);
+            }
+            if (moments.variances == null
+                    || !(moments.variances.isRowVector() && moments.variances.numColumns() == cols_)) {
+                moments.variances = Matrices.createD(1, cols_);
+            }
+        }
         double[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
             // overflow resistant implementation
@@ -361,6 +395,10 @@ public final class Statistics {
                 xi = (xi - mean) / stddev;
                 _a[i] = xi;
             }
+            if (moments != null) {
+                moments.means.setUnsafe(1, col, mean);
+                moments.variances.setUnsafe(1, col, stddev * stddev);
+            }
         }
         return A;
     }
@@ -379,8 +417,40 @@ public final class Statistics {
      * @return the matrix {@code A} z-scored inplace
      */
     public static MatrixF zscoreInplace(MatrixF A) {
+        return zscoreInplace(A, null);
+    }
+
+    /**
+     * Subtracts the mean of each column {@code j} from each value in that
+     * column {@code j} and then divides the difference by the standard
+     * deviation of the values in column {@code j}, effectively expressing the
+     * values in each column as the signed number of standard deviations
+     * (z-score) by which they are above or below the column's mean value.
+     * Optionally fills in the first two moments for each column as a row vector
+     * in the {@code moments} argument if that is not {@code null}. This is a
+     * destructive operation that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @param moments
+     *            optional holder object for the first two moments of each
+     *            column, may be {@code null}
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixF zscoreInplace(MatrixF A, MomentsF moments) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
+        if (moments != null) {
+            if (moments.means == null || !(moments.means.isRowVector() && moments.means.numColumns() == cols_)) {
+                moments.means = Matrices.createF(1, cols_);
+            }
+            if (moments.variances == null
+                    || !(moments.variances.isRowVector() && moments.variances.numColumns() == cols_)) {
+                moments.variances = Matrices.createF(1, cols_);
+            }
+        }
         float[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
             // overflow resistant implementation
@@ -412,6 +482,10 @@ public final class Statistics {
                 float xi = _a[i];
                 xi = (xi - mean) / stddev;
                 _a[i] = xi;
+            }
+            if (moments != null) {
+                moments.means.setUnsafe(1, col, mean);
+                moments.variances.setUnsafe(1, col, stddev * stddev);
             }
         }
         return A;
