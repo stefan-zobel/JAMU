@@ -374,8 +374,8 @@ public final class Statistics {
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 ++count;
                 double xi = _a[i];
+                mean = (((count - 1) * mean) + xi) / count;
                 if (xi != 0.0) {
-                    mean = (((count - 1) * mean) + xi) / count;
                     double absxi = Math.abs(xi);
                     if (scale < absxi) {
                         double unsquared = scale / absxi;
@@ -388,7 +388,8 @@ public final class Statistics {
                 }
             }
             double y = computeScaledMean(scale, mean);
-            double stddev = patchDev(scale * Math.sqrt(sumsquared / rows_ - y * y));
+            double oneOverSqrtRows = 1.0 / Math.sqrt(rows_);
+            double stddev = patchDev(scale * oneOverSqrtRows * Math.sqrt(sumsquared / rows_ - y * y));
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 // subtract mean and divide by standard deviation
                 double xi = _a[i];
@@ -462,8 +463,8 @@ public final class Statistics {
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 ++count;
                 float xi = _a[i];
+                mean = (((count - 1) * mean) + xi) / count;
                 if (xi != 0.0f) {
-                    mean = (((count - 1) * mean) + xi) / count;
                     float absxi = Math.abs(xi);
                     if (scale < absxi) {
                         float unsquared = scale / absxi;
@@ -476,7 +477,8 @@ public final class Statistics {
                 }
             }
             float y = computeScaledMean(scale, mean);
-            float stddev = patchDev(scale * (float) Math.sqrt(sumsquared / rows_ - y * y));
+            float oneOverSqrtRows = (float) (1.0 / Math.sqrt(rows_));
+            float stddev = patchDev(scale * oneOverSqrtRows * (float) Math.sqrt(sumsquared / rows_ - y * y));
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 // subtract mean and divide by standard deviation
                 float xi = _a[i];
@@ -522,9 +524,9 @@ public final class Statistics {
                 ++count;
                 double xre = _a[i];
                 double xim = _a[i + 1];
+                reMean = (((count - 1) * reMean) + xre) / count;
+                imMean = (((count - 1) * imMean) + xim) / count;
                 if (xre != 0.0 || xim != 0.0) {
-                    reMean = (((count - 1) * reMean) + xre) / count;
-                    imMean = (((count - 1) * imMean) + xim) / count;
                     double absxre = Math.abs(xre);
                     double absxim = Math.abs(xim);
                     if (reScale < absxre) {
@@ -548,8 +550,9 @@ public final class Statistics {
             //
             double reY = computeScaledMean(reScale, reMean);
             double imY = computeScaledMean(imScale, imMean);
-            double reStddev = patchDev(reScale * Math.sqrt(reSumSqr / rows_ - reY * reY));
-            double imStddev = patchDev(imScale * Math.sqrt(imSumSqr / rows_ - imY * imY));
+            double oneOverSqrtRows = 1.0 / Math.sqrt(rows_);
+            double reStddev = patchDev(reScale * oneOverSqrtRows * Math.sqrt(reSumSqr / rows_ - reY * reY));
+            double imStddev = patchDev(imScale * oneOverSqrtRows * Math.sqrt(imSumSqr / rows_ - imY * imY));
             //
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation
@@ -595,9 +598,9 @@ public final class Statistics {
                 ++count;
                 float xre = _a[i];
                 float xim = _a[i + 1];
+                reMean = (((count - 1) * reMean) + xre) / count;
+                imMean = (((count - 1) * imMean) + xim) / count;
                 if (xre != 0.0f || xim != 0.0f) {
-                    reMean = (((count - 1) * reMean) + xre) / count;
-                    imMean = (((count - 1) * imMean) + xim) / count;
                     float absxre = Math.abs(xre);
                     float absxim = Math.abs(xim);
                     if (reScale < absxre) {
@@ -621,8 +624,9 @@ public final class Statistics {
             //
             float reY = computeScaledMean(reScale, reMean);
             float imY = computeScaledMean(imScale, imMean);
-            float reStddev = patchDev(reScale * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
-            float imStddev = patchDev(imScale * (float) Math.sqrt(imSumSqr / rows_ - imY * imY));
+            float oneOverSqrtRows = (float) (1.0 / Math.sqrt(rows_));
+            float reStddev = patchDev(reScale * oneOverSqrtRows * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
+            float imStddev = patchDev(imScale * oneOverSqrtRows * (float) Math.sqrt(imSumSqr / rows_ - imY * imY));
             //
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation
