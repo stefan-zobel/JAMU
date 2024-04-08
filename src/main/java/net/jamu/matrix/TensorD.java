@@ -844,7 +844,7 @@ public class TensorD extends TensorBase {
         double _min = Double.MAX_VALUE;
         double _max = -Double.MAX_VALUE;
         for (int i = 0; i < _a.length; ++i) {
-            double x = a[i];
+            double x = _a[i];
             if (x < _min) {
                 _min = x;
             }
@@ -855,7 +855,7 @@ public class TensorD extends TensorBase {
         double scale = upperBound - lowerBound;
         double dataScale = (_min == _max) ? Double.MIN_NORMAL : (_max - _min);
         for (int i = 0; i < _a.length; ++i) {
-            a[i] = lowerBound + (((a[i] - _min) * scale) / dataScale);
+            _a[i] = lowerBound + (((_a[i] - _min) * scale) / dataScale);
         }
         return this;
     }
