@@ -494,6 +494,74 @@ public final class Statistics {
     }
 
     /**
+     * Rescales all elements in the matrix {@code A} into the range
+     * {@code [lowerBound, upperBound]}.
+     * 
+     * @param A
+     *            the matrix to rescale in-place
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return the matrix {@code A} with all elements rescaled in-place
+     * @since 1.4.6
+     */
+    public static MatrixD rescaleInplace(MatrixD A, double lowerBound, double upperBound) {
+        double[] _a = A.getArrayUnsafe();
+        double _min = Double.MAX_VALUE;
+        double _max = -Double.MAX_VALUE;
+        for (int i = 0; i < _a.length; ++i) {
+            double x = _a[i];
+            if (x < _min) {
+                _min = x;
+            }
+            if (x > _max) {
+                _max = x;
+            }
+        }
+        double scale = upperBound - lowerBound;
+        double dataScale = (_min == _max) ? Double.MIN_NORMAL : (_max - _min);
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = lowerBound + (((_a[i] - _min) * scale) / dataScale);
+        }
+        return A;
+    }
+
+    /**
+     * Rescales all elements in the matrix {@code A} into the range
+     * {@code [lowerBound, upperBound]}.
+     * 
+     * @param A
+     *            the matrix to rescale in-place
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return the matrix {@code A} with all elements rescaled in-place
+     * @since 1.4.6
+     */
+    public static MatrixF rescaleInplace(MatrixF A, float lowerBound, float upperBound) {
+        float[] _a = A.getArrayUnsafe();
+        float _min = Float.MAX_VALUE;
+        float _max = -Float.MAX_VALUE;
+        for (int i = 0; i < _a.length; ++i) {
+            float x = _a[i];
+            if (x < _min) {
+                _min = x;
+            }
+            if (x > _max) {
+                _max = x;
+            }
+        }
+        float scale = upperBound - lowerBound;
+        float dataScale = (_min == _max) ? Float.MIN_NORMAL : (_max - _min);
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = lowerBound + (((_a[i] - _min) * scale) / dataScale);
+        }
+        return A;
+    }
+
+    /**
      * Subtracts the mean of each column {@code j} from each value in that
      * column {@code j} and then divides the difference by the standard
      * deviation of the values in column {@code j}, effectively expressing the
@@ -526,9 +594,8 @@ public final class Statistics {
                 double xim = _a[i + 1];
                 reMean = (((count - 1) * reMean) + xre) / count;
                 imMean = (((count - 1) * imMean) + xim) / count;
-                if (xre != 0.0 || xim != 0.0) {
+                if (xre != 0.0) {
                     double absxre = Math.abs(xre);
-                    double absxim = Math.abs(xim);
                     if (reScale < absxre) {
                         double unsquared = reScale / absxre;
                         reSumSqr = 1.0 + reSumSqr * (unsquared * unsquared);
@@ -537,6 +604,9 @@ public final class Statistics {
                         double unsquared = absxre / reScale;
                         reSumSqr = reSumSqr + (unsquared * unsquared);
                     }
+                }
+                if (xim != 0.0) {
+                    double absxim = Math.abs(xim);
                     if (imScale < absxim) {
                         double unsquared = imScale / absxim;
                         imSumSqr = 1.0 + imSumSqr * (unsquared * unsquared);
@@ -600,9 +670,8 @@ public final class Statistics {
                 float xim = _a[i + 1];
                 reMean = (((count - 1) * reMean) + xre) / count;
                 imMean = (((count - 1) * imMean) + xim) / count;
-                if (xre != 0.0f || xim != 0.0f) {
+                if (xre != 0.0f) {
                     float absxre = Math.abs(xre);
-                    float absxim = Math.abs(xim);
                     if (reScale < absxre) {
                         float unsquared = reScale / absxre;
                         reSumSqr = 1.0f + reSumSqr * (unsquared * unsquared);
@@ -611,6 +680,9 @@ public final class Statistics {
                         float unsquared = absxre / reScale;
                         reSumSqr = reSumSqr + (unsquared * unsquared);
                     }
+                }
+                if (xim != 0.0f) {
+                    float absxim = Math.abs(xim);
                     if (imScale < absxim) {
                         float unsquared = imScale / absxim;
                         imSumSqr = 1.0f + imSumSqr * (unsquared * unsquared);
