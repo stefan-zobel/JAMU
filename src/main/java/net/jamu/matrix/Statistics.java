@@ -874,7 +874,9 @@ public final class Statistics {
         for (int i = rows; i > 1; --i) {
             int sourceRow = rnd.nextInt(i);
             int targetRow = i - 1;
-            swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+            if (sourceRow != targetRow) {
+                swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+            }
         }
         return A;
     }
@@ -888,38 +890,30 @@ public final class Statistics {
         for (int i = rows; i > 1; --i) {
             int sourceRow = rnd.nextInt(i);
             int targetRow = i - 1;
-            swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+            if (sourceRow != targetRow) {
+                swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+            }
         }
         return A;
     }
 
     private static void swapRows(int aoff1, double[] a, double[] tmp, int len, int skip, int aoff2) {
-        if (aoff1 != aoff2) {
-            int j = 0;
-            for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
-                // a1 -> tmp
-                tmp[j] = a[i];
-                // a2 -> a1
-                a[i] = a[aoff2];
-                // tmp -> a2
-                a[aoff2] = tmp[j];
-                ++j;
-            }
+        int j = 0;
+        for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
+            tmp[j] = a[i];
+            a[i] = a[aoff2];
+            a[aoff2] = tmp[j];
+            ++j;
         }
     }
 
     private static void swapRows(int aoff1, float[] a, float[] tmp, int len, int skip, int aoff2) {
-        if (aoff1 != aoff2) {
-            int j = 0;
-            for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
-                // a1 -> tmp
-                tmp[j] = a[i];
-                // a2 -> a1
-                a[i] = a[aoff2];
-                // tmp -> a2
-                a[aoff2] = tmp[j];
-                ++j;
-            }
+        int j = 0;
+        for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
+            tmp[j] = a[i];
+            a[i] = a[aoff2];
+            a[aoff2] = tmp[j];
+            ++j;
         }
     }
 
