@@ -805,6 +805,124 @@ public final class Statistics {
         }
     }
 
+    /**
+     * Randomly permutes the rows in matrix {@code A} in place using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @return the matrix argument with rows randomly permuted in place
+     * @since 1.4.6
+     */
+    public static MatrixD shuffleRowsInplace(MatrixD A) {
+        return shuffleRowsInplace(A, null);
+    }
+
+    /**
+     * Randomly permutes the rows in matrix {@code A} in place using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @return the matrix argument with rows randomly permuted in place
+     * @since 1.4.6
+     */
+    public static MatrixF shuffleRowsInplace(MatrixF A) {
+        return shuffleRowsInplace(A, null);
+    }
+
+    /**
+     * Randomly permutes the rows in matrix {@code A} in place using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return the matrix argument with rows randomly permuted in place
+     * @since 1.4.6
+     */
+    public static MatrixD shuffleRowsInplace(MatrixD A, long seed) {
+        return shuffleRowsInplace(A, new XoShiRo256StarStar(seed));
+    }
+
+    /**
+     * Randomly permutes the rows in matrix {@code A} in place using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return the matrix argument with rows randomly permuted in place
+     * @since 1.4.6
+     */
+    public static MatrixF shuffleRowsInplace(MatrixF A, long seed) {
+        return shuffleRowsInplace(A, new XoShiRo256StarStar(seed));
+    }
+
+    private static MatrixD shuffleRowsInplace(MatrixD A, XoShiRo256StarStar rng) {
+        int rows = A.numRows();
+        int cols = A.numColumns();
+        double[] a = A.getArrayUnsafe();
+        double[] tmp = new double[cols];
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        for (int i = rows; i > 1; --i) {
+            int sourceRow = rnd.nextInt(i);
+            int targetRow = i - 1;
+            swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+        }
+        return A;
+    }
+
+    private static MatrixF shuffleRowsInplace(MatrixF A, XoShiRo256StarStar rng) {
+        int rows = A.numRows();
+        int cols = A.numColumns();
+        float[] a = A.getArrayUnsafe();
+        float[] tmp = new float[cols];
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        for (int i = rows; i > 1; --i) {
+            int sourceRow = rnd.nextInt(i);
+            int targetRow = i - 1;
+            swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+        }
+        return A;
+    }
+
+    private static void swapRows(int aoff1, double[] a, double[] tmp, int len, int skip, int aoff2) {
+        if (aoff1 != aoff2) {
+            int j = 0;
+            for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
+                // a1 -> tmp
+                tmp[j] = a[i];
+                // a2 -> a1
+                a[i] = a[aoff2];
+                // tmp -> a2
+                a[aoff2] = tmp[j];
+                ++j;
+            }
+        }
+    }
+
+    private static void swapRows(int aoff1, float[] a, float[] tmp, int len, int skip, int aoff2) {
+        if (aoff1 != aoff2) {
+            int j = 0;
+            for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
+                // a1 -> tmp
+                tmp[j] = a[i];
+                // a2 -> a1
+                a[i] = a[aoff2];
+                // tmp -> a2
+                a[aoff2] = tmp[j];
+                ++j;
+            }
+        }
+    }
+
     private static int checkNotRowVector(MatrixDimensions A) {
         int rows = A.numRows();
         if (rows == 1) {
