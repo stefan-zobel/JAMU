@@ -42,6 +42,12 @@ public final class Statistics {
             this.means = means;
             this.variances = variances;
         }
+
+        @Override
+        public String toString() {
+            return new StringBuilder().append("means: ").append(means).append("variances: ").append(variances)
+                    .toString();
+        }
     }
 
     /**
@@ -62,6 +68,12 @@ public final class Statistics {
         public MomentsF(MatrixF means, MatrixF variances) {
             this.means = means;
             this.variances = variances;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder().append("means: ").append(means).append("variances: ").append(variances)
+                    .toString();
         }
     }
 
@@ -397,8 +409,8 @@ public final class Statistics {
                 _a[i] = xi;
             }
             if (moments != null) {
-                moments.means.setUnsafe(1, col, mean);
-                moments.variances.setUnsafe(1, col, stddev * stddev);
+                moments.means.setUnsafe(0, col, mean);
+                moments.variances.setUnsafe(0, col, stddev * stddev);
             }
         }
         return A;
@@ -486,8 +498,150 @@ public final class Statistics {
                 _a[i] = xi;
             }
             if (moments != null) {
-                moments.means.setUnsafe(1, col, mean);
-                moments.variances.setUnsafe(1, col, stddev * stddev);
+                moments.means.setUnsafe(0, col, mean);
+                moments.variances.setUnsafe(0, col, stddev * stddev);
+            }
+        }
+        return A;
+    }
+
+    /**
+     * Subtracts the mean of each row {@code i} from each value in that row
+     * {@code i} and then divides the difference by the standard deviation of
+     * the values in row {@code i}, effectively expressing the values in each
+     * row as the signed number of standard deviations (z-score) by which they
+     * are above or below the row's mean value. Optionally fills in the first
+     * two moments for each row as a column vector in the {@code moments}
+     * argument if that is not {@code null}. This is a destructive operation
+     * that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @param moments
+     *            optional holder object for the first two moments of each row,
+     *            may be {@code null}
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixD zscoreRowsInplace(MatrixD A, MomentsD moments) {
+        int cols_ = checkNotColumnVector(A);
+        int rows_ = A.numRows();
+        if (moments != null) {
+            if (moments.means == null || !(moments.means.isColumnVector() && moments.means.numRows() == rows_)) {
+                moments.means = Matrices.createD(rows_, 1);
+            }
+            if (moments.variances == null
+                    || !(moments.variances.isColumnVector() && moments.variances.numRows() == rows_)) {
+                moments.variances = Matrices.createD(rows_, 1);
+            }
+        }
+        double[] _a = A.getArrayUnsafe();
+        for (int row = 0; row < rows_; ++row) {
+            // overflow resistant implementation
+            int count = 0;
+            double mean = 0.0;
+            double scale = 0.0;
+            double sumsquared = 1.0;
+            // determine mean and sum squared
+            for (int i = row; i < row + rows_ * cols_; i += rows_) {
+                ++count;
+                double xi = _a[i];
+                mean = (((count - 1) * mean) + xi) / count;
+                if (xi != 0.0) {
+                    double absxi = Math.abs(xi);
+                    if (scale < absxi) {
+                        double unsquared = scale / absxi;
+                        sumsquared = 1.0 + sumsquared * (unsquared * unsquared);
+                        scale = absxi;
+                    } else {
+                        double unsquared = absxi / scale;
+                        sumsquared = sumsquared + (unsquared * unsquared);
+                    }
+                }
+            }
+            double y = computeScaledMean(scale, mean);
+            double oneOverSqrtCols = 1.0 / Math.sqrt(cols_);
+            double stddev = patchDev(scale * oneOverSqrtCols * Math.sqrt(sumsquared / cols_ - y * y));
+            for (int i = row; i < row + rows_ * cols_; i += rows_) {
+                // subtract mean and divide by standard deviation
+                double xi = _a[i];
+                xi = (xi - mean) / stddev;
+                _a[i] = xi;
+            }
+            if (moments != null) {
+                moments.means.setUnsafe(row, 0, mean);
+                moments.variances.setUnsafe(row, 0, stddev * stddev);
+            }
+        }
+        return A;
+    }
+
+    /**
+     * Subtracts the mean of each row {@code i} from each value in that row
+     * {@code i} and then divides the difference by the standard deviation of
+     * the values in row {@code i}, effectively expressing the values in each
+     * row as the signed number of standard deviations (z-score) by which they
+     * are above or below the row's mean value. Optionally fills in the first
+     * two moments for each row as a column vector in the {@code moments}
+     * argument if that is not {@code null}. This is a destructive operation
+     * that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @param moments
+     *            optional holder object for the first two moments of each row,
+     *            may be {@code null}
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixF zscoreRowsInplace(MatrixF A, MomentsF moments) {
+        int cols_ = checkNotColumnVector(A);
+        int rows_ = A.numRows();
+        if (moments != null) {
+            if (moments.means == null || !(moments.means.isColumnVector() && moments.means.numRows() == rows_)) {
+                moments.means = Matrices.createF(rows_, 1);
+            }
+            if (moments.variances == null
+                    || !(moments.variances.isColumnVector() && moments.variances.numRows() == rows_)) {
+                moments.variances = Matrices.createF(rows_, 1);
+            }
+        }
+        float[] _a = A.getArrayUnsafe();
+        for (int row = 0; row < rows_; ++row) {
+            // overflow resistant implementation
+            int count = 0;
+            float mean = 0.0f;
+            float scale = 0.0f;
+            float sumsquared = 1.0f;
+            // determine mean and sum squared
+            for (int i = row; i < row + rows_ * cols_; i += rows_) {
+                ++count;
+                float xi = _a[i];
+                mean = (((count - 1) * mean) + xi) / count;
+                if (xi != 0.0f) {
+                    float absxi = Math.abs(xi);
+                    if (scale < absxi) {
+                        float unsquared = scale / absxi;
+                        sumsquared = 1.0f + sumsquared * (unsquared * unsquared);
+                        scale = absxi;
+                    } else {
+                        float unsquared = absxi / scale;
+                        sumsquared = sumsquared + (unsquared * unsquared);
+                    }
+                }
+            }
+            float y = computeScaledMean(scale, mean);
+            float oneOverSqrtCols = (float) (1.0 / Math.sqrt(cols_));
+            float stddev = patchDev(scale * oneOverSqrtCols * (float) Math.sqrt(sumsquared / cols_ - y * y));
+            for (int i = row; i < row + rows_ * cols_; i += rows_) {
+                // subtract mean and divide by standard deviation
+                float xi = _a[i];
+                xi = (xi - mean) / stddev;
+                _a[i] = xi;
+            }
+            if (moments != null) {
+                moments.means.setUnsafe(row, 0, mean);
+                moments.variances.setUnsafe(row, 0, stddev * stddev);
             }
         }
         return A;
@@ -923,6 +1077,14 @@ public final class Statistics {
             throw new IllegalArgumentException("Can't compute zscore for a row vector");
         }
         return rows;
+    }
+
+    private static int checkNotColumnVector(MatrixDimensions A) {
+        int cols = A.numColumns();
+        if (cols == 1) {
+            throw new IllegalArgumentException("Can't compute zscore for a column vector");
+        }
+        return cols;
     }
 
     private static double patchDev(double stddev) {
