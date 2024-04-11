@@ -720,7 +720,41 @@ public final class Statistics {
     }
 
     /**
-     * Rescales all elements in the matrix {@code A} into the range
+     * Rescales all elements in a copy of the matrix {@code A} into the range
+     * {@code [lowerBound, upperBound]}. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix to rescale
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return a copy of matrix {@code A} with all elements rescaled
+     * @since 1.4.6
+     */
+    public static MatrixD rescale(MatrixD A, double lowerBound, double upperBound) {
+        return rescaleInplace(A.copy(), lowerBound, upperBound);
+    }
+
+    /**
+     * Rescales all elements in a copy of the matrix {@code A} into the range
+     * {@code [lowerBound, upperBound]}. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix to rescale
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return a copy of matrix {@code A} with all elements rescaled
+     * @since 1.4.6
+     */
+    public static MatrixF rescale(MatrixF A, float lowerBound, float upperBound) {
+        return rescaleInplace(A.copy(), lowerBound, upperBound);
+    }
+
+    /**
+     * Rescales all elements in the matrix {@code A} in-place into the range
      * {@code [lowerBound, upperBound]}.
      * 
      * @param A
@@ -754,7 +788,7 @@ public final class Statistics {
     }
 
     /**
-     * Rescales all elements in the matrix {@code A} into the range
+     * Rescales all elements in the matrix {@code A} in-place into the range
      * {@code [lowerBound, upperBound]}.
      * 
      * @param A
@@ -940,6 +974,34 @@ public final class Statistics {
     }
 
     /**
+     * Randomly permutes the columns in a copy of matrix {@code A} using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @return a copy of matrix {@code A} with columns randomly permuted
+     * @since 1.4.6
+     */
+    public static MatrixD shuffleColumns(MatrixD A) {
+        return shuffleColumnsInplace(A.copy(), null);
+    }
+
+    /**
+     * Randomly permutes the columns in a copy of matrix {@code A} using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @return a copy of matrix {@code A} with columns randomly permuted
+     * @since 1.4.6
+     */
+    public static MatrixF shuffleColumns(MatrixF A) {
+        return shuffleColumnsInplace(A.copy(), null);
+    }
+
+    /**
      * Randomly permutes the columns in matrix {@code A} in place using a
      * default source of randomness. All permutations occur with approximately
      * equal probability.
@@ -1029,6 +1091,34 @@ public final class Statistics {
             System.arraycopy(a, aoff2, a, aoff1, len);
             System.arraycopy(tmp, 0, a, aoff2, len);
         }
+    }
+
+    /**
+     * Randomly permutes the rows in a copy of matrix {@code A} using a default
+     * source of randomness. All permutations occur with approximately equal
+     * probability. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @return a copy of matrix {@code A} with rows randomly permuted
+     * @since 1.4.6
+     */
+    public static MatrixD shuffleRows(MatrixD A) {
+        return shuffleRowsInplace(A.copy(), null);
+    }
+
+    /**
+     * Randomly permutes the rows in a copy of matrix {@code A} using a default
+     * source of randomness. All permutations occur with approximately equal
+     * probability. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @return a copy of matrix {@code A} with rows randomly permuted
+     * @since 1.4.6
+     */
+    public static MatrixF shuffleRows(MatrixF A) {
+        return shuffleRowsInplace(A.copy(), null);
     }
 
     /**
