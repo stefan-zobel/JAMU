@@ -506,6 +506,61 @@ public final class Statistics {
     }
 
     /**
+     * Creates a standard-scored copy of matrix {@code A}, i.e., the values in
+     * each row of the copy have the mean of the corresponding row in {@code A}
+     * subtracted and are then scaled to the unit variance of this row by
+     * dividing the differences by the standard deviation of the row values. The
+     * result is the signed number of standard deviations (z-score) by which the
+     * value is above (below) the mean value of what is being measured in the
+     * corresponding row. Matrix {@code A} doesn't get mutated by this
+     * computation.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @return a copy of A that has been z-scored
+     * @since 1.4.6
+     */
+    public static MatrixD zscoreRows(MatrixD A) {
+        return zscoreRowsInplace(A.copy());
+    }
+
+    /**
+     * Creates a standard-scored copy of matrix {@code A}, i.e., the values in
+     * each row of the copy have the mean of the corresponding row in {@code A}
+     * subtracted and are then scaled to the unit variance of this row by
+     * dividing the differences by the standard deviation of the row values. The
+     * result is the signed number of standard deviations (z-score) by which the
+     * value is above (below) the mean value of what is being measured in the
+     * corresponding row. Matrix {@code A} doesn't get mutated by this
+     * computation.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @return a copy of A that has been z-scored
+     * @since 1.4.6
+     */
+    public static MatrixF zscoreRows(MatrixF A) {
+        return zscoreRowsInplace(A.copy());
+    }
+
+    /**
+     * Subtracts the mean of each row {@code i} from each value in that row
+     * {@code i} and then divides the difference by the standard deviation of
+     * the values in row {@code i}, effectively expressing the values in each
+     * row as the signed number of standard deviations (z-score) by which they
+     * are above or below the row's mean value. This is a destructive operation
+     * that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixD zscoreRowsInplace(MatrixD A) {
+        return zscoreRowsInplace(A, null);
+    }
+
+    /**
      * Subtracts the mean of each row {@code i} from each value in that row
      * {@code i} and then divides the difference by the standard deviation of
      * the values in row {@code i}, effectively expressing the values in each
@@ -574,6 +629,23 @@ public final class Statistics {
             }
         }
         return A;
+    }
+
+    /**
+     * Subtracts the mean of each row {@code i} from each value in that row
+     * {@code i} and then divides the difference by the standard deviation of
+     * the values in row {@code i}, effectively expressing the values in each
+     * row as the signed number of standard deviations (z-score) by which they
+     * are above or below the row's mean value. This is a destructive operation
+     * that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixF zscoreRowsInplace(MatrixF A) {
+        return zscoreRowsInplace(A, null);
     }
 
     /**
