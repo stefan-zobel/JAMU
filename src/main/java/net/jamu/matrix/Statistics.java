@@ -266,8 +266,8 @@ public final class Statistics {
      *            z-scored
      * @return a copy of A that has been z-scored
      */
-    public static MatrixD zscore(MatrixD A) {
-        return zscoreInplace(A.copy());
+    public static MatrixD zscoreColumns(MatrixD A) {
+        return zscoreColumnsInplace(A.copy());
     }
 
     /**
@@ -285,8 +285,8 @@ public final class Statistics {
      *            z-scored
      * @return a copy of A that has been z-scored
      */
-    public static MatrixF zscore(MatrixF A) {
-        return zscoreInplace(A.copy());
+    public static MatrixF zscoreColumns(MatrixF A) {
+        return zscoreColumnsInplace(A.copy());
     }
 
     /**
@@ -304,8 +304,8 @@ public final class Statistics {
      *            z-scored
      * @return a copy of A that has been z-scored
      */
-    public static ComplexMatrixD zscore(ComplexMatrixD A) {
-        return zscoreInplace(A.copy());
+    public static ComplexMatrixD zscoreColumns(ComplexMatrixD A) {
+        return zscoreColumnsInplace(A.copy());
     }
 
     /**
@@ -323,8 +323,8 @@ public final class Statistics {
      *            z-scored
      * @return a copy of A that has been z-scored
      */
-    public static ComplexMatrixF zscore(ComplexMatrixF A) {
-        return zscoreInplace(A.copy());
+    public static ComplexMatrixF zscoreColumns(ComplexMatrixF A) {
+        return zscoreColumnsInplace(A.copy());
     }
 
     /**
@@ -340,8 +340,8 @@ public final class Statistics {
      *            z-scored
      * @return the matrix {@code A} z-scored inplace
      */
-    public static MatrixD zscoreInplace(MatrixD A) {
-        return zscoreInplace(A, null);
+    public static MatrixD zscoreColumnsInplace(MatrixD A) {
+        return zscoreColumnsInplace(A, null);
     }
 
     /**
@@ -363,7 +363,7 @@ public final class Statistics {
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
-    public static MatrixD zscoreInplace(MatrixD A, MomentsD moments) {
+    public static MatrixD zscoreColumnsInplace(MatrixD A, MomentsD moments) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
         if (moments != null) {
@@ -429,8 +429,8 @@ public final class Statistics {
      *            z-scored
      * @return the matrix {@code A} z-scored inplace
      */
-    public static MatrixF zscoreInplace(MatrixF A) {
-        return zscoreInplace(A, null);
+    public static MatrixF zscoreColumnsInplace(MatrixF A) {
+        return zscoreColumnsInplace(A, null);
     }
 
     /**
@@ -452,7 +452,7 @@ public final class Statistics {
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
-    public static MatrixF zscoreInplace(MatrixF A, MomentsF moments) {
+    public static MatrixF zscoreColumnsInplace(MatrixF A, MomentsF moments) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
         if (moments != null) {
@@ -728,7 +728,7 @@ public final class Statistics {
      *            z-scored
      * @return the matrix {@code A} z-scored inplace
      */
-    public static ComplexMatrixD zscoreInplace(ComplexMatrixD A) {
+    public static ComplexMatrixD zscoreColumnsInplace(ComplexMatrixD A) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
         double[] _a = A.getArrayUnsafe();
@@ -804,7 +804,7 @@ public final class Statistics {
      *            z-scored
      * @return the matrix {@code A} z-scored inplace
      */
-    public static ComplexMatrixF zscoreInplace(ComplexMatrixF A) {
+    public static ComplexMatrixF zscoreColumnsInplace(ComplexMatrixF A) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
         float[] _a = A.getArrayUnsafe();
