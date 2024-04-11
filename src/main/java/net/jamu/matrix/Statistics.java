@@ -87,8 +87,8 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return a de-meaned copy of A
      */
-    public static MatrixD center(MatrixD A) {
-        return centerInplace(A.copy());
+    public static MatrixD centerColumns(MatrixD A) {
+        return centerColumnsInplace(A.copy());
     }
 
     /**
@@ -101,8 +101,8 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return a de-meaned copy of A
      */
-    public static MatrixF center(MatrixF A) {
-        return centerInplace(A.copy());
+    public static MatrixF centerColumns(MatrixF A) {
+        return centerColumnsInplace(A.copy());
     }
 
     /**
@@ -115,8 +115,8 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return a de-meaned copy of A
      */
-    public static ComplexMatrixD center(ComplexMatrixD A) {
-        return centerInplace(A.copy());
+    public static ComplexMatrixD centerColumns(ComplexMatrixD A) {
+        return centerColumnsInplace(A.copy());
     }
 
     /**
@@ -129,8 +129,8 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return a de-meaned copy of A
      */
-    public static ComplexMatrixF center(ComplexMatrixF A) {
-        return centerInplace(A.copy());
+    public static ComplexMatrixF centerColumns(ComplexMatrixF A) {
+        return centerColumnsInplace(A.copy());
     }
 
     /**
@@ -143,7 +143,7 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return the matrix {@code A} de-meaned inplace
      */
-    public static MatrixD centerInplace(MatrixD A) {
+    public static MatrixD centerColumnsInplace(MatrixD A) {
         double[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
@@ -171,7 +171,7 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return the matrix {@code A} de-meaned inplace
      */
-    public static MatrixF centerInplace(MatrixF A) {
+    public static MatrixF centerColumnsInplace(MatrixF A) {
         float[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
@@ -199,7 +199,7 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return the matrix {@code A} de-meaned inplace
      */
-    public static ComplexMatrixD centerInplace(ComplexMatrixD A) {
+    public static ComplexMatrixD centerColumnsInplace(ComplexMatrixD A) {
         double[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
@@ -230,7 +230,7 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return the matrix {@code A} de-meaned inplace
      */
-    public static ComplexMatrixF centerInplace(ComplexMatrixF A) {
+    public static ComplexMatrixF centerColumnsInplace(ComplexMatrixF A) {
         float[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
