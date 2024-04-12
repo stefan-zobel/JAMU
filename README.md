@@ -30,7 +30,7 @@ Matrices in *JAMU* are internally backed by 1-dimensional Java arrays in column-
 <dependency>
     <groupId>net.sourceforge.streamsupport</groupId>
     <artifactId>jamu</artifactId>
-    <version>1.4.5</version>
+    <version>1.4.6</version>
 </dependency>
 ```
 
