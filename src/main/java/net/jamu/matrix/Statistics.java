@@ -24,17 +24,57 @@ package net.jamu.matrix;
 public final class Statistics {
 
     /**
-     * Creates a mean-centered copy of matrix {@code A}, i.e., the values in
-     * each column of the copy have the mean of the corresponding column in
-     * {@code A} subtracted creating a new matrix that is a de-meaned version of
-     * {@code A}. Matrix {@code A} doesn't get mutated.
+     * Holder for the first two moments of {@code MatrixD} columns or rows.
      * 
-     * @param A
-     *            the matrix that contains the non-centered data
-     * @return a de-meaned copy of A
+     * @since 1.4.6
      */
-    public static MatrixD center(MatrixD A) {
-        return centerInplace(A.copy());
+    public static class MomentsD {
+        public MatrixD means;
+        public MatrixD variances;
+
+        /**
+         * For use as an out parameter.
+         */
+        public MomentsD() {
+        }
+
+        public MomentsD(MatrixD means, MatrixD variances) {
+            this.means = means;
+            this.variances = variances;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder().append("means: ").append(means).append("variances: ").append(variances)
+                    .toString();
+        }
+    }
+
+    /**
+     * Holder for the first two moments of {@code MatrixF} columns or rows.
+     * 
+     * @since 1.4.6
+     */
+    public static class MomentsF {
+        public MatrixF means;
+        public MatrixF variances;
+
+        /**
+         * For use as an out parameter.
+         */
+        public MomentsF() {
+        }
+
+        public MomentsF(MatrixF means, MatrixF variances) {
+            this.means = means;
+            this.variances = variances;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder().append("means: ").append(means).append("variances: ").append(variances)
+                    .toString();
+        }
     }
 
     /**
@@ -47,8 +87,8 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return a de-meaned copy of A
      */
-    public static MatrixF center(MatrixF A) {
-        return centerInplace(A.copy());
+    public static MatrixD centerColumns(MatrixD A) {
+        return centerColumnsInplace(A.copy());
     }
 
     /**
@@ -61,8 +101,8 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return a de-meaned copy of A
      */
-    public static ComplexMatrixD center(ComplexMatrixD A) {
-        return centerInplace(A.copy());
+    public static MatrixF centerColumns(MatrixF A) {
+        return centerColumnsInplace(A.copy());
     }
 
     /**
@@ -75,8 +115,22 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return a de-meaned copy of A
      */
-    public static ComplexMatrixF center(ComplexMatrixF A) {
-        return centerInplace(A.copy());
+    public static ComplexMatrixD centerColumns(ComplexMatrixD A) {
+        return centerColumnsInplace(A.copy());
+    }
+
+    /**
+     * Creates a mean-centered copy of matrix {@code A}, i.e., the values in
+     * each column of the copy have the mean of the corresponding column in
+     * {@code A} subtracted creating a new matrix that is a de-meaned version of
+     * {@code A}. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix that contains the non-centered data
+     * @return a de-meaned copy of A
+     */
+    public static ComplexMatrixF centerColumns(ComplexMatrixF A) {
+        return centerColumnsInplace(A.copy());
     }
 
     /**
@@ -89,7 +143,7 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return the matrix {@code A} de-meaned inplace
      */
-    public static MatrixD centerInplace(MatrixD A) {
+    public static MatrixD centerColumnsInplace(MatrixD A) {
         double[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
@@ -117,7 +171,7 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return the matrix {@code A} de-meaned inplace
      */
-    public static MatrixF centerInplace(MatrixF A) {
+    public static MatrixF centerColumnsInplace(MatrixF A) {
         float[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
@@ -145,7 +199,7 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return the matrix {@code A} de-meaned inplace
      */
-    public static ComplexMatrixD centerInplace(ComplexMatrixD A) {
+    public static ComplexMatrixD centerColumnsInplace(ComplexMatrixD A) {
         double[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
@@ -176,7 +230,7 @@ public final class Statistics {
      *            the matrix that contains the non-centered data
      * @return the matrix {@code A} de-meaned inplace
      */
-    public static ComplexMatrixF centerInplace(ComplexMatrixF A) {
+    public static ComplexMatrixF centerColumnsInplace(ComplexMatrixF A) {
         float[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
@@ -212,8 +266,8 @@ public final class Statistics {
      *            z-scored
      * @return a copy of A that has been z-scored
      */
-    public static MatrixD zscore(MatrixD A) {
-        return zscoreInplace(A.copy());
+    public static MatrixD zscoreColumns(MatrixD A) {
+        return zscoreColumnsInplace(A.copy());
     }
 
     /**
@@ -231,8 +285,8 @@ public final class Statistics {
      *            z-scored
      * @return a copy of A that has been z-scored
      */
-    public static MatrixF zscore(MatrixF A) {
-        return zscoreInplace(A.copy());
+    public static MatrixF zscoreColumns(MatrixF A) {
+        return zscoreColumnsInplace(A.copy());
     }
 
     /**
@@ -250,8 +304,8 @@ public final class Statistics {
      *            z-scored
      * @return a copy of A that has been z-scored
      */
-    public static ComplexMatrixD zscore(ComplexMatrixD A) {
-        return zscoreInplace(A.copy());
+    public static ComplexMatrixD zscoreColumns(ComplexMatrixD A) {
+        return zscoreColumnsInplace(A.copy());
     }
 
     /**
@@ -269,8 +323,8 @@ public final class Statistics {
      *            z-scored
      * @return a copy of A that has been z-scored
      */
-    public static ComplexMatrixF zscore(ComplexMatrixF A) {
-        return zscoreInplace(A.copy());
+    public static ComplexMatrixF zscoreColumns(ComplexMatrixF A) {
+        return zscoreColumnsInplace(A.copy());
     }
 
     /**
@@ -286,9 +340,41 @@ public final class Statistics {
      *            z-scored
      * @return the matrix {@code A} z-scored inplace
      */
-    public static MatrixD zscoreInplace(MatrixD A) {
+    public static MatrixD zscoreColumnsInplace(MatrixD A) {
+        return zscoreColumnsInplace(A, null);
+    }
+
+    /**
+     * Subtracts the mean of each column {@code j} from each value in that
+     * column {@code j} and then divides the difference by the standard
+     * deviation of the values in column {@code j}, effectively expressing the
+     * values in each column as the signed number of standard deviations
+     * (z-score) by which they are above or below the column's mean value.
+     * Optionally fills in the first two moments for each column as a row vector
+     * in the {@code moments} argument if that is not {@code null}. This is a
+     * destructive operation that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @param moments
+     *            optional holder object for the first two moments of each
+     *            column, may be {@code null}
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixD zscoreColumnsInplace(MatrixD A, MomentsD moments) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
+        if (moments != null) {
+            if (moments.means == null || !(moments.means.isRowVector() && moments.means.numColumns() == cols_)) {
+                moments.means = Matrices.createD(1, cols_);
+            }
+            if (moments.variances == null
+                    || !(moments.variances.isRowVector() && moments.variances.numColumns() == cols_)) {
+                moments.variances = Matrices.createD(1, cols_);
+            }
+        }
         double[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
             // overflow resistant implementation
@@ -300,8 +386,8 @@ public final class Statistics {
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 ++count;
                 double xi = _a[i];
+                mean = (((count - 1) * mean) + xi) / count;
                 if (xi != 0.0) {
-                    mean = (((count - 1) * mean) + xi) / count;
                     double absxi = Math.abs(xi);
                     if (scale < absxi) {
                         double unsquared = scale / absxi;
@@ -314,12 +400,17 @@ public final class Statistics {
                 }
             }
             double y = computeScaledMean(scale, mean);
-            double stddev = patchDev(scale * Math.sqrt(sumsquared / rows_ - y * y));
+            double oneOverSqrtRows = 1.0 / Math.sqrt(rows_);
+            double stddev = patchDev(scale * oneOverSqrtRows * Math.sqrt(sumsquared / rows_ - y * y));
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 // subtract mean and divide by standard deviation
                 double xi = _a[i];
                 xi = (xi - mean) / stddev;
                 _a[i] = xi;
+            }
+            if (moments != null) {
+                moments.means.setUnsafe(0, col, mean);
+                moments.variances.setUnsafe(0, col, stddev * stddev);
             }
         }
         return A;
@@ -338,9 +429,41 @@ public final class Statistics {
      *            z-scored
      * @return the matrix {@code A} z-scored inplace
      */
-    public static MatrixF zscoreInplace(MatrixF A) {
+    public static MatrixF zscoreColumnsInplace(MatrixF A) {
+        return zscoreColumnsInplace(A, null);
+    }
+
+    /**
+     * Subtracts the mean of each column {@code j} from each value in that
+     * column {@code j} and then divides the difference by the standard
+     * deviation of the values in column {@code j}, effectively expressing the
+     * values in each column as the signed number of standard deviations
+     * (z-score) by which they are above or below the column's mean value.
+     * Optionally fills in the first two moments for each column as a row vector
+     * in the {@code moments} argument if that is not {@code null}. This is a
+     * destructive operation that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose columns contain the observations to be
+     *            z-scored
+     * @param moments
+     *            optional holder object for the first two moments of each
+     *            column, may be {@code null}
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixF zscoreColumnsInplace(MatrixF A, MomentsF moments) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
+        if (moments != null) {
+            if (moments.means == null || !(moments.means.isRowVector() && moments.means.numColumns() == cols_)) {
+                moments.means = Matrices.createF(1, cols_);
+            }
+            if (moments.variances == null
+                    || !(moments.variances.isRowVector() && moments.variances.numColumns() == cols_)) {
+                moments.variances = Matrices.createF(1, cols_);
+            }
+        }
         float[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
             // overflow resistant implementation
@@ -352,8 +475,8 @@ public final class Statistics {
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 ++count;
                 float xi = _a[i];
+                mean = (((count - 1) * mean) + xi) / count;
                 if (xi != 0.0f) {
-                    mean = (((count - 1) * mean) + xi) / count;
                     float absxi = Math.abs(xi);
                     if (scale < absxi) {
                         float unsquared = scale / absxi;
@@ -366,13 +489,334 @@ public final class Statistics {
                 }
             }
             float y = computeScaledMean(scale, mean);
-            float stddev = patchDev(scale * (float) Math.sqrt(sumsquared / rows_ - y * y));
+            float oneOverSqrtRows = (float) (1.0 / Math.sqrt(rows_));
+            float stddev = patchDev(scale * oneOverSqrtRows * (float) Math.sqrt(sumsquared / rows_ - y * y));
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 // subtract mean and divide by standard deviation
                 float xi = _a[i];
                 xi = (xi - mean) / stddev;
                 _a[i] = xi;
             }
+            if (moments != null) {
+                moments.means.setUnsafe(0, col, mean);
+                moments.variances.setUnsafe(0, col, stddev * stddev);
+            }
+        }
+        return A;
+    }
+
+    /**
+     * Creates a standard-scored copy of matrix {@code A}, i.e., the values in
+     * each row of the copy have the mean of the corresponding row in {@code A}
+     * subtracted and are then scaled to the unit variance of this row by
+     * dividing the differences by the standard deviation of the row values. The
+     * result is the signed number of standard deviations (z-score) by which the
+     * value is above (below) the mean value of what is being measured in the
+     * corresponding row. Matrix {@code A} doesn't get mutated by this
+     * computation.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @return a copy of A that has been z-scored
+     * @since 1.4.6
+     */
+    public static MatrixD zscoreRows(MatrixD A) {
+        return zscoreRowsInplace(A.copy());
+    }
+
+    /**
+     * Creates a standard-scored copy of matrix {@code A}, i.e., the values in
+     * each row of the copy have the mean of the corresponding row in {@code A}
+     * subtracted and are then scaled to the unit variance of this row by
+     * dividing the differences by the standard deviation of the row values. The
+     * result is the signed number of standard deviations (z-score) by which the
+     * value is above (below) the mean value of what is being measured in the
+     * corresponding row. Matrix {@code A} doesn't get mutated by this
+     * computation.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @return a copy of A that has been z-scored
+     * @since 1.4.6
+     */
+    public static MatrixF zscoreRows(MatrixF A) {
+        return zscoreRowsInplace(A.copy());
+    }
+
+    /**
+     * Subtracts the mean of each row {@code i} from each value in that row
+     * {@code i} and then divides the difference by the standard deviation of
+     * the values in row {@code i}, effectively expressing the values in each
+     * row as the signed number of standard deviations (z-score) by which they
+     * are above or below the row's mean value. This is a destructive operation
+     * that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixD zscoreRowsInplace(MatrixD A) {
+        return zscoreRowsInplace(A, null);
+    }
+
+    /**
+     * Subtracts the mean of each row {@code i} from each value in that row
+     * {@code i} and then divides the difference by the standard deviation of
+     * the values in row {@code i}, effectively expressing the values in each
+     * row as the signed number of standard deviations (z-score) by which they
+     * are above or below the row's mean value. Optionally fills in the first
+     * two moments for each row as a column vector in the {@code moments}
+     * argument if that is not {@code null}. This is a destructive operation
+     * that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @param moments
+     *            optional holder object for the first two moments of each row,
+     *            may be {@code null}
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixD zscoreRowsInplace(MatrixD A, MomentsD moments) {
+        int cols_ = checkNotColumnVector(A);
+        int rows_ = A.numRows();
+        if (moments != null) {
+            if (moments.means == null || !(moments.means.isColumnVector() && moments.means.numRows() == rows_)) {
+                moments.means = Matrices.createD(rows_, 1);
+            }
+            if (moments.variances == null
+                    || !(moments.variances.isColumnVector() && moments.variances.numRows() == rows_)) {
+                moments.variances = Matrices.createD(rows_, 1);
+            }
+        }
+        double[] _a = A.getArrayUnsafe();
+        for (int row = 0; row < rows_; ++row) {
+            // overflow resistant implementation
+            int count = 0;
+            double mean = 0.0;
+            double scale = 0.0;
+            double sumsquared = 1.0;
+            // determine mean and sum squared
+            for (int i = row; i < row + rows_ * cols_; i += rows_) {
+                ++count;
+                double xi = _a[i];
+                mean = (((count - 1) * mean) + xi) / count;
+                if (xi != 0.0) {
+                    double absxi = Math.abs(xi);
+                    if (scale < absxi) {
+                        double unsquared = scale / absxi;
+                        sumsquared = 1.0 + sumsquared * (unsquared * unsquared);
+                        scale = absxi;
+                    } else {
+                        double unsquared = absxi / scale;
+                        sumsquared = sumsquared + (unsquared * unsquared);
+                    }
+                }
+            }
+            double y = computeScaledMean(scale, mean);
+            double oneOverSqrtCols = 1.0 / Math.sqrt(cols_);
+            double stddev = patchDev(scale * oneOverSqrtCols * Math.sqrt(sumsquared / cols_ - y * y));
+            for (int i = row; i < row + rows_ * cols_; i += rows_) {
+                // subtract mean and divide by standard deviation
+                double xi = _a[i];
+                xi = (xi - mean) / stddev;
+                _a[i] = xi;
+            }
+            if (moments != null) {
+                moments.means.setUnsafe(row, 0, mean);
+                moments.variances.setUnsafe(row, 0, stddev * stddev);
+            }
+        }
+        return A;
+    }
+
+    /**
+     * Subtracts the mean of each row {@code i} from each value in that row
+     * {@code i} and then divides the difference by the standard deviation of
+     * the values in row {@code i}, effectively expressing the values in each
+     * row as the signed number of standard deviations (z-score) by which they
+     * are above or below the row's mean value. This is a destructive operation
+     * that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixF zscoreRowsInplace(MatrixF A) {
+        return zscoreRowsInplace(A, null);
+    }
+
+    /**
+     * Subtracts the mean of each row {@code i} from each value in that row
+     * {@code i} and then divides the difference by the standard deviation of
+     * the values in row {@code i}, effectively expressing the values in each
+     * row as the signed number of standard deviations (z-score) by which they
+     * are above or below the row's mean value. Optionally fills in the first
+     * two moments for each row as a column vector in the {@code moments}
+     * argument if that is not {@code null}. This is a destructive operation
+     * that changes matrix {@code A} inplace.
+     * 
+     * @param A
+     *            the matrix whose rows contain the observations to be z-scored
+     * @param moments
+     *            optional holder object for the first two moments of each row,
+     *            may be {@code null}
+     * @return the matrix {@code A} z-scored inplace
+     * @since 1.4.6
+     */
+    public static MatrixF zscoreRowsInplace(MatrixF A, MomentsF moments) {
+        int cols_ = checkNotColumnVector(A);
+        int rows_ = A.numRows();
+        if (moments != null) {
+            if (moments.means == null || !(moments.means.isColumnVector() && moments.means.numRows() == rows_)) {
+                moments.means = Matrices.createF(rows_, 1);
+            }
+            if (moments.variances == null
+                    || !(moments.variances.isColumnVector() && moments.variances.numRows() == rows_)) {
+                moments.variances = Matrices.createF(rows_, 1);
+            }
+        }
+        float[] _a = A.getArrayUnsafe();
+        for (int row = 0; row < rows_; ++row) {
+            // overflow resistant implementation
+            int count = 0;
+            float mean = 0.0f;
+            float scale = 0.0f;
+            float sumsquared = 1.0f;
+            // determine mean and sum squared
+            for (int i = row; i < row + rows_ * cols_; i += rows_) {
+                ++count;
+                float xi = _a[i];
+                mean = (((count - 1) * mean) + xi) / count;
+                if (xi != 0.0f) {
+                    float absxi = Math.abs(xi);
+                    if (scale < absxi) {
+                        float unsquared = scale / absxi;
+                        sumsquared = 1.0f + sumsquared * (unsquared * unsquared);
+                        scale = absxi;
+                    } else {
+                        float unsquared = absxi / scale;
+                        sumsquared = sumsquared + (unsquared * unsquared);
+                    }
+                }
+            }
+            float y = computeScaledMean(scale, mean);
+            float oneOverSqrtCols = (float) (1.0 / Math.sqrt(cols_));
+            float stddev = patchDev(scale * oneOverSqrtCols * (float) Math.sqrt(sumsquared / cols_ - y * y));
+            for (int i = row; i < row + rows_ * cols_; i += rows_) {
+                // subtract mean and divide by standard deviation
+                float xi = _a[i];
+                xi = (xi - mean) / stddev;
+                _a[i] = xi;
+            }
+            if (moments != null) {
+                moments.means.setUnsafe(row, 0, mean);
+                moments.variances.setUnsafe(row, 0, stddev * stddev);
+            }
+        }
+        return A;
+    }
+
+    /**
+     * Rescales all elements in a copy of the matrix {@code A} into the range
+     * {@code [lowerBound, upperBound]}. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix to rescale
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return a copy of matrix {@code A} with all elements rescaled
+     * @since 1.4.6
+     */
+    public static MatrixD rescale(MatrixD A, double lowerBound, double upperBound) {
+        return rescaleInplace(A.copy(), lowerBound, upperBound);
+    }
+
+    /**
+     * Rescales all elements in a copy of the matrix {@code A} into the range
+     * {@code [lowerBound, upperBound]}. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix to rescale
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return a copy of matrix {@code A} with all elements rescaled
+     * @since 1.4.6
+     */
+    public static MatrixF rescale(MatrixF A, float lowerBound, float upperBound) {
+        return rescaleInplace(A.copy(), lowerBound, upperBound);
+    }
+
+    /**
+     * Rescales all elements in the matrix {@code A} in-place into the range
+     * {@code [lowerBound, upperBound]}.
+     * 
+     * @param A
+     *            the matrix to rescale in-place
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return the matrix {@code A} with all elements rescaled in-place
+     * @since 1.4.6
+     */
+    public static MatrixD rescaleInplace(MatrixD A, double lowerBound, double upperBound) {
+        double[] _a = A.getArrayUnsafe();
+        double _min = Double.MAX_VALUE;
+        double _max = -Double.MAX_VALUE;
+        for (int i = 0; i < _a.length; ++i) {
+            double x = _a[i];
+            if (x < _min) {
+                _min = x;
+            }
+            if (x > _max) {
+                _max = x;
+            }
+        }
+        double scale = upperBound - lowerBound;
+        double dataScale = (_min == _max) ? Double.MIN_NORMAL : (_max - _min);
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = lowerBound + (((_a[i] - _min) * scale) / dataScale);
+        }
+        return A;
+    }
+
+    /**
+     * Rescales all elements in the matrix {@code A} in-place into the range
+     * {@code [lowerBound, upperBound]}.
+     * 
+     * @param A
+     *            the matrix to rescale in-place
+     * @param lowerBound
+     *            the minimum value of an element after rescaling
+     * @param upperBound
+     *            the maximum value of an element after rescaling
+     * @return the matrix {@code A} with all elements rescaled in-place
+     * @since 1.4.6
+     */
+    public static MatrixF rescaleInplace(MatrixF A, float lowerBound, float upperBound) {
+        float[] _a = A.getArrayUnsafe();
+        float _min = Float.MAX_VALUE;
+        float _max = -Float.MAX_VALUE;
+        for (int i = 0; i < _a.length; ++i) {
+            float x = _a[i];
+            if (x < _min) {
+                _min = x;
+            }
+            if (x > _max) {
+                _max = x;
+            }
+        }
+        float scale = upperBound - lowerBound;
+        float dataScale = (_min == _max) ? Float.MIN_NORMAL : (_max - _min);
+        for (int i = 0; i < _a.length; ++i) {
+            _a[i] = lowerBound + (((_a[i] - _min) * scale) / dataScale);
         }
         return A;
     }
@@ -390,7 +834,7 @@ public final class Statistics {
      *            z-scored
      * @return the matrix {@code A} z-scored inplace
      */
-    public static ComplexMatrixD zscoreInplace(ComplexMatrixD A) {
+    public static ComplexMatrixD zscoreColumnsInplace(ComplexMatrixD A) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
         double[] _a = A.getArrayUnsafe();
@@ -408,11 +852,10 @@ public final class Statistics {
                 ++count;
                 double xre = _a[i];
                 double xim = _a[i + 1];
-                if (xre != 0.0 || xim != 0.0) {
-                    reMean = (((count - 1) * reMean) + xre) / count;
-                    imMean = (((count - 1) * imMean) + xim) / count;
+                reMean = (((count - 1) * reMean) + xre) / count;
+                imMean = (((count - 1) * imMean) + xim) / count;
+                if (xre != 0.0) {
                     double absxre = Math.abs(xre);
-                    double absxim = Math.abs(xim);
                     if (reScale < absxre) {
                         double unsquared = reScale / absxre;
                         reSumSqr = 1.0 + reSumSqr * (unsquared * unsquared);
@@ -421,6 +864,9 @@ public final class Statistics {
                         double unsquared = absxre / reScale;
                         reSumSqr = reSumSqr + (unsquared * unsquared);
                     }
+                }
+                if (xim != 0.0) {
+                    double absxim = Math.abs(xim);
                     if (imScale < absxim) {
                         double unsquared = imScale / absxim;
                         imSumSqr = 1.0 + imSumSqr * (unsquared * unsquared);
@@ -434,8 +880,9 @@ public final class Statistics {
             //
             double reY = computeScaledMean(reScale, reMean);
             double imY = computeScaledMean(imScale, imMean);
-            double reStddev = patchDev(reScale * Math.sqrt(reSumSqr / rows_ - reY * reY));
-            double imStddev = patchDev(imScale * Math.sqrt(imSumSqr / rows_ - imY * imY));
+            double oneOverSqrtRows = 1.0 / Math.sqrt(rows_);
+            double reStddev = patchDev(reScale * oneOverSqrtRows * Math.sqrt(reSumSqr / rows_ - reY * reY));
+            double imStddev = patchDev(imScale * oneOverSqrtRows * Math.sqrt(imSumSqr / rows_ - imY * imY));
             //
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation
@@ -463,7 +910,7 @@ public final class Statistics {
      *            z-scored
      * @return the matrix {@code A} z-scored inplace
      */
-    public static ComplexMatrixF zscoreInplace(ComplexMatrixF A) {
+    public static ComplexMatrixF zscoreColumnsInplace(ComplexMatrixF A) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
         float[] _a = A.getArrayUnsafe();
@@ -481,11 +928,10 @@ public final class Statistics {
                 ++count;
                 float xre = _a[i];
                 float xim = _a[i + 1];
-                if (xre != 0.0f || xim != 0.0f) {
-                    reMean = (((count - 1) * reMean) + xre) / count;
-                    imMean = (((count - 1) * imMean) + xim) / count;
+                reMean = (((count - 1) * reMean) + xre) / count;
+                imMean = (((count - 1) * imMean) + xim) / count;
+                if (xre != 0.0f) {
                     float absxre = Math.abs(xre);
-                    float absxim = Math.abs(xim);
                     if (reScale < absxre) {
                         float unsquared = reScale / absxre;
                         reSumSqr = 1.0f + reSumSqr * (unsquared * unsquared);
@@ -494,6 +940,9 @@ public final class Statistics {
                         float unsquared = absxre / reScale;
                         reSumSqr = reSumSqr + (unsquared * unsquared);
                     }
+                }
+                if (xim != 0.0f) {
+                    float absxim = Math.abs(xim);
                     if (imScale < absxim) {
                         float unsquared = imScale / absxim;
                         imSumSqr = 1.0f + imSumSqr * (unsquared * unsquared);
@@ -507,8 +956,9 @@ public final class Statistics {
             //
             float reY = computeScaledMean(reScale, reMean);
             float imY = computeScaledMean(imScale, imMean);
-            float reStddev = patchDev(reScale * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
-            float imStddev = patchDev(imScale * (float) Math.sqrt(imSumSqr / rows_ - imY * imY));
+            float oneOverSqrtRows = (float) (1.0 / Math.sqrt(rows_));
+            float reStddev = patchDev(reScale * oneOverSqrtRows * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
+            float imStddev = patchDev(imScale * oneOverSqrtRows * (float) Math.sqrt(imSumSqr / rows_ - imY * imY));
             //
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation
@@ -521,6 +971,34 @@ public final class Statistics {
             }
         }
         return A;
+    }
+
+    /**
+     * Randomly permutes the columns in a copy of matrix {@code A} using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @return a copy of matrix {@code A} with columns randomly permuted
+     * @since 1.4.6
+     */
+    public static MatrixD shuffleColumns(MatrixD A) {
+        return shuffleColumnsInplace(A.copy(), null);
+    }
+
+    /**
+     * Randomly permutes the columns in a copy of matrix {@code A} using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @return a copy of matrix {@code A} with columns randomly permuted
+     * @since 1.4.6
+     */
+    public static MatrixF shuffleColumns(MatrixF A) {
+        return shuffleColumnsInplace(A.copy(), null);
     }
 
     /**
@@ -615,12 +1093,160 @@ public final class Statistics {
         }
     }
 
+    /**
+     * Randomly permutes the rows in a copy of matrix {@code A} using a default
+     * source of randomness. All permutations occur with approximately equal
+     * probability. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @return a copy of matrix {@code A} with rows randomly permuted
+     * @since 1.4.6
+     */
+    public static MatrixD shuffleRows(MatrixD A) {
+        return shuffleRowsInplace(A.copy(), null);
+    }
+
+    /**
+     * Randomly permutes the rows in a copy of matrix {@code A} using a default
+     * source of randomness. All permutations occur with approximately equal
+     * probability. Matrix {@code A} doesn't get mutated.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @return a copy of matrix {@code A} with rows randomly permuted
+     * @since 1.4.6
+     */
+    public static MatrixF shuffleRows(MatrixF A) {
+        return shuffleRowsInplace(A.copy(), null);
+    }
+
+    /**
+     * Randomly permutes the rows in matrix {@code A} in place using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @return the matrix argument with rows randomly permuted in place
+     * @since 1.4.6
+     */
+    public static MatrixD shuffleRowsInplace(MatrixD A) {
+        return shuffleRowsInplace(A, null);
+    }
+
+    /**
+     * Randomly permutes the rows in matrix {@code A} in place using a
+     * default source of randomness. All permutations occur with approximately
+     * equal probability.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @return the matrix argument with rows randomly permuted in place
+     * @since 1.4.6
+     */
+    public static MatrixF shuffleRowsInplace(MatrixF A) {
+        return shuffleRowsInplace(A, null);
+    }
+
+    /**
+     * Randomly permutes the rows in matrix {@code A} in place using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return the matrix argument with rows randomly permuted in place
+     * @since 1.4.6
+     */
+    public static MatrixD shuffleRowsInplace(MatrixD A, long seed) {
+        return shuffleRowsInplace(A, new XoShiRo256StarStar(seed));
+    }
+
+    /**
+     * Randomly permutes the rows in matrix {@code A} in place using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability.
+     * 
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return the matrix argument with rows randomly permuted in place
+     * @since 1.4.6
+     */
+    public static MatrixF shuffleRowsInplace(MatrixF A, long seed) {
+        return shuffleRowsInplace(A, new XoShiRo256StarStar(seed));
+    }
+
+    private static MatrixD shuffleRowsInplace(MatrixD A, XoShiRo256StarStar rng) {
+        int rows = A.numRows();
+        int cols = A.numColumns();
+        double[] a = A.getArrayUnsafe();
+        double[] tmp = new double[cols];
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        for (int i = rows; i > 1; --i) {
+            int sourceRow = rnd.nextInt(i);
+            int targetRow = i - 1;
+            if (sourceRow != targetRow) {
+                swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+            }
+        }
+        return A;
+    }
+
+    private static MatrixF shuffleRowsInplace(MatrixF A, XoShiRo256StarStar rng) {
+        int rows = A.numRows();
+        int cols = A.numColumns();
+        float[] a = A.getArrayUnsafe();
+        float[] tmp = new float[cols];
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        for (int i = rows; i > 1; --i) {
+            int sourceRow = rnd.nextInt(i);
+            int targetRow = i - 1;
+            if (sourceRow != targetRow) {
+                swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+            }
+        }
+        return A;
+    }
+
+    private static void swapRows(int aoff1, double[] a, double[] tmp, int len, int skip, int aoff2) {
+        int j = 0;
+        for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
+            tmp[j] = a[i];
+            a[i] = a[aoff2];
+            a[aoff2] = tmp[j];
+            ++j;
+        }
+    }
+
+    private static void swapRows(int aoff1, float[] a, float[] tmp, int len, int skip, int aoff2) {
+        int j = 0;
+        for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
+            tmp[j] = a[i];
+            a[i] = a[aoff2];
+            a[aoff2] = tmp[j];
+            ++j;
+        }
+    }
+
     private static int checkNotRowVector(MatrixDimensions A) {
         int rows = A.numRows();
         if (rows == 1) {
             throw new IllegalArgumentException("Can't compute zscore for a row vector");
         }
         return rows;
+    }
+
+    private static int checkNotColumnVector(MatrixDimensions A) {
+        int cols = A.numColumns();
+        if (cols == 1) {
+            throw new IllegalArgumentException("Can't compute zscore for a column vector");
+        }
+        return cols;
     }
 
     private static double patchDev(double stddev) {

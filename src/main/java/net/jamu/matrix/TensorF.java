@@ -844,7 +844,7 @@ public class TensorF extends TensorBase {
         float _min = Float.MAX_VALUE;
         float _max = -Float.MAX_VALUE;
         for (int i = 0; i < _a.length; ++i) {
-            float x = a[i];
+            float x = _a[i];
             if (x < _min) {
                 _min = x;
             }
@@ -855,7 +855,7 @@ public class TensorF extends TensorBase {
         float scale = upperBound - lowerBound;
         float dataScale = (_min == _max) ? Float.MIN_NORMAL : (_max - _min);
         for (int i = 0; i < _a.length; ++i) {
-            a[i] = lowerBound + (((a[i] - _min) * scale) / dataScale);
+            _a[i] = lowerBound + (((_a[i] - _min) * scale) / dataScale);
         }
         return this;
     }
