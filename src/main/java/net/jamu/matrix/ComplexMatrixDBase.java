@@ -157,7 +157,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
     @Override
     public ComplexMatrixD addInplace(double alphar, double alphai, ComplexMatrixD B) {
         Checks.checkEqualDimension(this, B);
-        if (alphar != 0.0 && alphai != 0.0) {
+        if (alphar != 0.0 || alphai != 0.0) {
             double[] _a = a;
             double[] _b = B.getArrayUnsafe();
             for (int i = 0; i < _b.length; i += 2) {
