@@ -163,8 +163,8 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
             for (int i = 0; i < _b.length; i += 2) {
                 double bi = _b[i];
                 double bip1 = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
-                _a[i] = bi * alphar - bip1 * alphai;
-                _a[i + 1] = bi * alphai + bip1 * alphar;
+                _a[i] = _a[i] + (bi * alphar - bip1 * alphai);
+                _a[i + 1] = _a[i + 1] + (bi * alphai + bip1 * alphar);
             }
         }
         return this;
