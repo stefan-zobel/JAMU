@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, 2024 Stefan Zobel
+ * Copyright 2020, 2025 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,15 +157,16 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     @Override
     public ComplexMatrixF addInplace(float alphar, float alphai, ComplexMatrixF B) {
         Checks.checkEqualDimension(this, B);
-        if (alphar != 0.0f || alphai != 0.0f) {
-            float[] _a = a;
-            float[] _b = B.getArrayUnsafe();
-            for (int i = 0; i < _b.length; i += 2) {
-                float bi = _b[i];
-                float bip1 = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
-                _a[i] = _a[i] + (bi * alphar - bip1 * alphai);
-                _a[i + 1] = _a[i + 1] + (bi * alphai + bip1 * alphar);
-            }
+        if (alphar == 0.0f && alphai == 0.0f) {
+            return this;
+        }
+        float[] _a = a;
+        float[] _b = B.getArrayUnsafe();
+        for (int i = 0; i < _b.length; i += 2) {
+            float bi = _b[i];
+            float bip1 = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            _a[i] += (bi * alphar - bip1 * alphai);
+            _a[i + 1] += (bi * alphai + bip1 * alphar);
         }
         return this;
     }
