@@ -4,5 +4,5 @@
 .settings/
 /doc/
 /target/
-/src/test/java/
+/src/tests/java/
 /upload/
