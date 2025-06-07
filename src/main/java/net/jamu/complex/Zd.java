@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, 2021 Stefan Zobel
+ * Copyright 2018, 2025 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,4 +133,10 @@ public interface Zd {
      * @since 1.3
      */
     String toString(String format);
+
+    static Zd NaN() {return new ZdImpl(Double.NaN, Double.NaN);}
+    static Zd Inf() {return new ZdImpl(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);}
+    static Zd Zero() {return new ZdImpl(0.0, 0.0);}
+    static Zd One() {return new ZdImpl(1.0, 0.0);}
+    static Zd I() {return new ZdImpl(0.0, 1.0);}
 }

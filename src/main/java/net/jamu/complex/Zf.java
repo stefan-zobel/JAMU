@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, 2021 Stefan Zobel
+ * Copyright 2018, 2025 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,4 +133,10 @@ public interface Zf {
      * @since 1.3
      */
     String toString(String format);
+
+    static Zf NaN() {return new ZfImpl(Float.NaN, Float.NaN);}
+    static Zf Inf() {return new ZfImpl(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);}
+    static Zf Zero(){return new ZfImpl(0.0f, 0.0f);}
+    static Zf One() {return new ZfImpl(1.0f, 0.0f);}
+    static Zf I() {return new ZfImpl(0.0f, 1.0f);}
 }
