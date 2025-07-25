@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2024 Stefan Zobel
+ * Copyright 2019, 2025 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3733,6 +3733,92 @@ public final class Matrices {
      */
     public static MatrixF colsAverage(MatrixF A) {
         return sumColumns(A).scaleInplace(1.0f / A.numColumns());
+    }
+
+    /**
+     * Constructs a {@code (r * (delays - 1) x (c - delays))} time-delay
+     * embedding matrix (a.k.a Hankel matrix) from a {@code (r x c)} time series
+     * matrix.
+     * 
+     * @param data
+     *            a {@code (r x c)} time series matrix where {@code r} is the
+     *            dimension of a single observation and {@code c} is the time
+     *            dimension of the observations (equispaced, with the first
+     *            observation in column {@code 0} and the last one in column
+     *            {@code c - 1}
+     * @param delays
+     *            the positive number of time-shifts to apply
+     * @return a Hankel matrix produced by stacking time-shifted snapshots of
+     *         {@code data}
+     * @throws IllegalArgumentException
+     *             if delays < 0 or delays >= data.numColumns()
+     * @since 1.4.7
+     */
+    public static MatrixD timeDelayEmbeddingD(MatrixD data, int delays) {
+        if (delays < 0 || delays >= data.numColumns()) {
+            throw new IllegalArgumentException("delays: " + delays);
+        }
+        if (delays == 0) {
+            return data.copy();
+        }
+        // setup Hankel matrix
+        MatrixD H = createD(data.numRows() * (delays + 1), data.numColumns() - delays);
+        for (int col = 0; col < data.numColumns() - delays; ++col) {
+            int row_ = 0;
+            int col_ = col;
+            for (int row = 0; row < data.numRows() * (delays + 1); ++row) {
+                H.setUnsafe(row, col, data.getUnsafe(row_, col_));
+                ++row_;
+                if (row_ == data.numRows()) {
+                    row_ = 0;
+                    ++col_;
+                }
+            }
+        }
+        return H;
+    }
+
+    /**
+     * Constructs a {@code (r * (delays - 1) x (c - delays))} time-delay
+     * embedding matrix (a.k.a Hankel matrix) from a {@code (r x c)} time series
+     * matrix.
+     * 
+     * @param data
+     *            a {@code (r x c)} time series matrix where {@code r} is the
+     *            dimension of a single observation and {@code c} is the time
+     *            dimension of the observations (equispaced, with the first
+     *            observation in column {@code 0} and the last one in column
+     *            {@code c - 1}
+     * @param delays
+     *            the positive number of time-shifts to apply
+     * @return a Hankel matrix produced by stacking time-shifted snapshots of
+     *         {@code data}
+     * @throws IllegalArgumentException
+     *             if delays < 0 or delays >= data.numColumns()
+     * @since 1.4.7
+     */
+    public static MatrixF timeDelayEmbeddingF(MatrixF data, int delays) {
+        if (delays < 0 || delays >= data.numColumns()) {
+            throw new IllegalArgumentException("delays: " + delays);
+        }
+        if (delays == 0) {
+            return data.copy();
+        }
+        // setup Hankel matrix
+        MatrixF H = createF(data.numRows() * (delays + 1), data.numColumns() - delays);
+        for (int col = 0; col < data.numColumns() - delays; ++col) {
+            int row_ = 0;
+            int col_ = col;
+            for (int row = 0; row < data.numRows() * (delays + 1); ++row) {
+                H.setUnsafe(row, col, data.getUnsafe(row_, col_));
+                ++row_;
+                if (row_ == data.numRows()) {
+                    row_ = 0;
+                    ++col_;
+                }
+            }
+        }
+        return H;
     }
 
     private static boolean checkApproxEqualArgs(MatrixDimensions A, MatrixDimensions B, double relTol, double absTol) {
