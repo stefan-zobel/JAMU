@@ -3751,7 +3751,7 @@ public final class Matrices {
      * @return a Hankel matrix produced by stacking time-shifted snapshots of
      *         {@code data}
      * @throws IllegalArgumentException
-     *             if delays < 0 or delays >= data.numColumns()
+     *             if delays &lt; 0 or delays &ge; data.numColumns()
      * @since 1.4.7
      */
     public static MatrixD timeDelayEmbeddingD(MatrixD data, int delays) {
@@ -3794,7 +3794,7 @@ public final class Matrices {
      * @return a Hankel matrix produced by stacking time-shifted snapshots of
      *         {@code data}
      * @throws IllegalArgumentException
-     *             if delays < 0 or delays >= data.numColumns()
+     *             if delays &lt; 0 or delays &ge; data.numColumns()
      * @since 1.4.7
      */
     public static MatrixF timeDelayEmbeddingF(MatrixF data, int delays) {
