@@ -3736,7 +3736,7 @@ public final class Matrices {
     }
 
     /**
-     * Constructs a {@code (r * (delays - 1) x (c - delays))} time-delay
+     * Constructs a {@code (r * (delays + 1) x (c - delays))} time-delay
      * embedding matrix (a.k.a Hankel matrix) from a {@code (r x c)} time series
      * matrix.
      * 
@@ -3779,7 +3779,7 @@ public final class Matrices {
     }
 
     /**
-     * Constructs a {@code (r * (delays - 1) x (c - delays))} time-delay
+     * Constructs a {@code (r * (delays + 1) x (c - delays))} time-delay
      * embedding matrix (a.k.a Hankel matrix) from a {@code (r x c)} time series
      * matrix.
      * 
