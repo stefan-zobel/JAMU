@@ -47,6 +47,7 @@ abstract class UpperPacked {
     }
 
     // for debugging only
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         for (int row = 0; row < n; ++row) {
