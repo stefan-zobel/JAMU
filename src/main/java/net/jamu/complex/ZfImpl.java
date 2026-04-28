@@ -23,10 +23,12 @@ public final class ZfImpl implements Zf {
     private float re;
     private float im;
 
+    @Override
     public float re() {
         return re;
     }
 
+    @Override
     public float im() {
         return im;
     }
@@ -66,35 +68,42 @@ public final class ZfImpl implements Zf {
         return 0.0f;
     }
 
+    @Override
     public void setRe(float re) {
         this.re = re;
     }
 
+    @Override
     public void setIm(float im) {
         this.im = im;
     }
 
+    @Override
     public void set(float re, float im) {
         this.re = re;
         this.im = im;
     }
 
+    @Override
     public Zf copy() {
         return new ZfImpl(re, im);
     }
 
+    @Override
     public Zf add(Zf that) {
         re += that.re();
         im += that.im();
         return this;
     }
 
+    @Override
     public Zf sub(Zf that) {
         re -= that.re();
         im -= that.im();
         return this;
     }
 
+    @Override
     public Zf mul(Zf that) {
         if (isInfinite() || that.isInfinite()) {
             re = Float.POSITIVE_INFINITY;
@@ -108,6 +117,7 @@ public final class ZfImpl implements Zf {
         return this;
     }
 
+    @Override
     public Zf div(Zf that) {
         float c = that.re();
         float d = that.im();
@@ -138,6 +148,7 @@ public final class ZfImpl implements Zf {
         return this;
     }
 
+    @Override
     public Zf inv() {
         if (re == 0.0f && im == 0.0f) {
             re = Float.POSITIVE_INFINITY;
@@ -155,6 +166,7 @@ public final class ZfImpl implements Zf {
         return this;
     }
 
+    @Override
     public Zf ln() {
         float abs = abs();
         float phi = arg();
@@ -163,6 +175,7 @@ public final class ZfImpl implements Zf {
         return this;
     }
 
+    @Override
     public Zf exp() {
         double expRe = Math.exp(re);
         float im_ = im;
@@ -171,14 +184,17 @@ public final class ZfImpl implements Zf {
         return this;
     }
 
+    @Override
     public Zf pow(float exponent) {
         return ln().scale(exponent).exp();
     }
 
+    @Override
     public Zf pow(Zf exponent) {
         return ln().mul(exponent).exp();
     }
 
+    @Override
     public Zf scale(float alpha) {
         if (isInfinite() || Float.isInfinite(alpha)) {
             re = Float.POSITIVE_INFINITY;
@@ -190,11 +206,13 @@ public final class ZfImpl implements Zf {
         return this;
     }
 
+    @Override
     public Zf conj() {
         im = -im;
         return this;
     }
 
+    @Override
     public Zf neg() {
         re = -re;
         im = -im;
@@ -204,14 +222,17 @@ public final class ZfImpl implements Zf {
     // the following methods could also be used for an immutable complex given
     // re() and im()
 
+    @Override
     public final boolean isReal() {
         return im() == 0.0f;
     }
 
+    @Override
     public final float arg() {
         return (float) Math.atan2(im(), re());
     }
 
+    @Override
     public final float abs() {
         if (isInfinite()) {
             return Float.POSITIVE_INFINITY;
@@ -231,18 +252,22 @@ public final class ZfImpl implements Zf {
         return 0.0f;
     }
 
+    @Override
     public final boolean isNan() {
         return Float.isNaN(re()) || Float.isNaN(im());
     }
 
+    @Override
     public final boolean isInfinite() {
         return Float.isInfinite(re()) || Float.isInfinite(im());
     }
 
+    @Override
     public final String toString() {
         return toString("%.6E");
     }
 
+    @Override
     public String toString(String format) {
         float re_ = re();
         float im_ = im();
@@ -265,6 +290,7 @@ public final class ZfImpl implements Zf {
         return buf.toString();
     }
 
+    @Override
     public final boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -279,6 +305,7 @@ public final class ZfImpl implements Zf {
         return false;
     }
 
+    @Override
     public final int hashCode() {
         int h = 0x7FFFF + Float.floatToIntBits(re);
         h = ((h << 19) - h) + Float.floatToIntBits(im);
