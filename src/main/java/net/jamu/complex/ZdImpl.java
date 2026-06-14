@@ -23,10 +23,12 @@ public final class ZdImpl implements Zd {
     private double re;
     private double im;
 
+    @Override
     public double re() {
         return re;
     }
 
+    @Override
     public double im() {
         return im;
     }
@@ -66,35 +68,42 @@ public final class ZdImpl implements Zd {
         return 0.0;
     }
 
+    @Override
     public void setRe(double re) {
         this.re = re;
     }
 
+    @Override
     public void setIm(double im) {
         this.im = im;
     }
 
+    @Override
     public void set(double re, double im) {
         this.re = re;
         this.im = im;
     }
 
+    @Override
     public Zd copy() {
         return new ZdImpl(re, im);
     }
 
+    @Override
     public Zd add(Zd that) {
         re += that.re();
         im += that.im();
         return this;
     }
 
+    @Override
     public Zd sub(Zd that) {
         re -= that.re();
         im -= that.im();
         return this;
     }
 
+    @Override
     public Zd mul(Zd that) {
         if (isInfinite() || that.isInfinite()) {
             re = Double.POSITIVE_INFINITY;
@@ -108,6 +117,7 @@ public final class ZdImpl implements Zd {
         return this;
     }
 
+    @Override
     public Zd div(Zd that) {
         double c = that.re();
         double d = that.im();
@@ -138,6 +148,7 @@ public final class ZdImpl implements Zd {
         return this;
     }
 
+    @Override
     public Zd inv() {
         if (re == 0.0 && im == 0.0) {
             re = Double.POSITIVE_INFINITY;
@@ -155,6 +166,7 @@ public final class ZdImpl implements Zd {
         return this;
     }
 
+    @Override
     public Zd ln() {
         double abs = abs();
         double phi = arg();
@@ -163,6 +175,7 @@ public final class ZdImpl implements Zd {
         return this;
     }
 
+    @Override
     public Zd exp() {
         double expRe = Math.exp(re);
         double im_ = im;
@@ -171,14 +184,17 @@ public final class ZdImpl implements Zd {
         return this;
     }
 
+    @Override
     public Zd pow(double exponent) {
         return ln().scale(exponent).exp();
     }
 
+    @Override
     public Zd pow(Zd exponent) {
         return ln().mul(exponent).exp();
     }
 
+    @Override
     public Zd scale(double alpha) {
         if (isInfinite() || Double.isInfinite(alpha)) {
             re = Double.POSITIVE_INFINITY;
@@ -190,11 +206,13 @@ public final class ZdImpl implements Zd {
         return this;
     }
 
+    @Override
     public Zd conj() {
         im = -im;
         return this;
     }
 
+    @Override
     public Zd neg() {
         re = -re;
         im = -im;
@@ -204,14 +222,17 @@ public final class ZdImpl implements Zd {
     // the following methods could also be used for an immutable complex given
     // re() and im()
 
+    @Override
     public final boolean isReal() {
         return im() == 0.0;
     }
 
+    @Override
     public final double arg() {
         return Math.atan2(im(), re());
     }
 
+    @Override
     public final double abs() {
         if (isInfinite()) {
             return Double.POSITIVE_INFINITY;
@@ -231,18 +252,22 @@ public final class ZdImpl implements Zd {
         return 0.0;
     }
 
+    @Override
     public final boolean isNan() {
         return Double.isNaN(re()) || Double.isNaN(im());
     }
 
+    @Override
     public final boolean isInfinite() {
         return Double.isInfinite(re()) || Double.isInfinite(im());
     }
 
+    @Override
     public final String toString() {
         return toString("%.10E");
     }
 
+    @Override
     public String toString(String format) {
         double re_ = re();
         double im_ = im();
@@ -265,6 +290,7 @@ public final class ZdImpl implements Zd {
         return buf.toString();
     }
 
+    @Override
     public final boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -279,6 +305,7 @@ public final class ZdImpl implements Zd {
         return false;
     }
 
+    @Override
     public final int hashCode() {
         long bits = Double.doubleToLongBits(re);
         int h = 0x7FFFF + (int) (bits ^ (bits >>> 32));
