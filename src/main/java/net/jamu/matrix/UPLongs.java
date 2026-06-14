@@ -36,6 +36,7 @@ final class UPLongs extends UpperPacked {
     }
 
     // for toString() only
+    @Override
     Object getVal(int row, int col) {
         return get(row, col);
     }

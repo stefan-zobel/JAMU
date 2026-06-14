@@ -36,6 +36,7 @@ public final class SvdEconD extends SvdD {
      * @return reduced m-by-r semi-orthogonal matrix where {@code r} is the rank
      *         of {@code A}
      */
+    @Override
     public MatrixD getU() {
         return U;
     }
@@ -49,6 +50,7 @@ public final class SvdEconD extends SvdD {
      * @return reduced n-by-r semi-orthogonal matrix where {@code r} is the rank
      *         of {@code A}
      */
+    @Override
     public MatrixD getVt() {
         return Vt;
     }
@@ -59,6 +61,7 @@ public final class SvdEconD extends SvdD {
      * @return array of size {@code r <= min(m, n)} containing the non-zero
      *         singular values in descending order
      */
+    @Override
     public double[] getS() {
         return S;
     }
@@ -68,6 +71,7 @@ public final class SvdEconD extends SvdD {
      * 
      * @return whether singular vectors have been computed or not
      */
+    @Override
     public boolean hasSingularVectors() {
         return true;
     }

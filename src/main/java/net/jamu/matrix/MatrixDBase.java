@@ -460,6 +460,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getUnsafe(int row, int col) {
         return a[idx(row, col)];
     }
@@ -477,6 +478,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setUnsafe(int row, int col, double val) {
         a[idx(row, col)] = val;
     }

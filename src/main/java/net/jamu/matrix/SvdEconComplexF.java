@@ -38,6 +38,7 @@ public final class SvdEconComplexF extends SvdComplexF {
      * @return reduced m-by-r semi-unitary matrix {@code U} where {@code r} is
      *         the rank of {@code A}
      */
+    @Override
     public ComplexMatrixF getU() {
         return U;
     }
@@ -51,6 +52,7 @@ public final class SvdEconComplexF extends SvdComplexF {
      * @return reduced n-by-r semi-unitary matrix <code>V<sup>*</sup></code>
      *         where {@code r} is the rank of {@code A}
      */
+    @Override
     public ComplexMatrixF getVh() {
         return Vh;
     }
@@ -61,6 +63,7 @@ public final class SvdEconComplexF extends SvdComplexF {
      * @return array of size {@code r <= min(m, n)} containing the non-zero
      *         singular values in descending order
      */
+    @Override
     public float[] getS() {
         return S;
     }
@@ -70,6 +73,7 @@ public final class SvdEconComplexF extends SvdComplexF {
      * 
      * @return whether singular vectors have been computed or not
      */
+    @Override
     public boolean hasSingularVectors() {
         return true;
     }
