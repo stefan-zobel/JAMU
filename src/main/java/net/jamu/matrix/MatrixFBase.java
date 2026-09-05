@@ -540,9 +540,6 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      */
     @Override
     public MatrixF pseudoInv() {
-        if (this.isSquareMatrix()) {
-            return inv(create(rows, cols));
-        }
         SvdF svd = svd(true);
         float[] sigma = svd.getS();
         float tol = MACH_EPS_FLT * Math.max(rows, cols) * sigma[0];

@@ -540,9 +540,6 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      */
     @Override
     public MatrixD pseudoInv() {
-        if (this.isSquareMatrix()) {
-            return inv(create(rows, cols));
-        }
         SvdD svd = svd(true);
         double[] sigma = svd.getS();
         double tol = MACH_EPS_DBL * Math.max(rows, cols) * sigma[0];

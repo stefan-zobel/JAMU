@@ -321,7 +321,9 @@ public interface MatrixDConduct {
 
     /**
      * Returns <code>A<sup>-1</sup></code> for quadratic matrices. None of the
-     * operands are mutated.
+     * operands are mutated. No condition estimation is done: a
+     * numerically singular matrix yields a meaningless result rather than an
+     * exception.
      * 
      * @return the inverse of this matrix if it is quadratic
      * @throws IllegalArgumentException

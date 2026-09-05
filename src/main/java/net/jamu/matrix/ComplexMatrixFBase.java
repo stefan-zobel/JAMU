@@ -575,9 +575,6 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixF pseudoInv() {
-        if (this.isSquareMatrix()) {
-            return inv(create(rows, cols));
-        }
         SvdComplexF svd = svd(true);
         float tol = MACH_EPS_FLT * Math.max(rows, cols) * svd.norm2();
         float[] sigma = svd.getS();
