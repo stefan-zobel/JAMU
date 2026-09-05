@@ -18,12 +18,24 @@ package net.jamu.matrix;
 /**
  * Approximately optimal Singular Value truncation ("Singular Values Hard
  * Threshold (SVHT)") after Gavish and Donoho (2014).
- * 
+ * <p>
+ * Every method here expects the singular values in descending order, as LAPACK
+ * hands them out, and takes {@code singularValues[0]} to be the largest of
+ * them. {@code TOL_DBL} and {@code TOL_FLT} are relative to that largest value,
+ * not absolute: a singular value carries the scale of the matrix it came from,
+ * so an absolute machine epsilon compared against one makes the result depend
+ * on how the input happened to be scaled. Measured before this was relative, one
+ * and the same rank 5 spectrum answered 5 down to a scale of {@code 1e-13},
+ * then 1, and 0 from {@code 1e-20} on; in single precision the same collapse
+ * began at {@code 1e-6}.
+ *
  * @see "https://arxiv.org/pdf/1305.5870.pdf"
  */
 class SVHT {
 
+    /** relative to the largest singular value, see the class comment */
     static final double TOL_DBL = 5.0 * DimensionsBase.MACH_EPS_DBL;
+    /** relative to the largest singular value, see the class comment */
     static final float TOL_FLT = 5.0f * DimensionsBase.MACH_EPS_FLT;
     static final double BROAD_SHARE_DBL = 1.0 - 1e-4;
     static final float BROAD_SHARE_FLT = 1.0f - 1e-4f;
@@ -31,7 +43,9 @@ class SVHT {
     static int threshold(int rows, int cols, double[] singularValues) {
         DimensionsBase.checkRows(rows);
         DimensionsBase.checkCols(cols);
-        if (singularValues[0] <= DimensionsBase.MACH_EPS_DBL) {
+        // there is nothing to threshold without a positive largest singular
+        // value, and the negated comparison rejects a NaN as well
+        if (!(singularValues[0] > 0.0)) {
             return 0;
         }
         double omega = computeOmega(rows, cols);
@@ -43,7 +57,9 @@ class SVHT {
     static int threshold(int rows, int cols, float[] singularValues) {
         DimensionsBase.checkRows(rows);
         DimensionsBase.checkCols(cols);
-        if (singularValues[0] <= DimensionsBase.MACH_EPS_FLT) {
+        // there is nothing to threshold without a positive largest singular
+        // value, and the negated comparison rejects a NaN as well
+        if (!(singularValues[0] > 0.0f)) {
             return 0;
         }
         float omega = (float) computeOmega(rows, cols);
@@ -53,8 +69,9 @@ class SVHT {
     }
 
     static double getSigmaMin(double[] singularValues) {
+        double tol = TOL_DBL * singularValues[0];
         for (int i = singularValues.length - 1; i >= 0; --i) {
-            if (singularValues[i] > TOL_DBL) {
+            if (singularValues[i] > tol) {
                 return singularValues[i];
             }
         }
@@ -62,8 +79,9 @@ class SVHT {
     }
 
     static float getSigmaMin(float[] singularValues) {
+        float tol = TOL_FLT * singularValues[0];
         for (int i = singularValues.length - 1; i >= 0; --i) {
-            if (singularValues[i] > TOL_FLT) {
+            if (singularValues[i] > tol) {
                 return singularValues[i];
             }
         }
@@ -71,10 +89,15 @@ class SVHT {
     }
 
     static double median(double[] values) {
+        // relative to the largest value, which is values[0] for a descending
+        // spectrum. That also makes the fall through below unreachable: the
+        // loop breaks at i = 0 at the latest, because values[0] is always
+        // above 5 * eps * values[0] for a positive values[0]
+        double tol = TOL_DBL * values[0];
         int len = values.length;
         int endIdx = len - 1;
         for (int i = endIdx; i >= 0; --i) {
-            if (values[i] > TOL_DBL) {
+            if (values[i] > tol) {
                 endIdx = i;
                 break;
             }
@@ -91,10 +114,12 @@ class SVHT {
     }
 
     static float median(float[] values) {
+        // relative to the largest value, see the double variant above
+        float tol = TOL_FLT * values[0];
         int len = values.length;
         int endIdx = len - 1;
         for (int i = endIdx; i >= 0; --i) {
-            if (values[i] > TOL_FLT) {
+            if (values[i] > tol) {
                 endIdx = i;
                 break;
             }
@@ -174,10 +199,14 @@ class SVHT {
     }
 
     static double sum(double[] values) {
+        // relative to the largest value, which also keeps the sum from coming
+        // out as zero for a matrix of small scale. It used to, and the caller
+        // then capped its answer at 1 whatever the spectrum said
+        double tol = TOL_DBL * values[0];
         double sum = 0.0;
         for (int i = 0; i < values.length; ++i) {
             double sv = values[i];
-            if (sv <= TOL_DBL) {
+            if (sv <= tol) {
                 break;
             }
             sum += sv;
@@ -186,10 +215,12 @@ class SVHT {
     }
 
     static float sum(float[] values) {
+        // relative to the largest value, see the double variant above
+        float tol = TOL_FLT * values[0];
         float sum = 0.0f;
         for (int i = 0; i < values.length; ++i) {
             float sv = values[i];
-            if (sv <= TOL_FLT) {
+            if (sv <= tol) {
                 break;
             }
             sum += sv;
