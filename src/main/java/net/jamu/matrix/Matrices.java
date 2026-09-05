@@ -3159,7 +3159,7 @@ public final class Matrices {
     public static int numericalRank(MatrixD A, double tol) {
         tol = checkTol(tol, DimensionsBase.MACH_EPS_DBL);
         double[] sigma = A.singularValues();
-        if (sigma[0] <= DimensionsBase.MACH_EPS_DBL) {
+        if (!(sigma[0] > 0.0)) {
             return 0;
         }
         return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
@@ -3203,7 +3203,7 @@ public final class Matrices {
     public static int numericalRank(MatrixF A, float tol) {
         tol = (float) checkTol(tol, DimensionsBase.MACH_EPS_FLT);
         float[] sigma = A.singularValues();
-        if (sigma[0] <= DimensionsBase.MACH_EPS_FLT) {
+        if (!(sigma[0] > 0.0f)) {
             return 0;
         }
         return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
@@ -3247,7 +3247,7 @@ public final class Matrices {
     public static int numericalRank(ComplexMatrixD A, double tol) {
         tol = checkTol(tol, DimensionsBase.MACH_EPS_DBL);
         double[] sigma = A.singularValues();
-        if (sigma[0] <= DimensionsBase.MACH_EPS_DBL) {
+        if (!(sigma[0] > 0.0)) {
             return 0;
         }
         return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
@@ -3291,7 +3291,7 @@ public final class Matrices {
     public static int numericalRank(ComplexMatrixF A, float tol) {
         tol = (float) checkTol(tol, DimensionsBase.MACH_EPS_FLT);
         float[] sigma = A.singularValues();
-        if (sigma[0] <= DimensionsBase.MACH_EPS_FLT) {
+        if (!(sigma[0] > 0.0f)) {
             return 0;
         }
         return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
