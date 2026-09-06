@@ -189,9 +189,11 @@ public final class ZfImpl implements Zf {
     @Override
     public Zf exp() {
         double expRe = Math.exp(re);
-        float im_ = im;
-        re = (float) (expRe * Math.cos(im_));
-        im = (float) (expRe * Math.sin(im_));
+        double c = Math.cos(im);
+        double s = Math.sin(im);
+        // an exact zero stays zero even when expRe has overflown
+        re = (c == 0.0) ? (float) c : (float) (expRe * c);
+        im = (s == 0.0) ? (float) s : (float) (expRe * s);
         return this;
     }
 

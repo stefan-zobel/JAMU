@@ -106,6 +106,89 @@ public final class ZImplTest {
         assertEquals("double underflow im", -5.0e+199, u.im(), 1.0e+185);
     }
 
+    /** e^(re + im i) through the finite branch only, scaled back up */
+    private static double[] expReference(double re, double im) {
+        Zd w = new ZdImpl(re - 300.0, im).exp();
+        double f = Math.exp(300.0);
+        return new double[] { w.re() * f, w.im() * f };
+    }
+
+    private static boolean usable(double x) {
+        return !Double.isInfinite(x) && !Double.isNaN(x) && x != 0.0;
+    }
+
+    @Test
+    public void testExpOverflowKeepsAnExactZero() {
+        Zd d = new ZdImpl(1000.0, 0.0).exp();
+        assertEquals(Double.POSITIVE_INFINITY, d.re(), 0.0);
+        assertEquals("inf times an exact zero must stay zero", 0.0, d.im(), 0.0);
+        Zf f = new ZfImpl(1000.0f, 0.0f).exp();
+        assertEquals(Float.POSITIVE_INFINITY, f.re(), 0.0f);
+        assertEquals("inf times an exact zero must stay zero", 0.0f, f.im(), 0.0f);
+        Zd u = new ZdImpl(-1000.0, 0.0).exp();
+        assertEquals(0.0, u.re(), 0.0);
+        assertEquals(0.0, u.im(), 0.0);
+    }
+
+    @Test
+    public void testExpInTheOverflowBand() {
+        // e^re overflows here, the product with cos or sin need not
+        for (double re : new double[] { 709.9, 710.0, 712.0, 715.0, 720.0, 740.0 }) {
+            for (double im : new double[] { 1.0, 1.5, Math.PI / 2.0 }) {
+                Zd got = new ZdImpl(re, im).exp();
+                double[] want = expReference(re, im);
+                if (usable(want[0])) {
+                    assertTrue("re at " + re + ", " + im, usable(got.re()));
+                    assertTrue("re at " + re + ", " + im, Math.abs(got.re() - want[0]) <= 1.0e-14 * Math.abs(want[0]));
+                }
+                if (usable(want[1])) {
+                    assertTrue("im at " + re + ", " + im, usable(got.im()));
+                    assertTrue("im at " + re + ", " + im, Math.abs(got.im() - want[1]) <= 1.0e-14 * Math.abs(want[1]));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testExpDoesNotInventFiniteValues() {
+        for (double re = 709.79; re <= 800.0; re += 0.37) {
+            for (int k = 0; k < 40; ++k) {
+                double im = k * 0.157 - 3.0;
+                Zd got = new ZdImpl(re, im).exp();
+                double[] want = expReference(re, im);
+                if (Double.isInfinite(want[0])) {
+                    assertTrue("re at " + re, Double.isInfinite(got.re()));
+                }
+                if (Double.isInfinite(want[1])) {
+                    assertTrue("im at " + re, Double.isInfinite(got.im()));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testExpBelowOverflowIsUnchanged() {
+        for (int r = -700; r <= 700; r += 7) {
+            for (int k = 0; k < 12; ++k) {
+                double im = k * 0.7 - 4.0;
+                Zd got = new ZdImpl(r, im).exp();
+                double h = Math.exp(r);
+                assertEquals("re at " + r, Double.doubleToLongBits(h * Math.cos(im)),
+                        Double.doubleToLongBits(got.re()));
+                assertEquals("im at " + r, Double.doubleToLongBits(h * Math.sin(im)),
+                        Double.doubleToLongBits(got.im()));
+            }
+        }
+    }
+
+    @Test
+    public void testPowOfALargeRealStaysReal() {
+        // pow goes through ln().scale().exp(), so it inherits the exp fix
+        Zd p = new ZdImpl(1.0e200, 0.0).pow(2.0);
+        assertEquals(Double.POSITIVE_INFINITY, p.re(), 0.0);
+        assertEquals(0.0, p.im(), 0.0);
+    }
+
     @Test
     public void testInvKeepsTheInfinityConvention() {
         Zd zero = new ZdImpl(0.0, 0.0).inv();

@@ -188,10 +188,18 @@ public final class ZdImpl implements Zd {
 
     @Override
     public Zd exp() {
-        double expRe = Math.exp(re);
-        double im_ = im;
-        re = expRe * Math.cos(im_);
-        im = expRe * Math.sin(im_);
+        double c = Math.cos(im);
+        double s = Math.sin(im);
+        double h = Math.exp(re);
+        if (Double.isInfinite(h)) {
+            // e^re overflows although the product with cos or sin need not
+            h = Math.exp(re / 2.0);
+            re = (c == 0.0) ? c : h * c * h;
+            im = (s == 0.0) ? s : h * s * h;
+        } else {
+            re = h * c;
+            im = h * s;
+        }
         return this;
     }
 
