@@ -205,12 +205,53 @@ public final class ZdImpl implements Zd {
 
     @Override
     public Zd pow(double exponent) {
+        if (isDegenerate()) {
+            return degeneratePow(exponent);
+        }
         return ln().scale(exponent).exp();
     }
 
     @Override
     public Zd pow(Zd exponent) {
+        if (isDegenerate()) {
+            return degeneratePow(exponent);
+        }
         return ln().mul(exponent).exp();
+    }
+
+    // a base that ln() cannot carry
+    private boolean isDegenerate() {
+        return (re == 0.0 && im == 0.0) || isInfinite();
+    }
+
+    // the values of Math.pow, mirrored for an infinite base
+    private Zd degeneratePow(double exponent) {
+        boolean zeroBase = (re == 0.0 && im == 0.0);
+        if (isNan() || Double.isNaN(exponent)) {
+            set(Double.NaN, Double.NaN);
+        } else if (exponent == 0.0) {
+            set(1.0, 0.0);
+        } else if (zeroBase == (exponent > 0.0)) {
+            set(0.0, 0.0);
+        } else {
+            set(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        }
+        return this;
+    }
+
+    private Zd degeneratePow(Zd exponent) {
+        double a = exponent.re();
+        double b = exponent.im();
+        if (a == 0.0 && b == 0.0) {
+            set(1.0, 0.0);
+            return this;
+        }
+        if (a == 0.0 || Double.isNaN(b) || Double.isInfinite(b)) {
+            // only a real exponent is defined here, and 0^(bi) is not
+            set(Double.NaN, Double.NaN);
+            return this;
+        }
+        return degeneratePow(a);
     }
 
     @Override

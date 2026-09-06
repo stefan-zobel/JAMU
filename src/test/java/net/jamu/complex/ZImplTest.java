@@ -189,6 +189,87 @@ public final class ZImplTest {
         assertEquals(0.0, p.im(), 0.0);
     }
 
+    private static void assertZ(String what, double wantRe, double wantIm, Zd got) {
+        assertEquals(what + " re", wantRe, got.re(), 0.0);
+        assertEquals(what + " im", wantIm, got.im(), 0.0);
+    }
+
+    @Test
+    public void testPowOfZero() {
+        double inf = Double.POSITIVE_INFINITY;
+        assertZ("0^2", 0.0, 0.0, new ZdImpl(0.0, 0.0).pow(2.0));
+        assertZ("0^0.5", 0.0, 0.0, new ZdImpl(0.0, 0.0).pow(0.5));
+        assertZ("0^0", 1.0, 0.0, new ZdImpl(0.0, 0.0).pow(0.0));
+        assertZ("0^-2", inf, inf, new ZdImpl(0.0, 0.0).pow(-2.0));
+        assertZ("0^NaN", Double.NaN, Double.NaN, new ZdImpl(0.0, 0.0).pow(Double.NaN));
+        Zf f = new ZfImpl(0.0f, 0.0f).pow(2.0f);
+        assertEquals("float 0^2 re", 0.0f, f.re(), 0.0f);
+        assertEquals("float 0^2 im", 0.0f, f.im(), 0.0f);
+        Zf g = new ZfImpl(0.0f, 0.0f).pow(0.0f);
+        assertEquals("float 0^0 re", 1.0f, g.re(), 0.0f);
+        assertEquals("float 0^0 im", 0.0f, g.im(), 0.0f);
+    }
+
+    @Test
+    public void testPowOfInfinity() {
+        double inf = Double.POSITIVE_INFINITY;
+        assertZ("inf^2", inf, inf, new ZdImpl(inf, 0.0).pow(2.0));
+        assertZ("inf^0", 1.0, 0.0, new ZdImpl(inf, 0.0).pow(0.0));
+        assertZ("inf^-2", 0.0, 0.0, new ZdImpl(inf, 0.0).pow(-2.0));
+        Zf f = new ZfImpl(Float.POSITIVE_INFINITY, 0.0f).pow(-2.0f);
+        assertEquals("float inf^-2 re", 0.0f, f.re(), 0.0f);
+        assertEquals("float inf^-2 im", 0.0f, f.im(), 0.0f);
+    }
+
+    @Test
+    public void testPowOfZeroWithAComplexExponent() {
+        double inf = Double.POSITIVE_INFINITY;
+        assertZ("0^(2+0i)", 0.0, 0.0, new ZdImpl(0.0, 0.0).pow(new ZdImpl(2.0, 0.0)));
+        assertZ("0^(0+0i)", 1.0, 0.0, new ZdImpl(0.0, 0.0).pow(new ZdImpl(0.0, 0.0)));
+        assertZ("0^(0+1i)", Double.NaN, Double.NaN, new ZdImpl(0.0, 0.0).pow(new ZdImpl(0.0, 1.0)));
+        assertZ("0^(-2+3i)", inf, inf, new ZdImpl(0.0, 0.0).pow(new ZdImpl(-2.0, 3.0)));
+    }
+
+    @Test
+    public void testPowWithANonFiniteExponent() {
+        // only a real exponent is defined for a degenerate base
+        double inf = Double.POSITIVE_INFINITY;
+        assertZ("0^(2+inf i)", Double.NaN, Double.NaN, new ZdImpl(0.0, 0.0).pow(new ZdImpl(2.0, inf)));
+        assertZ("inf^(1+inf i)", Double.NaN, Double.NaN, new ZdImpl(inf, 0.0).pow(new ZdImpl(1.0, inf)));
+        assertZ("0^(2+NaN i)", Double.NaN, Double.NaN, new ZdImpl(0.0, 0.0).pow(new ZdImpl(2.0, Double.NaN)));
+        Zf f = new ZfImpl(0.0f, 0.0f).pow(new ZfImpl(2.0f, Float.POSITIVE_INFINITY));
+        assertEquals("float 0^(2+inf i) re", Float.NaN, f.re(), 0.0f);
+        assertEquals("float 0^(2+inf i) im", Float.NaN, f.im(), 0.0f);
+        // a real exponent stays real, so both overloads agree
+        assertZ("0^(-inf+0i)", inf, inf, new ZdImpl(0.0, 0.0).pow(new ZdImpl(Double.NEGATIVE_INFINITY, 0.0)));
+        assertZ("0^-inf", inf, inf, new ZdImpl(0.0, 0.0).pow(Double.NEGATIVE_INFINITY));
+    }
+
+    @Test
+    public void testPowOfANanBaseStaysNan() {
+        assertZ("(inf,NaN)^2", Double.NaN, Double.NaN, new ZdImpl(Double.POSITIVE_INFINITY, Double.NaN).pow(2.0));
+        assertZ("(NaN,0)^2", Double.NaN, Double.NaN, new ZdImpl(Double.NaN, 0.0).pow(2.0));
+    }
+
+    @Test
+    public void testPowOfOrdinaryBasesIsUnchanged() {
+        for (int e = -150; e <= 150; e += 3) {
+            double r = Math.pow(10.0, e);
+            for (int k = 0; k < ANGLES; ++k) {
+                double re = r * Math.cos(angle(k));
+                double im = r * Math.sin(angle(k));
+                for (double x : new double[] { 2.0, 0.5, -1.5, 0.0 }) {
+                    Zd got = new ZdImpl(re, im).pow(x);
+                    Zd want = new ZdImpl(re, im).ln().scale(x).exp();
+                    assertEquals("re at 1e" + e, Double.doubleToLongBits(want.re()),
+                            Double.doubleToLongBits(got.re()));
+                    assertEquals("im at 1e" + e, Double.doubleToLongBits(want.im()),
+                            Double.doubleToLongBits(got.im()));
+                }
+            }
+        }
+    }
+
     @Test
     public void testInvKeepsTheInfinityConvention() {
         Zd zero = new ZdImpl(0.0, 0.0).inv();

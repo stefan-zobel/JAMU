@@ -199,12 +199,53 @@ public final class ZfImpl implements Zf {
 
     @Override
     public Zf pow(float exponent) {
+        if (isDegenerate()) {
+            return degeneratePow(exponent);
+        }
         return ln().scale(exponent).exp();
     }
 
     @Override
     public Zf pow(Zf exponent) {
+        if (isDegenerate()) {
+            return degeneratePow(exponent);
+        }
         return ln().mul(exponent).exp();
+    }
+
+    // a base that ln() cannot carry
+    private boolean isDegenerate() {
+        return (re == 0.0f && im == 0.0f) || isInfinite();
+    }
+
+    // the values of Math.pow, mirrored for an infinite base
+    private Zf degeneratePow(float exponent) {
+        boolean zeroBase = (re == 0.0f && im == 0.0f);
+        if (isNan() || Float.isNaN(exponent)) {
+            set(Float.NaN, Float.NaN);
+        } else if (exponent == 0.0f) {
+            set(1.0f, 0.0f);
+        } else if (zeroBase == (exponent > 0.0f)) {
+            set(0.0f, 0.0f);
+        } else {
+            set(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+        }
+        return this;
+    }
+
+    private Zf degeneratePow(Zf exponent) {
+        float a = exponent.re();
+        float b = exponent.im();
+        if (a == 0.0f && b == 0.0f) {
+            set(1.0f, 0.0f);
+            return this;
+        }
+        if (a == 0.0f || Float.isNaN(b) || Float.isInfinite(b)) {
+            // only a real exponent is defined here, and 0^(bi) is not
+            set(Float.NaN, Float.NaN);
+            return this;
+        }
+        return degeneratePow(a);
     }
 
     @Override

@@ -533,6 +533,7 @@ public final class ZdImplBasicsTest {
 
    @Test
    public void testPowInf() {
+       // a degenerate base follows Math.pow, not the NaN convention
        TestUtils.assertSame(Zd.NaN(), Zd.One().pow(oneInf()));
        TestUtils.assertSame(Zd.NaN(), Zd.One().pow(oneNegInf()));
        TestUtils.assertSame(Zd.NaN(), Zd.One().pow(infOne()));
@@ -540,12 +541,12 @@ public final class ZdImplBasicsTest {
        TestUtils.assertSame(Zd.NaN(), Zd.One().pow(infNegInf()));
        TestUtils.assertSame(Zd.NaN(), Zd.One().pow(negInfInf()));
        TestUtils.assertSame(Zd.NaN(), Zd.One().pow(negInfNegInf()));
-       TestUtils.assertSame(Zd.NaN(), infOne().pow(Zd.One()));
-       TestUtils.assertSame(Zd.NaN(), negInfOne().pow(Zd.One()));
-       TestUtils.assertSame(Zd.NaN(), infInf().pow(Zd.One()));
-       TestUtils.assertSame(Zd.NaN(), infNegInf().pow(Zd.One()));
-       TestUtils.assertSame(Zd.NaN(), negInfInf().pow(Zd.One()));
-       TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(Zd.One()));
+       TestUtils.assertSame(Zd.Inf(), infOne().pow(Zd.One()));
+       TestUtils.assertSame(Zd.Inf(), negInfOne().pow(Zd.One()));
+       TestUtils.assertSame(Zd.Inf(), infInf().pow(Zd.One()));
+       TestUtils.assertSame(Zd.Inf(), infNegInf().pow(Zd.One()));
+       TestUtils.assertSame(Zd.Inf(), negInfInf().pow(Zd.One()));
+       TestUtils.assertSame(Zd.Inf(), negInfNegInf().pow(Zd.One()));
        TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(infNegInf()));
        TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(negInfNegInf()));
        TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(infInf()));
@@ -559,9 +560,10 @@ public final class ZdImplBasicsTest {
 
    @Test
    public void testPowZero() {
-       TestUtils.assertSame(Zd.NaN(),
+       // a degenerate base follows Math.pow, not the NaN convention
+       TestUtils.assertSame(Zd.Zero(),
                Zd.Zero().pow(Zd.One()));
-       TestUtils.assertSame(Zd.NaN(),
+       TestUtils.assertSame(Zd.One(),
                Zd.Zero().pow(Zd.Zero()));
        TestUtils.assertSame(Zd.NaN(),
                Zd.Zero().pow(Zd.I()));
@@ -599,26 +601,28 @@ public final class ZdImplBasicsTest {
 
    @Test
    public void testScalarPowInf() {
+       // a degenerate base follows Math.pow, not the NaN convention
        TestUtils.assertSame(Zd.NaN(), Zd.One().pow(Double.POSITIVE_INFINITY));
        TestUtils.assertSame(Zd.NaN(), Zd.One().pow(Double.NEGATIVE_INFINITY));
-       TestUtils.assertSame(Zd.NaN(), infOne().pow(1.0));
-       TestUtils.assertSame(Zd.NaN(), negInfOne().pow(1.0));
-       TestUtils.assertSame(Zd.NaN(), infInf().pow(1.0));
-       TestUtils.assertSame(Zd.NaN(), infNegInf().pow(1.0));
-       TestUtils.assertSame(Zd.NaN(), negInfInf().pow(10));
-       TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(1.0));
-       TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(Double.POSITIVE_INFINITY));
-       TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(Double.POSITIVE_INFINITY));
-       TestUtils.assertSame(Zd.NaN(), infInf().pow(Double.POSITIVE_INFINITY));
-       TestUtils.assertSame(Zd.NaN(), infInf().pow(Double.NEGATIVE_INFINITY));
-       TestUtils.assertSame(Zd.NaN(), infNegInf().pow(Double.NEGATIVE_INFINITY));
-       TestUtils.assertSame(Zd.NaN(), infNegInf().pow(Double.POSITIVE_INFINITY));
+       TestUtils.assertSame(Zd.Inf(), infOne().pow(1.0));
+       TestUtils.assertSame(Zd.Inf(), negInfOne().pow(1.0));
+       TestUtils.assertSame(Zd.Inf(), infInf().pow(1.0));
+       TestUtils.assertSame(Zd.Inf(), infNegInf().pow(1.0));
+       TestUtils.assertSame(Zd.Inf(), negInfInf().pow(10));
+       TestUtils.assertSame(Zd.Inf(), negInfNegInf().pow(1.0));
+       TestUtils.assertSame(Zd.Inf(), negInfNegInf().pow(Double.POSITIVE_INFINITY));
+       TestUtils.assertSame(Zd.Inf(), negInfNegInf().pow(Double.POSITIVE_INFINITY));
+       TestUtils.assertSame(Zd.Inf(), infInf().pow(Double.POSITIVE_INFINITY));
+       TestUtils.assertSame(Zd.Zero(), infInf().pow(Double.NEGATIVE_INFINITY));
+       TestUtils.assertSame(Zd.Zero(), infNegInf().pow(Double.NEGATIVE_INFINITY));
+       TestUtils.assertSame(Zd.Inf(), infNegInf().pow(Double.POSITIVE_INFINITY));
    }
 
    @Test
    public void testScalarPowZero() {
-       TestUtils.assertSame(Zd.NaN(), Zd.Zero().pow(1.0));
-       TestUtils.assertSame(Zd.NaN(), Zd.Zero().pow(0.0));
+       // a degenerate base follows Math.pow, not the NaN convention
+       TestUtils.assertSame(Zd.Zero(), Zd.Zero().pow(1.0));
+       TestUtils.assertSame(Zd.One(), Zd.Zero().pow(0.0));
        TestUtils.assertEquals(Zd.One(), Zd.One().pow(0.0), 10e-12);
        TestUtils.assertEquals(Zd.One(), Zd.I().pow(0.0), 10e-12);
        TestUtils.assertEquals(Zd.One(), new ZdImpl(-1, 3).pow(0.0), 10e-12);
