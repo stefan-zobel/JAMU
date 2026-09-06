@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, 2021 Stefan Zobel
+ * Copyright 2018, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,13 +157,28 @@ public final class ZdImpl implements Zd {
         double c = that.re();
         double d = that.im();
         if (c == 0.0 && d == 0.0) {
-            re = Double.NaN;
-            im = Double.NaN;
+            // zero over zero has no value, anything else over zero is inv(0)
+            if (re == 0.0 && im == 0.0) {
+                re = Double.NaN;
+                im = Double.NaN;
+            } else {
+                re = Double.POSITIVE_INFINITY;
+                im = Double.POSITIVE_INFINITY;
+            }
             return this;
         }
-        if (that.isInfinite() && !this.isInfinite()) {
+        boolean thisInfinite = isInfinite();
+        if (that.isInfinite() && !thisInfinite) {
             re = 0.0;
             im = 0.0;
+            return this;
+        }
+        if (thisInfinite && Double.isFinite(c) && Double.isFinite(d)) {
+            // C99 Annex G: an infinite numerator still fixes the direction
+            double a = Math.copySign(Double.isInfinite(re) ? 1.0 : 0.0, re);
+            double b = Math.copySign(Double.isInfinite(im) ? 1.0 : 0.0, im);
+            re = unbounded(a * c + b * d);
+            im = unbounded(b * c - a * d);
             return this;
         }
         // limit overflow/underflow

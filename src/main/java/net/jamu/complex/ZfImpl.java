@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, 2021 Stefan Zobel
+ * Copyright 2018, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,13 +157,28 @@ public final class ZfImpl implements Zf {
         float c = that.re();
         float d = that.im();
         if (c == 0.0f && d == 0.0f) {
-            re = Float.NaN;
-            im = Float.NaN;
+            // zero over zero has no value, anything else over zero is inv(0)
+            if (re == 0.0f && im == 0.0f) {
+                re = Float.NaN;
+                im = Float.NaN;
+            } else {
+                re = Float.POSITIVE_INFINITY;
+                im = Float.POSITIVE_INFINITY;
+            }
             return this;
         }
-        if (that.isInfinite() && !this.isInfinite()) {
+        boolean thisInfinite = isInfinite();
+        if (that.isInfinite() && !thisInfinite) {
             re = 0.0f;
             im = 0.0f;
+            return this;
+        }
+        if (thisInfinite && Float.isFinite(c) && Float.isFinite(d)) {
+            // C99 Annex G: an infinite numerator still fixes the direction
+            float a = Math.copySign(Float.isInfinite(re) ? 1.0f : 0.0f, re);
+            float b = Math.copySign(Float.isInfinite(im) ? 1.0f : 0.0f, im);
+            re = unbounded(a * c + b * d);
+            im = unbounded(b * c - a * d);
             return this;
         }
         // limit overflow/underflow

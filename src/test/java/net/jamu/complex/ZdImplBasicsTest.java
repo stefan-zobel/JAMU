@@ -171,12 +171,14 @@ public final class ZdImplBasicsTest {
 
         Zd x = new ZdImpl(3, 4);
         Zd z = w.div(x);
-        Assert.assertTrue(Double.isNaN(z.re()));
+        // arg 3pi/4 - atan2(4,3), so both parts are positive
+        Assert.assertEquals(inf, z.re(), 0);
         Assert.assertEquals(inf, z.im(), 0);
 
         w = new ZdImpl(inf, inf);
         z = w.div(x);
-        Assert.assertTrue(Double.isNaN(z.im()));
+        // arg pi/4 - atan2(4,3) is negative
+        Assert.assertEquals(neginf, z.im(), 0);
         Assert.assertEquals(inf, z.re(), 0);
 
         w = new ZdImpl(1, inf);
@@ -189,7 +191,8 @@ public final class ZdImplBasicsTest {
     public void testDivideZero() {
         Zd x = new ZdImpl(3.0, 4.0);
         Zd z = x.div(Zd.Zero());
-        Assert.assertEquals(z, Zd.NaN());
+        // nonzero over zero is what inv(0) gives
+        Assert.assertEquals(z, Zd.Inf());
     }
 
     @Test
@@ -209,7 +212,8 @@ public final class ZdImplBasicsTest {
     @Test
     public void testDivideNaNInf() {
        Zd z = oneInf().div(Zd.One());
-       Assert.assertTrue(Double.isNaN(z.re()));
+       // arg pi/2, so the quotient is purely imaginary
+       Assert.assertEquals(0.0, z.re(), 0);
        Assert.assertEquals(inf, z.im(), 0);
 
        z = negInfNegInf().div(oneNaN());
@@ -217,8 +221,9 @@ public final class ZdImplBasicsTest {
        Assert.assertTrue(Double.isNaN(z.im()));
 
        z = negInfInf().div(Zd.One());
-       Assert.assertTrue(Double.isNaN(z.re()));
-       Assert.assertTrue(Double.isNaN(z.im()));
+       // arg 3pi/4, so the second quadrant
+       Assert.assertEquals(neginf, z.re(), 0);
+       Assert.assertEquals(inf, z.im(), 0);
     }
 
     @Test

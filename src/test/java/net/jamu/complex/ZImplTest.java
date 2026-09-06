@@ -364,6 +364,50 @@ public final class ZImplTest {
     }
 
     @Test
+    public void testAnInfiniteQuotientKeepsItsDirection() {
+        double inf = Double.POSITIVE_INFINITY;
+        double neg = Double.NEGATIVE_INFINITY;
+        // the argument of the quotient is the difference of the arguments
+        assertZ("(-inf,inf)/(3,4)", inf, inf, new ZdImpl(neg, inf).div(new ZdImpl(3.0, 4.0)));
+        assertZ("(inf,inf)/(3,4)", inf, neg, new ZdImpl(inf, inf).div(new ZdImpl(3.0, 4.0)));
+        assertZ("(1,inf)/(1,0)", 0.0, inf, new ZdImpl(1.0, inf).div(Zd.One()));
+        assertZ("(-inf,inf)/(1,0)", neg, inf, new ZdImpl(neg, inf).div(Zd.One()));
+        Zf f = new ZfImpl(1.0f, Float.POSITIVE_INFINITY).div(Zf.One());
+        assertEquals("float re", 0.0f, f.re(), 0.0f);
+        assertEquals("float im", Float.POSITIVE_INFINITY, f.im(), 0.0f);
+    }
+
+    @Test
+    public void testQuotientsWithoutADirection() {
+        double inf = Double.POSITIVE_INFINITY;
+        Zd w = new ZdImpl(1.0, inf);
+        assertZ("inf / inf", Double.NaN, Double.NaN, w.div(w));
+        assertZ("inf / NaN", Double.NaN, Double.NaN,
+                new ZdImpl(inf, inf).div(new ZdImpl(1.0, Double.NaN)));
+        assertZ("finite / inf", 0.0, 0.0, new ZdImpl(3.0, 4.0).div(new ZdImpl(inf, inf)));
+        assertZ("zero over zero", Double.NaN, Double.NaN, Zd.Zero().div(Zd.Zero()));
+    }
+
+    @Test
+    public void testInverseAgreesWithOneOverZ() {
+        double inf = Double.POSITIVE_INFINITY;
+        double[][] cases = { { 2.0, 3.0 }, { 0.0, 0.0 }, { inf, 1.0 }, { 1.0e-200, 1.0e-200 } };
+        for (double[] v : cases) {
+            Zd a = new ZdImpl(v[0], v[1]).inv();
+            Zd b = Zd.One().div(new ZdImpl(v[0], v[1]));
+            assertZ("1/(" + v[0] + "," + v[1] + ")", a.re(), a.im(), b);
+        }
+    }
+
+    @Test
+    public void testDivideIsSafeWhenBothOperandsAreTheSameObject() {
+        Zd z = new ZdImpl(3.0, 4.0);
+        Zd w = new ZdImpl(3.0, 4.0);
+        assertZ("aliased", 1.0, 0.0, z.div(z));
+        assertZ("not aliased", 1.0, 0.0, w.div(w.copy()));
+    }
+
+    @Test
     public void testInvKeepsTheInfinityConvention() {
         Zd zero = new ZdImpl(0.0, 0.0).inv();
         assertEquals(Double.POSITIVE_INFINITY, zero.re(), 0.0);
