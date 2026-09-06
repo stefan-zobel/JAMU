@@ -112,14 +112,6 @@ public final class ZfImpl implements Zf {
         float c = that.re();
         float d = that.im();
         if (isInfinite() || that.isInfinite()) {
-            boolean thisZero = (a == 0.0f && b == 0.0f);
-            boolean thatZero = (c == 0.0f && d == 0.0f);
-            if (thisZero || thatZero) {
-                // zero times infinity has no direction and no modulus
-                re = Float.NaN;
-                im = Float.NaN;
-                return this;
-            }
             // C99 Annex G: an infinite operand still fixes the direction
             if (Float.isInfinite(a) || Float.isInfinite(b)) {
                 a = Math.copySign(Float.isInfinite(a) ? 1.0f : 0.0f, a);
@@ -133,6 +125,12 @@ public final class ZfImpl implements Zf {
             b = zeroIfNan(b);
             c = zeroIfNan(c);
             d = zeroIfNan(d);
+            if ((a == 0.0f && b == 0.0f) || (c == 0.0f && d == 0.0f)) {
+                // zero times infinity has no direction and no modulus
+                re = Float.NaN;
+                im = Float.NaN;
+                return this;
+            }
             re = unbounded(a * c - b * d);
             im = unbounded(a * d + b * c);
             return this;
@@ -329,11 +327,6 @@ public final class ZfImpl implements Zf {
         float b = im;
         float c = alpha;
         if (isInfinite() || Float.isInfinite(alpha)) {
-            if ((a == 0.0f && b == 0.0f) || c == 0.0f) {
-                re = Float.NaN;
-                im = Float.NaN;
-                return this;
-            }
             if (Float.isInfinite(a) || Float.isInfinite(b)) {
                 a = Math.copySign(Float.isInfinite(a) ? 1.0f : 0.0f, a);
                 b = Math.copySign(Float.isInfinite(b) ? 1.0f : 0.0f, b);
@@ -341,8 +334,16 @@ public final class ZfImpl implements Zf {
             if (Float.isInfinite(c)) {
                 c = Math.copySign(1.0f, c);
             }
-            re = unbounded(zeroIfNan(a) * zeroIfNan(c));
-            im = unbounded(zeroIfNan(b) * zeroIfNan(c));
+            a = zeroIfNan(a);
+            b = zeroIfNan(b);
+            c = zeroIfNan(c);
+            if ((a == 0.0f && b == 0.0f) || c == 0.0f) {
+                re = Float.NaN;
+                im = Float.NaN;
+                return this;
+            }
+            re = unbounded(a * c);
+            im = unbounded(b * c);
             return this;
         }
         re = alpha * a;

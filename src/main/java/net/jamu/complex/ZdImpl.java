@@ -112,14 +112,6 @@ public final class ZdImpl implements Zd {
         double c = that.re();
         double d = that.im();
         if (isInfinite() || that.isInfinite()) {
-            boolean thisZero = (a == 0.0 && b == 0.0);
-            boolean thatZero = (c == 0.0 && d == 0.0);
-            if (thisZero || thatZero) {
-                // zero times infinity has no direction and no modulus
-                re = Double.NaN;
-                im = Double.NaN;
-                return this;
-            }
             // C99 Annex G: an infinite operand still fixes the direction
             if (Double.isInfinite(a) || Double.isInfinite(b)) {
                 a = Math.copySign(Double.isInfinite(a) ? 1.0 : 0.0, a);
@@ -133,6 +125,12 @@ public final class ZdImpl implements Zd {
             b = zeroIfNan(b);
             c = zeroIfNan(c);
             d = zeroIfNan(d);
+            if ((a == 0.0 && b == 0.0) || (c == 0.0 && d == 0.0)) {
+                // zero times infinity has no direction and no modulus
+                re = Double.NaN;
+                im = Double.NaN;
+                return this;
+            }
             re = unbounded(a * c - b * d);
             im = unbounded(a * d + b * c);
             return this;
@@ -335,11 +333,6 @@ public final class ZdImpl implements Zd {
         double b = im;
         double c = alpha;
         if (isInfinite() || Double.isInfinite(alpha)) {
-            if ((a == 0.0 && b == 0.0) || c == 0.0) {
-                re = Double.NaN;
-                im = Double.NaN;
-                return this;
-            }
             if (Double.isInfinite(a) || Double.isInfinite(b)) {
                 a = Math.copySign(Double.isInfinite(a) ? 1.0 : 0.0, a);
                 b = Math.copySign(Double.isInfinite(b) ? 1.0 : 0.0, b);
@@ -347,8 +340,16 @@ public final class ZdImpl implements Zd {
             if (Double.isInfinite(c)) {
                 c = Math.copySign(1.0, c);
             }
-            re = unbounded(zeroIfNan(a) * zeroIfNan(c));
-            im = unbounded(zeroIfNan(b) * zeroIfNan(c));
+            a = zeroIfNan(a);
+            b = zeroIfNan(b);
+            c = zeroIfNan(c);
+            if ((a == 0.0 && b == 0.0) || c == 0.0) {
+                re = Double.NaN;
+                im = Double.NaN;
+                return this;
+            }
+            re = unbounded(a * c);
+            im = unbounded(b * c);
             return this;
         }
         re = alpha * a;

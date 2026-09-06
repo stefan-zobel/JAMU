@@ -508,6 +508,23 @@ public final class ZImplTest {
     }
 
     @Test
+    public void testInfinityTimesNanIsNan() {
+        double inf = Double.POSITIVE_INFINITY;
+        double nan = Double.NaN;
+        // zeroing a NaN component must not turn the product into a zero
+        assertZ("(inf,inf)*(NaN,NaN)", nan, nan, new ZdImpl(inf, inf).mul(new ZdImpl(nan, nan)));
+        assertZ("(inf,inf)*(NaN,0)", nan, nan, new ZdImpl(inf, inf).mul(new ZdImpl(nan, 0.0)));
+        assertZ("(inf,0)*(0,NaN)", nan, nan, new ZdImpl(inf, 0.0).mul(new ZdImpl(0.0, nan)));
+        assertZ("(inf,inf) scaled by NaN", nan, nan, new ZdImpl(inf, inf).scale(nan));
+        // but a single NaN component leaves the direction intact
+        assertZ("(-inf,-inf)*(1,NaN)", Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
+                new ZdImpl(-inf, -inf).mul(new ZdImpl(1.0, nan)));
+        Zf f = new ZfImpl(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY).scale(Float.NaN);
+        assertEquals("float re", Float.NaN, f.re(), 0.0f);
+        assertEquals("float im", Float.NaN, f.im(), 0.0f);
+    }
+
+    @Test
     public void testInvKeepsTheInfinityConvention() {
         Zd zero = new ZdImpl(0.0, 0.0).inv();
         assertEquals(Double.POSITIVE_INFINITY, zero.re(), 0.0);

@@ -22,8 +22,10 @@ package net.jamu.complex;
  * collapses to {@link #Inf()} - the inverse of zero, a quotient by zero, a
  * divergent {@link #pow(float)}. {@code 0 * inf} and {@code 0 / 0} are
  * {@link #NaN()}. Sum, difference, negation, conjugation, {@link #ln()} and
- * {@link #exp()} are componentwise. {@code equals} sees one value in every NaN
- * and does not tell {@code +0.0} from {@code -0.0}; {@code hashCode} follows.
+ * {@link #exp()} are componentwise. A NaN spreads componentwise too; only
+ * against an infinite operand does a NaN component count as zero, so that the
+ * direction survives. {@code equals} sees one value in every NaN and does not
+ * tell {@code +0.0} from {@code -0.0}; {@code hashCode} follows.
  */
 public interface Zf {
 
