@@ -22,9 +22,9 @@ package net.jamu.matrix;
  * Compare the paper "Bader, P.; Blanes, S.; Casas, F.: Computing the Matrix
  * Exponential with an Optimized Taylor Polynomial Approximation. Mathematics
  * 2019, 7, 1174." for the implementation approach.
- * <p>
  * 
- * @see https://doi.org/10.3390/math7121174
+ * @see <a href="https://doi.org/10.3390/math7121174">Computing the Matrix
+ *      Exponential with an Optimized Taylor Polynomial Approximation</a>
  */
 final class Expm {
 
