@@ -248,6 +248,31 @@ public final class ZfImpl implements Zf {
     }
 
     @Override
+    public Zf sqrt() {
+        if (Float.isInfinite(im)) {
+            // C99: an infinite imaginary part decides, whatever the real part is
+            re = Float.POSITIVE_INFINITY;
+            im = Math.copySign(Float.POSITIVE_INFINITY, im);
+            return this;
+        }
+        if (re == 0.0f && im == 0.0f) {
+            re = 0.0f;
+            return this;
+        }
+        // Kahan: t is built from |re| so that nothing cancels
+        float b = im;
+        float t = (float) Math.sqrt((Math.abs(re) + abs()) / 2.0);
+        if (re >= 0.0f) {
+            re = t;
+            im = b / (2.0f * t);
+        } else {
+            re = Math.abs(b) / (2.0f * t);
+            im = Math.copySign(t, b);
+        }
+        return this;
+    }
+
+    @Override
     public Zf pow(float exponent) {
         if (isDegenerate()) {
             return degeneratePow(exponent);

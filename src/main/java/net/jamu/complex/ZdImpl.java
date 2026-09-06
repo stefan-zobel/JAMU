@@ -254,6 +254,31 @@ public final class ZdImpl implements Zd {
     }
 
     @Override
+    public Zd sqrt() {
+        if (Double.isInfinite(im)) {
+            // C99: an infinite imaginary part decides, whatever the real part is
+            re = Double.POSITIVE_INFINITY;
+            im = Math.copySign(Double.POSITIVE_INFINITY, im);
+            return this;
+        }
+        if (re == 0.0 && im == 0.0) {
+            re = 0.0;
+            return this;
+        }
+        // Kahan: t is built from |re| so that nothing cancels
+        double b = im;
+        double t = Math.sqrt((Math.abs(re) + abs()) / 2.0);
+        if (re >= 0.0) {
+            re = t;
+            im = b / (2.0 * t);
+        } else {
+            re = Math.abs(b) / (2.0 * t);
+            im = Math.copySign(t, b);
+        }
+        return this;
+    }
+
+    @Override
     public Zd pow(double exponent) {
         if (isDegenerate()) {
             return degeneratePow(exponent);

@@ -99,6 +99,13 @@ public interface Zd {
     Zd exp();
 
     /**
+     * Principal square root: the root whose real part is not negative.
+     *
+     * @return the principal square root of this complex number
+     */
+    Zd sqrt();
+
+    /**
      * Power function of this complex base with a real exponent.
      * <p>
      * Computes {@code this}<sup>{@code exponent}</sup>

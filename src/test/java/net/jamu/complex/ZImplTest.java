@@ -525,6 +525,77 @@ public final class ZImplTest {
     }
 
     @Test
+    public void testSqrtSquaredIsTheOriginal() {
+        for (int e = MIN_EXP_D; e <= MAX_EXP_D; ++e) {
+            double r = Math.pow(10.0, e);
+            for (int k = 0; k < ANGLES; ++k) {
+                Zd z = new ZdImpl(r * Math.cos(angle(k)), r * Math.sin(angle(k)));
+                Zd s = z.copy().sqrt();
+                assertTrue("1e" + e, relative(s.copy().mul(s.copy()), z) <= 1.0e-15);
+            }
+        }
+    }
+
+    @Test
+    public void testSqrtIsThePrincipalValue() {
+        for (int e = MIN_EXP_D; e <= MAX_EXP_D; ++e) {
+            double r = Math.pow(10.0, e);
+            for (int k = 0; k < ANGLES; ++k) {
+                double b = r * Math.sin(angle(k));
+                Zd s = new ZdImpl(r * Math.cos(angle(k)), b).sqrt();
+                assertTrue("real part at 1e" + e, s.re() >= 0.0);
+                assertTrue("sign at 1e" + e, Math.signum(s.im()) == Math.signum(b));
+            }
+        }
+    }
+
+    @Test
+    public void testSqrtFarOutOfRange() {
+        // the squared modulus over- and underflows here, abs() does not
+        for (double r : new double[] { 1.0e+300, 1.0e+200, 1.0e-200, 1.0e-300 }) {
+            Zd z = new ZdImpl(r * Math.cos(0.7), r * Math.sin(0.7));
+            Zd s = z.copy().sqrt();
+            assertTrue("finite at " + r, !Double.isInfinite(s.re()) && !Double.isNaN(s.re()));
+            assertTrue("value at " + r, relative(s.copy().mul(s.copy()), z) <= 1.0e-15);
+        }
+    }
+
+    @Test
+    public void testSqrtEdgeCases() {
+        double inf = Double.POSITIVE_INFINITY;
+        double nan = Double.NaN;
+        assertZ("(4,0)", 2.0, 0.0, new ZdImpl(4.0, 0.0).sqrt());
+        assertZ("(-4,0)", 0.0, 2.0, new ZdImpl(-4.0, 0.0).sqrt());
+        // copySign carries the branch cut
+        assertZ("(-4,-0.0)", 0.0, -2.0, new ZdImpl(-4.0, -0.0).sqrt());
+        assertZ("(0,0)", 0.0, 0.0, new ZdImpl(0.0, 0.0).sqrt());
+        assertZ("(-0.0,0.0)", 0.0, 0.0, new ZdImpl(-0.0, 0.0).sqrt());
+        assertZ("(inf,1)", inf, 0.0, new ZdImpl(inf, 1.0).sqrt());
+        assertZ("(-inf,1)", 0.0, inf, new ZdImpl(-inf, 1.0).sqrt());
+        assertZ("(inf,inf)", inf, inf, new ZdImpl(inf, inf).sqrt());
+        assertZ("(1,inf)", inf, inf, new ZdImpl(1.0, inf).sqrt());
+        assertZ("(1,-inf)", inf, -inf, new ZdImpl(1.0, -inf).sqrt());
+        assertZ("(NaN,1)", nan, nan, new ZdImpl(nan, 1.0).sqrt());
+        assertZ("(1,NaN)", nan, nan, new ZdImpl(1.0, nan).sqrt());
+    }
+
+    @Test
+    public void testSqrtInSinglePrecision() {
+        Zf a = new ZfImpl(-4.0f, 0.0f).sqrt();
+        assertEquals("(-4,0) re", 0.0f, a.re(), 0.0f);
+        assertEquals("(-4,0) im", 2.0f, a.im(), 1.0e-6f);
+        Zf b = new ZfImpl(1.0f, Float.POSITIVE_INFINITY).sqrt();
+        assertEquals("(1,inf) re", Float.POSITIVE_INFINITY, b.re(), 0.0f);
+        assertEquals("(1,inf) im", Float.POSITIVE_INFINITY, b.im(), 0.0f);
+        Zf c = new ZfImpl(0.0f, 0.0f).sqrt();
+        assertEquals("(0,0) re", 0.0f, c.re(), 0.0f);
+        assertEquals("(0,0) im", 0.0f, c.im(), 0.0f);
+        // the squared modulus would overflow a float here
+        Zf d = new ZfImpl(1.0e30f, 1.0e30f).sqrt();
+        assertTrue("(1e30,1e30) finite", !Float.isInfinite(d.re()) && !Float.isNaN(d.re()));
+    }
+
+    @Test
     public void testInvKeepsTheInfinityConvention() {
         Zd zero = new ZdImpl(0.0, 0.0).inv();
         assertEquals(Double.POSITIVE_INFINITY, zero.re(), 0.0);
