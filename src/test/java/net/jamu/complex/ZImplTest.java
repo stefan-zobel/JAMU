@@ -16,6 +16,7 @@
 package net.jamu.complex;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -455,6 +456,55 @@ public final class ZImplTest {
             hashes.add(Integer.valueOf(new ZdImpl(rnd.nextGaussian(), rnd.nextGaussian()).hashCode()));
         }
         assertTrue("only " + hashes.size() + " distinct hashes for " + n + " values", hashes.size() > n - n / 100);
+    }
+
+    @Test
+    public void testFromPolarWithAnInfiniteRadius() {
+        double inf = Double.POSITIVE_INFINITY;
+        // radius * sin(0.0) must not turn into NaN
+        assertZ("fromPolar(inf, 0)", inf, 0.0, ZdImpl.fromPolar(inf, 0.0));
+        assertZ("fromPolar(2, 0)", 2.0, 0.0, ZdImpl.fromPolar(2.0, 0.0));
+        assertZ("fromPolar(0, pi)", -0.0, 0.0, ZdImpl.fromPolar(0.0, Math.PI));
+        Zf f = ZfImpl.fromPolar(Float.POSITIVE_INFINITY, 0.0f);
+        assertEquals("float re", Float.POSITIVE_INFINITY, f.re(), 0.0f);
+        assertEquals("float im", 0.0f, f.im(), 0.0f);
+    }
+
+    @Test
+    public void testFromPolarStillRejectsANegativeRadius() {
+        try {
+            ZdImpl.fromPolar(-1.0, 0.0);
+            fail("expected IllegalArgumentException");
+        } catch (IllegalArgumentException expected) {
+            // as documented
+        }
+    }
+
+    @Test
+    public void testIsRealIsFalseForNan() {
+        double inf = Double.POSITIVE_INFINITY;
+        assertTrue("(1,0)", new ZdImpl(1.0, 0.0).isReal());
+        assertTrue("(1,-0.0)", new ZdImpl(1.0, -0.0).isReal());
+        // the real axis reaches infinity, but NaN is not on it
+        assertTrue("(inf,0)", new ZdImpl(inf, 0.0).isReal());
+        assertTrue("(NaN,0)", !new ZdImpl(Double.NaN, 0.0).isReal());
+        assertTrue("(1,1)", !new ZdImpl(1.0, 1.0).isReal());
+        assertTrue("(1,NaN)", !new ZdImpl(1.0, Double.NaN).isReal());
+        assertTrue("float (NaN,0)", !new ZfImpl(Float.NaN, 0.0f).isReal());
+        assertTrue("float (1,0)", new ZfImpl(1.0f, 0.0f).isReal());
+    }
+
+    @Test
+    public void testAbsOnTheBranchThatWasDead() {
+        // |im| >= |re| and im != 0 is the branch the dead test guarded
+        assertEquals("(3,4)", 5.0, new ZdImpl(3.0, 4.0).abs(), 1.0e-15);
+        assertEquals("static (3,4)", 5.0, ZdImpl.abs(3.0, 4.0), 1.0e-15);
+        assertEquals("(0,-1)", 1.0, new ZdImpl(0.0, -1.0).abs(), 0.0);
+        assertEquals("(1e-320,1e-320)", ZdImpl.abs(1.0e-320, 1.0e-320), new ZdImpl(1.0e-320, 1.0e-320).abs(), 0.0);
+        assertTrue("(NaN,1)", Double.isNaN(ZdImpl.abs(Double.NaN, 1.0)));
+        assertTrue("(1,NaN)", Double.isNaN(ZdImpl.abs(1.0, Double.NaN)));
+        assertEquals("float (3,4)", 5.0f, ZfImpl.abs(3.0f, 4.0f), 1.0e-6f);
+        assertEquals("(0,0)", 0.0, ZdImpl.abs(0.0, 0.0), 0.0);
     }
 
     @Test

@@ -51,7 +51,10 @@ public final class ZfImpl implements Zf {
         if (radius < 0.0f) {
             throw new IllegalArgumentException("radius must be positive : " + radius);
         }
-        return new ZfImpl((float) (radius * Math.cos(phi)), (float) (radius * Math.sin(phi)));
+        double c = Math.cos(phi);
+        double s = Math.sin(phi);
+        // an exact zero stays zero even for an infinite radius
+        return new ZfImpl((float) (c == 0.0 ? c : radius * c), (float) (s == 0.0 ? s : radius * s));
     }
 
     public static float abs(float re, float im) {
@@ -61,11 +64,10 @@ public final class ZfImpl implements Zf {
         } else if (Math.abs(re) > Math.abs(im)) {
             double abs = im / re;
             return (float) (Math.abs(re) * Math.sqrt(1.0 + abs * abs));
-        } else if (im != 0.0f) {
+        } else {
             double abs = re / im;
             return (float) (Math.abs(im) * Math.sqrt(1.0 + abs * abs));
         }
-        return 0.0f;
     }
 
     @Override
@@ -366,7 +368,7 @@ public final class ZfImpl implements Zf {
 
     @Override
     public final boolean isReal() {
-        return im() == 0.0f;
+        return im() == 0.0f && !Float.isNaN(re());
     }
 
     @Override
@@ -387,11 +389,10 @@ public final class ZfImpl implements Zf {
         } else if (Math.abs(re) > Math.abs(im)) {
             double abs = im / re;
             return (float) (Math.abs(re) * Math.sqrt(1.0 + abs * abs));
-        } else if (im != 0.0f) {
+        } else {
             double abs = re / im;
             return (float) (Math.abs(im) * Math.sqrt(1.0 + abs * abs));
         }
-        return 0.0f;
     }
 
     @Override

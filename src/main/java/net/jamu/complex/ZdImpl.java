@@ -51,7 +51,10 @@ public final class ZdImpl implements Zd {
         if (radius < 0.0) {
             throw new IllegalArgumentException("radius must be positive : " + radius);
         }
-        return new ZdImpl(radius * Math.cos(phi), radius * Math.sin(phi));
+        double c = Math.cos(phi);
+        double s = Math.sin(phi);
+        // an exact zero stays zero even for an infinite radius
+        return new ZdImpl(c == 0.0 ? c : radius * c, s == 0.0 ? s : radius * s);
     }
 
     public static double abs(double re, double im) {
@@ -61,11 +64,10 @@ public final class ZdImpl implements Zd {
         } else if (Math.abs(re) > Math.abs(im)) {
             double abs = im / re;
             return Math.abs(re) * Math.sqrt(1.0 + abs * abs);
-        } else if (im != 0.0) {
+        } else {
             double abs = re / im;
             return Math.abs(im) * Math.sqrt(1.0 + abs * abs);
         }
-        return 0.0;
     }
 
     @Override
@@ -372,7 +374,7 @@ public final class ZdImpl implements Zd {
 
     @Override
     public final boolean isReal() {
-        return im() == 0.0;
+        return im() == 0.0 && !Double.isNaN(re());
     }
 
     @Override
@@ -393,11 +395,10 @@ public final class ZdImpl implements Zd {
         } else if (Math.abs(re) > Math.abs(im)) {
             double abs = im / re;
             return Math.abs(re) * Math.sqrt(1.0 + abs * abs);
-        } else if (im != 0.0) {
+        } else {
             double abs = re / im;
             return Math.abs(im) * Math.sqrt(1.0 + abs * abs);
         }
-        return 0.0;
     }
 
     @Override
