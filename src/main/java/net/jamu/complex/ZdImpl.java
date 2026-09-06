@@ -455,9 +455,11 @@ public final class ZdImpl implements Zd {
 
     @Override
     public final int hashCode() {
-        long bits = Double.doubleToLongBits(re);
+        // equals() sees one value in every NaN and does not tell the zeros apart
+        boolean nan = isNan();
+        long bits = Double.doubleToLongBits(nan ? Double.NaN : re + 0.0);
         int h = 0x7FFFF + (int) (bits ^ (bits >>> 32));
-        bits = Double.doubleToLongBits(im);
+        bits = Double.doubleToLongBits(nan ? Double.NaN : im + 0.0);
         h = ((h << 19) - h) + (int) (bits ^ (bits >>> 32));
         return (h << 19) - h;
     }

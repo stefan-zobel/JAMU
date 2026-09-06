@@ -335,10 +335,10 @@ public final class ZdImplBasicsTest {
         Zd x = new ZdImpl(3.0, 4.0);
         double yDouble = 2.0;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.mul(yZdImpl), x.scale(yDouble));
+        Assert.assertEquals(x.copy().mul(yZdImpl), x.copy().scale(yDouble));
         int zInt = -5;
         Zd zZdImpl = new ZdImpl(zInt);
-        Assert.assertEquals(x.mul(zZdImpl), x.scale(zInt));
+        Assert.assertEquals(x.copy().mul(zZdImpl), x.copy().scale(zInt));
     }
 
     @Test
@@ -346,7 +346,7 @@ public final class ZdImplBasicsTest {
         Zd x = new ZdImpl(3.0, 4.0);
         double yDouble = Double.NaN;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.mul(yZdImpl), x.scale(yDouble));
+        Assert.assertEquals(x.copy().mul(yZdImpl), x.copy().scale(yDouble));
     }
 
     @Test
@@ -354,11 +354,11 @@ public final class ZdImplBasicsTest {
         Zd x = new ZdImpl(1, 1);
         double yDouble = Double.POSITIVE_INFINITY;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.mul(yZdImpl), x.scale(yDouble));
+        Assert.assertEquals(x.copy().mul(yZdImpl), x.copy().scale(yDouble));
 
         yDouble = Double.NEGATIVE_INFINITY;
         yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.mul(yZdImpl), x.scale(yDouble));
+        Assert.assertEquals(x.copy().mul(yZdImpl), x.copy().scale(yDouble));
     }
 
     @Test
@@ -589,7 +589,7 @@ public final class ZdImplBasicsTest {
         Zd x = new ZdImpl(3, 4);
         double yDouble = 5.0;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.pow(yZdImpl), x.pow(yDouble));
+        Assert.assertEquals(x.copy().pow(yZdImpl), x.copy().pow(yDouble));
     }
 
     @Test
@@ -597,7 +597,7 @@ public final class ZdImplBasicsTest {
         Zd x = Zd.NaN();
         double yDouble = 5.0;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.pow(yZdImpl), x.pow(yDouble));
+        Assert.assertEquals(x.copy().pow(yZdImpl), x.copy().pow(yDouble));
     }
 
     @Test
@@ -605,7 +605,7 @@ public final class ZdImplBasicsTest {
         Zd x = new ZdImpl(3, 4);
         double yDouble = Double.NaN;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.pow(yZdImpl), x.pow(yDouble));
+        Assert.assertEquals(x.copy().pow(yZdImpl), x.copy().pow(yDouble));
     }
 
    @Test

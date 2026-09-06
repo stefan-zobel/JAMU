@@ -407,6 +407,56 @@ public final class ZImplTest {
         assertZ("not aliased", 1.0, 0.0, w.div(w.copy()));
     }
 
+    private static void assertSameHash(String what, Zd a, Zd b) {
+        assertTrue(what + ": not equal", a.equals(b));
+        assertEquals(what + ": equal but hashed differently", a.hashCode(), b.hashCode());
+    }
+
+    @Test
+    public void testTheTwoZerosHashAlike() {
+        assertSameHash("(1,+0) and (1,-0)", new ZdImpl(1.0, 0.0), new ZdImpl(1.0, -0.0));
+        assertSameHash("(+0,1) and (-0,1)", new ZdImpl(0.0, 1.0), new ZdImpl(-0.0, 1.0));
+        // conj() on a real value is how one walks into this
+        assertSameHash("(1,0).conj()", new ZdImpl(1.0, 0.0).conj(), new ZdImpl(1.0, 0.0));
+        Zf f = new ZfImpl(1.0f, 0.0f);
+        Zf g = new ZfImpl(1.0f, -0.0f);
+        assertTrue("float not equal", f.equals(g));
+        assertEquals("float equal but hashed differently", f.hashCode(), g.hashCode());
+    }
+
+    @Test
+    public void testEveryNanHashesAlike() {
+        double nan = Double.NaN;
+        assertSameHash("(NaN,1) and (NaN,2)", new ZdImpl(nan, 1.0), new ZdImpl(nan, 2.0));
+        assertSameHash("(NaN,0) and (0,NaN)", new ZdImpl(nan, 0.0), new ZdImpl(0.0, nan));
+        assertSameHash("(NaN,0) and NaN()", new ZdImpl(nan, 0.0), Zd.NaN());
+        assertSameHash("(1,NaN) and NaN()", new ZdImpl(1.0, nan), Zd.NaN());
+        Zf f = new ZfImpl(Float.NaN, 1.0f);
+        Zf g = new ZfImpl(0.0f, Float.NaN);
+        assertTrue("float not equal", f.equals(g));
+        assertEquals("float equal but hashed differently", f.hashCode(), g.hashCode());
+    }
+
+    @Test
+    public void testHashCodeIsStable() {
+        Zd z = new ZdImpl(3.0, -4.0);
+        int first = z.hashCode();
+        assertEquals(first, z.hashCode());
+        assertEquals(first, z.copy().hashCode());
+    }
+
+    @Test
+    public void testHashCodeStillSeparatesValues() {
+        // the canonicalization must not collapse ordinary values
+        java.util.Set<Integer> hashes = new java.util.HashSet<Integer>();
+        java.util.Random rnd = new java.util.Random(41L);
+        int n = 5000;
+        for (int i = 0; i < n; ++i) {
+            hashes.add(Integer.valueOf(new ZdImpl(rnd.nextGaussian(), rnd.nextGaussian()).hashCode()));
+        }
+        assertTrue("only " + hashes.size() + " distinct hashes for " + n + " values", hashes.size() > n - n / 100);
+    }
+
     @Test
     public void testInvKeepsTheInfinityConvention() {
         Zd zero = new ZdImpl(0.0, 0.0).inv();

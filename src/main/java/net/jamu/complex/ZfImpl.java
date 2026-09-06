@@ -449,8 +449,10 @@ public final class ZfImpl implements Zf {
 
     @Override
     public final int hashCode() {
-        int h = 0x7FFFF + Float.floatToIntBits(re);
-        h = ((h << 19) - h) + Float.floatToIntBits(im);
+        // equals() sees one value in every NaN and does not tell the zeros apart
+        boolean nan = isNan();
+        int h = 0x7FFFF + Float.floatToIntBits(nan ? Float.NaN : re + 0.0f);
+        h = ((h << 19) - h) + Float.floatToIntBits(nan ? Float.NaN : im + 0.0f);
         return (h << 19) - h;
     }
 }
