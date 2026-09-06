@@ -1065,10 +1065,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         MatrixD m = copy();
         double[] b_ = m.getArrayUnsafe();
         for (int i = 0; i < b_.length; ++i) {
-            double x = b_[i]; 
-            if (x < 0.0) {
-                b_[i] = -x;
-            }
+            b_[i] = Math.abs(b_[i]);
         }
         return m;
     }

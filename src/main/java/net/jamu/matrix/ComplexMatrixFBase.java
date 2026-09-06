@@ -1036,15 +1036,14 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         float[] b_ = m.getArrayUnsafe();
         for (int i = 0; i < b_.length; i += 2) {
             float re = b_[i];
-            float im = b_[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            float im = b_[i + 1];
             // nano-optimize
             if (im == 0.0f) {
-                if (re < 0.0f) {
-                    b_[i] = -re;
-                }
+                b_[i] = Math.abs(re);
+                b_[i + 1] = 0.0f;
             } else {
                 b_[i] = ZfImpl.abs(re, im);
-                b_[i + 1] = 0.0f; // "lgtm[java/index-out-of-bounds]"
+                b_[i + 1] = 0.0f;
             }
         }
         return m;
