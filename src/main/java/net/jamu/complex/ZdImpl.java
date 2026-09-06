@@ -160,9 +160,20 @@ public final class ZdImpl implements Zd {
             im = 0.0;
             return this;
         }
-        double scale = re * re + im * im;
-        re = re / scale;
-        im = -im / scale;
+        // the scaling from div(), with a numerator of (1, 0)
+        double c = re;
+        double d = im;
+        if (Math.abs(c) < Math.abs(d)) {
+            double q = c / d;
+            double denom = c * q + d;
+            re = q / denom;
+            im = -1.0 / denom;
+        } else {
+            double q = d / c;
+            double denom = d * q + c;
+            re = 1.0 / denom;
+            im = -q / denom;
+        }
         return this;
     }
 
