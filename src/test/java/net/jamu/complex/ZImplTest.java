@@ -246,6 +246,52 @@ public final class ZImplTest {
     }
 
     @Test
+    public void testPowWithAnInfiniteExponent() {
+        // the modulus of the base decides, as |x| does in Math.pow
+        double inf = Double.POSITIVE_INFINITY;
+        double neg = Double.NEGATIVE_INFINITY;
+        assertZ("2^inf", inf, inf, new ZdImpl(2.0, 0.0).pow(inf));
+        assertZ("2^-inf", 0.0, 0.0, new ZdImpl(2.0, 0.0).pow(neg));
+        assertZ("0.5^inf", 0.0, 0.0, new ZdImpl(0.5, 0.0).pow(inf));
+        assertZ("0.5^-inf", inf, inf, new ZdImpl(0.5, 0.0).pow(neg));
+        assertZ("(3,4)^inf", inf, inf, new ZdImpl(3.0, 4.0).pow(inf));
+        assertZ("(0.3,0.4)^inf", 0.0, 0.0, new ZdImpl(0.3, 0.4).pow(inf));
+    }
+
+    @Test
+    public void testPowWithAnInfiniteExponentAtModulusOne() {
+        double inf = Double.POSITIVE_INFINITY;
+        assertZ("1^inf", Double.NaN, Double.NaN, new ZdImpl(1.0, 0.0).pow(inf));
+        assertZ("i^inf", Double.NaN, Double.NaN, new ZdImpl(0.0, 1.0).pow(inf));
+        assertZ("NaN base", Double.NaN, Double.NaN, new ZdImpl(Double.NaN, 1.0).pow(inf));
+    }
+
+    @Test
+    public void testPowWithAnInfiniteExponentFarOutOfRange() {
+        // the squared modulus would over- and underflow here, abs() does not
+        double inf = Double.POSITIVE_INFINITY;
+        assertZ("(1e200,1e200)^inf", inf, inf, new ZdImpl(1.0e200, 1.0e200).pow(inf));
+        assertZ("(1e-200,1e-200)^inf", 0.0, 0.0, new ZdImpl(1.0e-200, 1.0e-200).pow(inf));
+    }
+
+    @Test
+    public void testInfiniteExponentAgreesAcrossTheOverloads() {
+        double inf = Double.POSITIVE_INFINITY;
+        assertZ("2^(inf+0i)", inf, inf, new ZdImpl(2.0, 0.0).pow(new ZdImpl(inf, 0.0)));
+        assertZ("2^(-inf+0i)", 0.0, 0.0, new ZdImpl(2.0, 0.0).pow(new ZdImpl(Double.NEGATIVE_INFINITY, 0.0)));
+        assertZ("2^(1+inf i)", Double.NaN, Double.NaN, new ZdImpl(2.0, 0.0).pow(new ZdImpl(1.0, inf)));
+        Zf f = new ZfImpl(2.0f, 0.0f).pow(Float.POSITIVE_INFINITY);
+        assertEquals("float 2^inf re", Float.POSITIVE_INFINITY, f.re(), 0.0f);
+        assertEquals("float 2^inf im", Float.POSITIVE_INFINITY, f.im(), 0.0f);
+        Zf g = new ZfImpl(0.5f, 0.0f).pow(Float.POSITIVE_INFINITY);
+        assertEquals("float 0.5^inf re", 0.0f, g.re(), 0.0f);
+        assertEquals("float 0.5^inf im", 0.0f, g.im(), 0.0f);
+        Zf h = new ZfImpl(1.0f, 0.0f).pow(new ZfImpl(Float.POSITIVE_INFINITY, 0.0f));
+        assertEquals("float 1^inf re", Float.NaN, h.re(), 0.0f);
+        assertEquals("float 1^inf im", Float.NaN, h.im(), 0.0f);
+    }
+
+    @Test
     public void testPowOfANanBaseStaysNan() {
         assertZ("(inf,NaN)^2", Double.NaN, Double.NaN, new ZdImpl(Double.POSITIVE_INFINITY, Double.NaN).pow(2.0));
         assertZ("(NaN,0)^2", Double.NaN, Double.NaN, new ZdImpl(Double.NaN, 0.0).pow(2.0));

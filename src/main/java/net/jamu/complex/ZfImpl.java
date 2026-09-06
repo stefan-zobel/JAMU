@@ -202,6 +202,9 @@ public final class ZfImpl implements Zf {
         if (isDegenerate()) {
             return degeneratePow(exponent);
         }
+        if (Float.isInfinite(exponent)) {
+            return infinitePow(exponent);
+        }
         return ln().scale(exponent).exp();
     }
 
@@ -210,7 +213,27 @@ public final class ZfImpl implements Zf {
         if (isDegenerate()) {
             return degeneratePow(exponent);
         }
+        if (exponent.isInfinite()) {
+            if (exponent.im() == 0.0f) {
+                return infinitePow(exponent.re());
+            }
+            set(Float.NaN, Float.NaN);
+            return this;
+        }
         return ln().mul(exponent).exp();
+    }
+
+    // the values of Math.pow, with the modulus in place of |x|
+    private Zf infinitePow(float exponent) {
+        float r = abs();
+        if (Float.isNaN(r) || r == 1.0f) {
+            set(Float.NaN, Float.NaN);
+        } else if ((r > 1.0f) == (exponent > 0.0f)) {
+            set(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+        } else {
+            set(0.0f, 0.0f);
+        }
+        return this;
     }
 
     // a base that ln() cannot carry

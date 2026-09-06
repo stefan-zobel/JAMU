@@ -208,6 +208,9 @@ public final class ZdImpl implements Zd {
         if (isDegenerate()) {
             return degeneratePow(exponent);
         }
+        if (Double.isInfinite(exponent)) {
+            return infinitePow(exponent);
+        }
         return ln().scale(exponent).exp();
     }
 
@@ -216,7 +219,27 @@ public final class ZdImpl implements Zd {
         if (isDegenerate()) {
             return degeneratePow(exponent);
         }
+        if (exponent.isInfinite()) {
+            if (exponent.im() == 0.0) {
+                return infinitePow(exponent.re());
+            }
+            set(Double.NaN, Double.NaN);
+            return this;
+        }
         return ln().mul(exponent).exp();
+    }
+
+    // the values of Math.pow, with the modulus in place of |x|
+    private Zd infinitePow(double exponent) {
+        double r = abs();
+        if (Double.isNaN(r) || r == 1.0) {
+            set(Double.NaN, Double.NaN);
+        } else if ((r > 1.0) == (exponent > 0.0)) {
+            set(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        } else {
+            set(0.0, 0.0);
+        }
+        return this;
     }
 
     // a base that ln() cannot carry
