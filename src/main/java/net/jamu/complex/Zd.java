@@ -21,11 +21,13 @@ package net.jamu.complex;
  * Infinity keeps its direction (C99 Annex G): only a result that has none
  * collapses to {@link #Inf()} - the inverse of zero, a quotient by zero, a
  * divergent {@link #pow(double)}. {@code 0 * inf} and {@code 0 / 0} are
- * {@link #NaN()}. Sum, difference, negation, conjugation, {@link #ln()} and
- * {@link #exp()} are componentwise. A NaN spreads componentwise too; only
- * against an infinite operand does a NaN component count as zero, so that the
- * direction survives. {@code equals} sees one value in every NaN and does not
- * tell {@code +0.0} from {@code -0.0}; {@code hashCode} follows.
+ * {@link #NaN()}. Sum, difference, negation, conjugation and {@link #ln()} are
+ * componentwise, while {@link #exp()} keeps an exact zero, so a real argument
+ * stays real even where the modulus is not a number. A NaN spreads
+ * componentwise too; only against an infinite operand does a NaN component
+ * count as zero, so that the direction survives. {@code equals} sees one value
+ * in every NaN and does not tell {@code +0.0} from {@code -0.0};
+ * {@code hashCode} follows.
  */
 public interface Zd {
 

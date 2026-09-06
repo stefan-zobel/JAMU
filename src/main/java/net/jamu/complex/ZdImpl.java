@@ -60,7 +60,7 @@ public final class ZdImpl implements Zd {
     public static double abs(double re, double im) {
         // sqrt(a^2 + b^2) without under/overflow
         if (im == 0.0) {
-            return re >= 0.0 ? re : -re;
+            return Math.abs(re);
         } else if (Math.abs(re) > Math.abs(im)) {
             double abs = im / re;
             return Math.abs(re) * Math.sqrt(1.0 + abs * abs);
@@ -247,8 +247,8 @@ public final class ZdImpl implements Zd {
             re = (c == 0.0) ? c : h * c * h;
             im = (s == 0.0) ? s : h * s * h;
         } else {
-            re = h * c;
-            im = h * s;
+            re = (c == 0.0) ? c : h * c;
+            im = (s == 0.0) ? s : h * s;
         }
         return this;
     }
@@ -417,7 +417,7 @@ public final class ZdImpl implements Zd {
         double re = re();
         double im = im();
         if (im == 0.0) {
-            return re >= 0.0 ? re : -re;
+            return Math.abs(re);
         } else if (Math.abs(re) > Math.abs(im)) {
             double abs = im / re;
             return Math.abs(re) * Math.sqrt(1.0 + abs * abs);

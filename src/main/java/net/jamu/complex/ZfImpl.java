@@ -60,7 +60,7 @@ public final class ZfImpl implements Zf {
     public static float abs(float re, float im) {
         // sqrt(a^2 + b^2) without under/overflow
         if (im == 0.0f) {
-            return re >= 0.0f ? re : -re;
+            return Math.abs(re);
         } else if (Math.abs(re) > Math.abs(im)) {
             double abs = im / re;
             return (float) (Math.abs(re) * Math.sqrt(1.0 + abs * abs));
@@ -411,7 +411,7 @@ public final class ZfImpl implements Zf {
         float re = re();
         float im = im();
         if (im == 0.0f) {
-            return re >= 0.0f ? re : -re;
+            return Math.abs(re);
         } else if (Math.abs(re) > Math.abs(im)) {
             double abs = im / re;
             return (float) (Math.abs(re) * Math.sqrt(1.0 + abs * abs));
