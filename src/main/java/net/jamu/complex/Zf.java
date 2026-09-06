@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, 2025 Stefan Zobel
+ * Copyright 2018, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,13 @@ package net.jamu.complex;
 
 /**
  * A mutable single-precision complex number.
+ * <p>
+ * Infinity keeps its direction (C99 Annex G): only a result that has none
+ * collapses to {@link #Inf()} - the inverse of zero, a quotient by zero, a
+ * divergent {@link #pow(float)}. {@code 0 * inf} and {@code 0 / 0} are
+ * {@link #NaN()}. Sum, difference, negation, conjugation, {@link #ln()} and
+ * {@link #exp()} are componentwise. {@code equals} sees one value in every NaN
+ * and does not tell {@code +0.0} from {@code -0.0}; {@code hashCode} follows.
  */
 public interface Zf {
 
