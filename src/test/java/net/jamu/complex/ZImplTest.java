@@ -317,6 +317,53 @@ public final class ZImplTest {
     }
 
     @Test
+    public void testMultiplyingByOneLeavesAnInfiniteValueAlone() {
+        double inf = Double.POSITIVE_INFINITY;
+        double neg = Double.NEGATIVE_INFINITY;
+        assertZ("(-inf,0) scaled by 1", neg, 0.0, new ZdImpl(neg, 0.0).scale(1.0));
+        assertZ("(-inf,0) times one", neg, 0.0, new ZdImpl(neg, 0.0).mul(Zd.One()));
+        assertZ("(inf,inf) scaled by 1", inf, inf, new ZdImpl(inf, inf).scale(1.0));
+        assertZ("(inf,inf) times one", inf, inf, new ZdImpl(inf, inf).mul(Zd.One()));
+        Zf f = new ZfImpl(Float.NEGATIVE_INFINITY, 0.0f).scale(1.0f);
+        assertEquals("float re", Float.NEGATIVE_INFINITY, f.re(), 0.0f);
+        assertEquals("float im", 0.0f, f.im(), 0.0f);
+    }
+
+    @Test
+    public void testAnInfiniteProductKeepsItsDirection() {
+        double inf = Double.POSITIVE_INFINITY;
+        double neg = Double.NEGATIVE_INFINITY;
+        // the argument of the product is the sum of the arguments
+        assertZ("(-1,0)*(inf,inf)", neg, neg, new ZdImpl(-1.0, 0.0).mul(new ZdImpl(inf, inf)));
+        assertZ("(1,0)*(-inf,0)", neg, 0.0, new ZdImpl(1.0, 0.0).mul(new ZdImpl(neg, 0.0)));
+        assertZ("(1,inf)*(1,-inf)", inf, 0.0, new ZdImpl(1.0, inf).mul(new ZdImpl(1.0, neg)));
+        assertZ("(inf,inf)*(inf,inf)", 0.0, inf, new ZdImpl(inf, inf).mul(new ZdImpl(inf, inf)));
+        assertZ("(inf,0)*(0,1)", 0.0, inf, new ZdImpl(inf, 0.0).mul(Zd.I()));
+        assertZ("(1,1) scaled by -inf", neg, neg, new ZdImpl(1.0, 1.0).scale(neg));
+    }
+
+    @Test
+    public void testZeroTimesInfinityIsNan() {
+        double inf = Double.POSITIVE_INFINITY;
+        assertZ("(inf,inf)*(0,0)", Double.NaN, Double.NaN, new ZdImpl(inf, inf).mul(Zd.Zero()));
+        assertZ("(0,0)*(inf,inf)", Double.NaN, Double.NaN, new ZdImpl(0.0, 0.0).mul(new ZdImpl(inf, inf)));
+        assertZ("(-inf,0) scaled by 0", Double.NaN, Double.NaN,
+                new ZdImpl(Double.NEGATIVE_INFINITY, 0.0).scale(0.0));
+        Zf f = new ZfImpl(Float.POSITIVE_INFINITY, 0.0f).scale(0.0f);
+        assertEquals("float re", Float.NaN, f.re(), 0.0f);
+        assertEquals("float im", Float.NaN, f.im(), 0.0f);
+    }
+
+    @Test
+    public void testMultiplyIsSafeWhenBothOperandsAreTheSameObject() {
+        Zd z = new ZdImpl(3.0, 4.0);
+        Zd w = new ZdImpl(3.0, 4.0);
+        assertZ("aliased", w.copy().mul(w.copy()).re(), w.copy().mul(w.copy()).im(), z.mul(z));
+        Zd u = new ZdImpl(1.0, Double.NEGATIVE_INFINITY);
+        assertZ("aliased and infinite", Double.NEGATIVE_INFINITY, 0.0, u.mul(u));
+    }
+
+    @Test
     public void testInvKeepsTheInfinityConvention() {
         Zd zero = new ZdImpl(0.0, 0.0).inv();
         assertEquals(Double.POSITIVE_INFINITY, zero.re(), 0.0);

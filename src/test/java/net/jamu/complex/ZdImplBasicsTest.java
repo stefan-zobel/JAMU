@@ -303,12 +303,15 @@ public final class ZdImplBasicsTest {
 
         // multiplications with infinity 
         Assert.assertTrue(new ZdImpl( 1,0).mul(infInf()).equals(Zd.Inf()));
-        Assert.assertTrue(new ZdImpl(-1,0).mul(infInf()).equals(Zd.Inf()));
-        Assert.assertTrue(new ZdImpl( 1,0).mul(negInfZero()).equals(Zd.Inf()));
+        // arg pi + pi/4, so the direction is the third quadrant
+        Assert.assertTrue(new ZdImpl(-1,0).mul(infInf()).equals(negInfNegInf()));
+        // arg pi, so the result stays on the real axis
+        Assert.assertTrue(new ZdImpl( 1,0).mul(negInfZero()).equals(negInfZero()));
 
+        // arg pi/2 - pi/2, so the result is real
         w = oneInf().mul(oneNegInf());
         Assert.assertEquals(w.re(), inf, 0);
-        Assert.assertEquals(w.im(), inf, 0);
+        Assert.assertEquals(w.im(), 0.0, 0);
 
         w = negInfNegInf().mul(oneNaN());
         // TODO: better use isNaN()?
@@ -318,7 +321,8 @@ public final class ZdImplBasicsTest {
         Assert.assertTrue(Double.isInfinite(w.im()));
 
         z = new ZdImpl(1, neginf);
-        TestUtils.assertSame(Zd.Inf(), z.mul(z));
+        // arg -pi/2 doubled is -pi, so the square is negative real
+        TestUtils.assertSame(negInfZero(), z.mul(z));
     }
 
     @Test

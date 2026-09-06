@@ -105,16 +105,51 @@ public final class ZdImpl implements Zd {
 
     @Override
     public Zd mul(Zd that) {
+        double a = re;
+        double b = im;
+        double c = that.re();
+        double d = that.im();
         if (isInfinite() || that.isInfinite()) {
-            re = Double.POSITIVE_INFINITY;
-            im = Double.POSITIVE_INFINITY;
+            boolean thisZero = (a == 0.0 && b == 0.0);
+            boolean thatZero = (c == 0.0 && d == 0.0);
+            if (thisZero || thatZero) {
+                // zero times infinity has no direction and no modulus
+                re = Double.NaN;
+                im = Double.NaN;
+                return this;
+            }
+            // C99 Annex G: an infinite operand still fixes the direction
+            if (Double.isInfinite(a) || Double.isInfinite(b)) {
+                a = Math.copySign(Double.isInfinite(a) ? 1.0 : 0.0, a);
+                b = Math.copySign(Double.isInfinite(b) ? 1.0 : 0.0, b);
+            }
+            if (Double.isInfinite(c) || Double.isInfinite(d)) {
+                c = Math.copySign(Double.isInfinite(c) ? 1.0 : 0.0, c);
+                d = Math.copySign(Double.isInfinite(d) ? 1.0 : 0.0, d);
+            }
+            a = zeroIfNan(a);
+            b = zeroIfNan(b);
+            c = zeroIfNan(c);
+            d = zeroIfNan(d);
+            re = unbounded(a * c - b * d);
+            im = unbounded(a * d + b * c);
             return this;
         }
-        double this_re = re;
-        double that_re = that.re();
-        re = this_re * that_re - im * that.im();
-        im = im * that_re + this_re * that.im();
+        re = a * c - b * d;
+        im = a * d + b * c;
         return this;
+    }
+
+    private static double zeroIfNan(double x) {
+        return Double.isNaN(x) ? Math.copySign(0.0, x) : x;
+    }
+
+    // C99 scales by infinity here; an exact zero keeps its sign instead
+    private static double unbounded(double x) {
+        if (x == 0.0 || Double.isNaN(x)) {
+            return x;
+        }
+        return (x > 0.0) ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
     }
 
     @Override
@@ -279,13 +314,28 @@ public final class ZdImpl implements Zd {
 
     @Override
     public Zd scale(double alpha) {
+        double a = re;
+        double b = im;
+        double c = alpha;
         if (isInfinite() || Double.isInfinite(alpha)) {
-            re = Double.POSITIVE_INFINITY;
-            im = Double.POSITIVE_INFINITY;
+            if ((a == 0.0 && b == 0.0) || c == 0.0) {
+                re = Double.NaN;
+                im = Double.NaN;
+                return this;
+            }
+            if (Double.isInfinite(a) || Double.isInfinite(b)) {
+                a = Math.copySign(Double.isInfinite(a) ? 1.0 : 0.0, a);
+                b = Math.copySign(Double.isInfinite(b) ? 1.0 : 0.0, b);
+            }
+            if (Double.isInfinite(c)) {
+                c = Math.copySign(1.0, c);
+            }
+            re = unbounded(zeroIfNan(a) * zeroIfNan(c));
+            im = unbounded(zeroIfNan(b) * zeroIfNan(c));
             return this;
         }
-        re = alpha * re;
-        im = alpha * im;
+        re = alpha * a;
+        im = alpha * b;
         return this;
     }
 

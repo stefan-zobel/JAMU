@@ -105,16 +105,51 @@ public final class ZfImpl implements Zf {
 
     @Override
     public Zf mul(Zf that) {
+        float a = re;
+        float b = im;
+        float c = that.re();
+        float d = that.im();
         if (isInfinite() || that.isInfinite()) {
-            re = Float.POSITIVE_INFINITY;
-            im = Float.POSITIVE_INFINITY;
+            boolean thisZero = (a == 0.0f && b == 0.0f);
+            boolean thatZero = (c == 0.0f && d == 0.0f);
+            if (thisZero || thatZero) {
+                // zero times infinity has no direction and no modulus
+                re = Float.NaN;
+                im = Float.NaN;
+                return this;
+            }
+            // C99 Annex G: an infinite operand still fixes the direction
+            if (Float.isInfinite(a) || Float.isInfinite(b)) {
+                a = Math.copySign(Float.isInfinite(a) ? 1.0f : 0.0f, a);
+                b = Math.copySign(Float.isInfinite(b) ? 1.0f : 0.0f, b);
+            }
+            if (Float.isInfinite(c) || Float.isInfinite(d)) {
+                c = Math.copySign(Float.isInfinite(c) ? 1.0f : 0.0f, c);
+                d = Math.copySign(Float.isInfinite(d) ? 1.0f : 0.0f, d);
+            }
+            a = zeroIfNan(a);
+            b = zeroIfNan(b);
+            c = zeroIfNan(c);
+            d = zeroIfNan(d);
+            re = unbounded(a * c - b * d);
+            im = unbounded(a * d + b * c);
             return this;
         }
-        float this_re = re;
-        float that_re = that.re();
-        re = this_re * that_re - im * that.im();
-        im = im * that_re + this_re * that.im();
+        re = a * c - b * d;
+        im = a * d + b * c;
         return this;
+    }
+
+    private static float zeroIfNan(float x) {
+        return Float.isNaN(x) ? Math.copySign(0.0f, x) : x;
+    }
+
+    // C99 scales by infinity here; an exact zero keeps its sign instead
+    private static float unbounded(float x) {
+        if (x == 0.0f || Float.isNaN(x)) {
+            return x;
+        }
+        return (x > 0.0f) ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
     }
 
     @Override
@@ -273,13 +308,28 @@ public final class ZfImpl implements Zf {
 
     @Override
     public Zf scale(float alpha) {
+        float a = re;
+        float b = im;
+        float c = alpha;
         if (isInfinite() || Float.isInfinite(alpha)) {
-            re = Float.POSITIVE_INFINITY;
-            im = Float.POSITIVE_INFINITY;
+            if ((a == 0.0f && b == 0.0f) || c == 0.0f) {
+                re = Float.NaN;
+                im = Float.NaN;
+                return this;
+            }
+            if (Float.isInfinite(a) || Float.isInfinite(b)) {
+                a = Math.copySign(Float.isInfinite(a) ? 1.0f : 0.0f, a);
+                b = Math.copySign(Float.isInfinite(b) ? 1.0f : 0.0f, b);
+            }
+            if (Float.isInfinite(c)) {
+                c = Math.copySign(1.0f, c);
+            }
+            re = unbounded(zeroIfNan(a) * zeroIfNan(c));
+            im = unbounded(zeroIfNan(b) * zeroIfNan(c));
             return this;
         }
-        re = alpha * re;
-        im = alpha * im;
+        re = alpha * a;
+        im = alpha * b;
         return this;
     }
 
