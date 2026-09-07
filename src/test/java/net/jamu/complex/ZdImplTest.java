@@ -239,7 +239,8 @@ public final class ZdImplTest {
     @Test
     public void testInvReal() {
         Zd z = new ZdImpl(-2.0, 0.0);
-        Assert.assertEquals(new ZdImpl(-0.5, 0.0), z.inv());
+        // the imaginary part is -0/4, so it carries its sign; the C library agrees
+        Assert.assertEquals(new ZdImpl(-0.5, -0.0), z.inv());
     }
 
     @Test
@@ -327,7 +328,7 @@ public final class ZdImplTest {
 
         z = new ZdImpl(1, neginf);
         // arg -pi/2 doubled is -pi, so the square is negative real
-        Assert.assertEquals(negInfZero(), z.mul(z));
+        Assert.assertEquals(new ZdImpl(neginf, -0.0), z.mul(z));
     }
 
     @Test
@@ -629,7 +630,8 @@ public final class ZdImplTest {
 
     @Test
     public void testEqualsIssue() {
-        Assert.assertEquals(new ZdImpl(0, -1), new ZdImpl(0, 1).mul(new ZdImpl(-1, 0)));
+        // 0*(-1) - 1*0 is -0, not +0; the C library agrees
+        Assert.assertEquals(new ZdImpl(-0.0, -1.0), new ZdImpl(0, 1).mul(new ZdImpl(-1, 0)));
     }
 
     /**

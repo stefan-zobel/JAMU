@@ -26,8 +26,8 @@ package net.jamu.complex;
  * stays real even where the modulus is not a number. A NaN spreads
  * componentwise too; only against an infinite operand does a NaN component
  * count as zero, so that the direction survives. {@code equals} sees one value
- * in every NaN and does not tell {@code +0.0} from {@code -0.0};
- * {@code hashCode} follows.
+ * in every NaN but tells {@code +0.0} from {@code -0.0}, because the branch
+ * cuts do; {@code hashCode} follows.
  */
 public interface Zd {
 

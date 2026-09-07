@@ -16,8 +16,12 @@
 package net.jamu.complex;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -419,15 +423,92 @@ public final class ZImplTest {
     }
 
     @Test
-    public void testTheTwoZerosHashAlike() {
-        assertSameHash("(1,+0) and (1,-0)", new ZdImpl(1.0, 0.0), new ZdImpl(1.0, -0.0));
-        assertSameHash("(+0,1) and (-0,1)", new ZdImpl(0.0, 1.0), new ZdImpl(-0.0, 1.0));
+    public void testTheTwoZerosAreToldApart() {
+        // the branch cuts read the sign of a zero, so equals does too
+        assertDifferent("(1,+0) and (1,-0)", new ZdImpl(1.0, 0.0), new ZdImpl(1.0, -0.0));
+        assertDifferent("(+0,1) and (-0,1)", new ZdImpl(0.0, 1.0), new ZdImpl(-0.0, 1.0));
         // conj() on a real value is how one walks into this
-        assertSameHash("(1,0).conj()", new ZdImpl(1.0, 0.0).conj(), new ZdImpl(1.0, 0.0));
+        assertDifferent("(1,0).conj()", new ZdImpl(1.0, 0.0).conj(), new ZdImpl(1.0, 0.0));
+        // the four zeros are four values with four hashes
+        Zd[] zeros = { new ZdImpl(0.0, 0.0), new ZdImpl(-0.0, -0.0), new ZdImpl(0.0, -0.0),
+                new ZdImpl(-0.0, 0.0) };
+        for (int i = 0; i < zeros.length; ++i) {
+            for (int j = i + 1; j < zeros.length; ++j) {
+                assertDifferent("zero " + i + " and " + j, zeros[i], zeros[j]);
+            }
+        }
         Zf f = new ZfImpl(1.0f, 0.0f);
         Zf g = new ZfImpl(1.0f, -0.0f);
-        assertTrue("float not equal", f.equals(g));
-        assertEquals("float equal but hashed differently", f.hashCode(), g.hashCode());
+        assertFalse("float equal", f.equals(g));
+        assertTrue("float hashed alike", f.hashCode() != g.hashCode());
+        Zf[] fz = { new ZfImpl(0.0f, 0.0f), new ZfImpl(-0.0f, -0.0f), new ZfImpl(0.0f, -0.0f),
+                new ZfImpl(-0.0f, 0.0f) };
+        for (int i = 0; i < fz.length; ++i) {
+            for (int j = i + 1; j < fz.length; ++j) {
+                assertFalse("float zero " + i + " and " + j, fz[i].equals(fz[j]));
+                assertTrue("float zero " + i + " and " + j + " hashed alike",
+                        fz[i].hashCode() != fz[j].hashCode());
+            }
+        }
+    }
+
+    private static void assertDifferent(String what, Zd a, Zd b) {
+        assertFalse(what + ": equal", a.equals(b));
+        assertTrue(what + ": hashed alike", a.hashCode() != b.hashCode());
+    }
+
+    @Test
+    public void testHashCodeSpreadsARegularGrid() {
+        // the mixing this replaced folded a regular grid onto 3.9 percent of
+        // its values; regular grids are what numerical code produces
+        java.util.HashSet<Integer> d = new java.util.HashSet<Integer>();
+        java.util.HashSet<Integer> f = new java.util.HashSet<Integer>();
+        int n = 0;
+        for (int i = -160; i <= 160; ++i) {
+            for (int j = -160; j <= 160; ++j) {
+                ++n;
+                d.add(new ZdImpl(i * 0.25, j * 0.25).hashCode());
+                f.add(new ZfImpl(i * 0.25f, j * 0.25f).hashCode());
+            }
+        }
+        assertTrue("double: " + d.size() + " of " + n, d.size() > 0.99 * n);
+        assertTrue("float: " + f.size() + " of " + n, f.size() > 0.99 * n);
+    }
+
+    @Test
+    public void testTheEqualsContract() {
+        double inf = Double.POSITIVE_INFINITY;
+        double nan = Double.NaN;
+        double[] vals = { 0.0, -0.0, 1.0, -1.0, 2.5, inf, -inf, nan, 4.9e-324, 1.0e300 };
+        List<Zd> zs = new ArrayList<Zd>();
+        for (int i = 0; i < vals.length; ++i) {
+            for (int j = 0; j < vals.length; ++j) {
+                zs.add(new ZdImpl(vals[i], vals[j]));
+            }
+        }
+        for (Zd p : zs) {
+            assertTrue("reflexive: " + p, p.equals(p));
+            assertFalse("null: " + p, p.equals(null));
+            assertFalse("foreign class: " + p, p.equals("z"));
+            for (Zd q : zs) {
+                assertEquals("symmetric: " + p + " / " + q, p.equals(q), q.equals(p));
+                if (p.equals(q)) {
+                    assertEquals("hashCode: " + p + " / " + q, p.hashCode(), q.hashCode());
+                }
+            }
+        }
+        for (Zd p : zs) {
+            for (Zd q : zs) {
+                if (!p.equals(q)) {
+                    continue;
+                }
+                for (Zd r : zs) {
+                    if (q.equals(r)) {
+                        assertTrue("transitive: " + p + " / " + q + " / " + r, p.equals(r));
+                    }
+                }
+            }
+        }
     }
 
     @Test

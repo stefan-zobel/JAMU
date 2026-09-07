@@ -491,19 +491,25 @@ public final class ZdImpl implements Zd {
             if (other.isNan()) {
                 return this.isNan();
             }
-            return re() == other.re() && im() == other.im();
+            // the two zeros stay apart: every function here reads the sign of a
+            // zero off the branch cut
+            return Double.doubleToLongBits(re()) == Double.doubleToLongBits(other.re())
+                    && Double.doubleToLongBits(im()) == Double.doubleToLongBits(other.im());
         }
         return false;
     }
 
     @Override
     public final int hashCode() {
-        // equals() sees one value in every NaN and does not tell the zeros apart
+        // equals() sees one value in every NaN but tells the two zeros
+        // apart, and the sign of a zero sits in the top bit alone, so the
+        // mixing has to spread it before the second component arrives
         boolean nan = isNan();
-        long bits = Double.doubleToLongBits(nan ? Double.NaN : re + 0.0);
-        int h = 0x7FFFF + (int) (bits ^ (bits >>> 32));
-        bits = Double.doubleToLongBits(nan ? Double.NaN : im + 0.0);
-        h = ((h << 19) - h) + (int) (bits ^ (bits >>> 32));
-        return (h << 19) - h;
+        long h = 0xCBF29CE484222325L;
+        h = (h ^ Double.doubleToLongBits(nan ? Double.NaN : re)) * 0x100000001B3L;
+        h ^= h >>> 29;
+        h = (h ^ Double.doubleToLongBits(nan ? Double.NaN : im)) * 0x100000001B3L;
+        h ^= h >>> 29;
+        return (int) (h ^ (h >>> 32));
     }
 }
