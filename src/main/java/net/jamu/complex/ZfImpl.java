@@ -484,11 +484,9 @@ public final class ZfImpl implements Zf {
         }
         if (that instanceof Zf) {
             Zf other = (Zf) that;
-            if (other.isNan()) {
-                return this.isNan();
-            }
-            // the two zeros stay apart: every function here reads the sign of a
-            // zero off the branch cut
+            // bit for bit, as Arrays.equals does for a double[]: the branch cuts
+            // read the sign of a zero, and a NaN component says nothing about
+            // the other one
             return Float.floatToIntBits(re()) == Float.floatToIntBits(other.re())
                     && Float.floatToIntBits(im()) == Float.floatToIntBits(other.im());
         }
@@ -497,14 +495,13 @@ public final class ZfImpl implements Zf {
 
     @Override
     public final int hashCode() {
-        // equals() sees one value in every NaN but tells the two zeros
-        // apart, and the sign of a zero sits in the top bit alone, so the
-        // mixing has to spread it before the second component arrives
-        boolean nan = isNan();
+        // equals compares the components bit for bit, and the sign of a zero
+        // sits in the top bit alone, so the mixing has to spread it before the
+        // second component arrives
         long h = 0xCBF29CE484222325L;
-        h = (h ^ (Float.floatToIntBits(nan ? Float.NaN : re) & 0xFFFFFFFFL)) * 0x100000001B3L;
+        h = (h ^ (Float.floatToIntBits(re) & 0xFFFFFFFFL)) * 0x100000001B3L;
         h ^= h >>> 29;
-        h = (h ^ (Float.floatToIntBits(nan ? Float.NaN : im) & 0xFFFFFFFFL)) * 0x100000001B3L;
+        h = (h ^ (Float.floatToIntBits(im) & 0xFFFFFFFFL)) * 0x100000001B3L;
         h ^= h >>> 29;
         return (int) (h ^ (h >>> 32));
     }

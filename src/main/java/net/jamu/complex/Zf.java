@@ -25,9 +25,9 @@ package net.jamu.complex;
  * componentwise, while {@link #exp()} keeps an exact zero, so a real argument
  * stays real even where the modulus is not a number. A NaN spreads
  * componentwise too; only against an infinite operand does a NaN component
- * count as zero, so that the direction survives. {@code equals} sees one value
- * in every NaN but tells {@code +0.0} from {@code -0.0}, because the branch
- * cuts do; {@code hashCode} follows.
+ * count as zero, so that the direction survives. {@code equals} compares the
+ * two components bit for bit, as {@code Arrays.equals} does for a
+ * {@code float[]}; {@code hashCode} follows.
  */
 public interface Zf {
 

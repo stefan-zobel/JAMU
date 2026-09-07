@@ -512,16 +512,69 @@ public final class ZImplTest {
     }
 
     @Test
-    public void testEveryNanHashesAlike() {
+    public void testNanPairsAreNotOneValue() {
         double nan = Double.NaN;
-        assertSameHash("(NaN,1) and (NaN,2)", new ZdImpl(nan, 1.0), new ZdImpl(nan, 2.0));
-        assertSameHash("(NaN,0) and (0,NaN)", new ZdImpl(nan, 0.0), new ZdImpl(0.0, nan));
-        assertSameHash("(NaN,0) and NaN()", new ZdImpl(nan, 0.0), Zd.NaN());
-        assertSameHash("(1,NaN) and NaN()", new ZdImpl(1.0, nan), Zd.NaN());
+        // a NaN component says nothing about the other one, so these are values
+        // in their own right; sqrt(NaN,0) is (NaN,NaN) while sqrt(NaN,inf) is
+        // (inf,inf), which the old NaN class could not tell apart
+        assertDifferent("(NaN,1) and (NaN,2)", new ZdImpl(nan, 1.0), new ZdImpl(nan, 2.0));
+        assertDifferent("(NaN,0) and (0,NaN)", new ZdImpl(nan, 0.0), new ZdImpl(0.0, nan));
+        assertDifferent("(NaN,0) and NaN()", new ZdImpl(nan, 0.0), Zd.NaN());
+        assertDifferent("(1,NaN) and NaN()", new ZdImpl(1.0, nan), Zd.NaN());
+        assertDifferent("(NaN,-5) and (-5,NaN)", new ZdImpl(nan, -5.0), new ZdImpl(-5.0, nan));
         Zf f = new ZfImpl(Float.NaN, 1.0f);
         Zf g = new ZfImpl(0.0f, Float.NaN);
-        assertTrue("float not equal", f.equals(g));
-        assertEquals("float equal but hashed differently", f.hashCode(), g.hashCode());
+        assertFalse("float equal", f.equals(g));
+        assertTrue("float hashed alike", f.hashCode() != g.hashCode());
+        // but every NaN bit pattern is still one value, because
+        // doubleToLongBits canonicalises them
+        Zd odd = new ZdImpl(Double.longBitsToDouble(0x7ff8000000000001L), 1.0);
+        assertSameHash("two NaN bit patterns", odd, new ZdImpl(nan, 1.0));
+        Zf oddF = new ZfImpl(Float.intBitsToFloat(0x7fc00001), 1.0f);
+        assertTrue("two float NaN bit patterns", oddF.equals(new ZfImpl(Float.NaN, 1.0f)));
+        assertEquals("two float NaN bit patterns hashed apart",
+                oddF.hashCode(), new ZfImpl(Float.NaN, 1.0f).hashCode());
+    }
+
+    @Test
+    public void testEqualsIsACongruence() {
+        // equal now means the same bits, so no operation can tell two equal
+        // values apart. With the old NaN class there were 128 pairs that could.
+        double nan = Double.NaN;
+        double inf = Double.POSITIVE_INFINITY;
+        double[][] pts = { { nan, 0.0 }, { nan, -0.0 }, { 0.0, nan }, { -0.0, nan }, { nan, -5.0 },
+                { -5.0, nan }, { inf, nan }, { nan, inf }, { 1.0, nan }, { nan, 1.0 }, { nan, nan },
+                { -inf, nan }, { nan, -inf }, { 0.0, 0.0 }, { -0.0, -0.0 } };
+        String[] ops = { "exp", "ln", "sqrt", "inv", "conj", "neg" };
+        for (int o = 0; o < ops.length; ++o) {
+            for (int i = 0; i < pts.length; ++i) {
+                for (int j = 0; j < pts.length; ++j) {
+                    Zd u = new ZdImpl(pts[i][0], pts[i][1]);
+                    Zd v = new ZdImpl(pts[j][0], pts[j][1]);
+                    if (!u.equals(v)) {
+                        continue;
+                    }
+                    assertTrue(ops[o] + " of two equal values differs: " + u + " / " + v,
+                            unary(u, ops[o]).equals(unary(v, ops[o])));
+                }
+            }
+        }
+    }
+
+    private static Zd unary(Zd z, String op) {
+        Zd w = z.copy();
+        if (op.equals("exp")) {
+            return w.exp();
+        } else if (op.equals("ln")) {
+            return w.ln();
+        } else if (op.equals("sqrt")) {
+            return w.sqrt();
+        } else if (op.equals("inv")) {
+            return w.inv();
+        } else if (op.equals("conj")) {
+            return w.conj();
+        }
+        return w.neg();
     }
 
     @Test

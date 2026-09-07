@@ -451,9 +451,11 @@ public final class ZdImplTest {
         Zd realNaN = new ZdImpl(Double.NaN, 0.0);
         Zd imaginaryNaN = new ZdImpl(0.0, Double.NaN);
         Zd complexNaN = Zd.NaN();
-        Assert.assertTrue(realNaN.equals(imaginaryNaN));
-        Assert.assertTrue(imaginaryNaN.equals(complexNaN));
-        Assert.assertTrue(realNaN.equals(complexNaN));
+        // a NaN component says nothing about the other one
+        Assert.assertFalse(realNaN.equals(imaginaryNaN));
+        Assert.assertFalse(imaginaryNaN.equals(complexNaN));
+        Assert.assertFalse(realNaN.equals(complexNaN));
+        Assert.assertTrue(complexNaN.equals(Zd.NaN()));
     }
 
     @Test
