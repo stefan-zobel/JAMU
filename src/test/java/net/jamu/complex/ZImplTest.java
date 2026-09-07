@@ -190,6 +190,11 @@ public final class ZImplTest {
         assertEquals(0.0, p.im(), 0.0);
     }
 
+
+    private static void assertZf(String what, float wantRe, float wantIm, Zf got) {
+        assertEquals(what + " re", wantRe, got.re(), 0.0f);
+        assertEquals(what + " im", wantIm, got.im(), 0.0f);
+    }
     private static void assertZ(String what, double wantRe, double wantIm, Zd got) {
         assertEquals(what + " re", wantRe, got.re(), 0.0);
         assertEquals(what + " im", wantIm, got.im(), 0.0);
@@ -593,6 +598,156 @@ public final class ZImplTest {
         // the squared modulus would overflow a float here
         Zf d = new ZfImpl(1.0e30f, 1.0e30f).sqrt();
         assertTrue("(1e30,1e30) finite", !Float.isInfinite(d.re()) && !Float.isNaN(d.re()));
+    }
+
+    /** the sqrt tests reach further out than the shared ensemble */
+    private static final int SQRT_MIN_EXP_D = -323;
+    private static final int SQRT_MAX_EXP_D = 308;
+    private static final int SQRT_MIN_EXP_F = -45;
+    private static final int SQRT_MAX_EXP_F = 38;
+
+    @Test
+    public void testSqrtOnTheRealAxisIsMathSqrt() {
+        // on the axis the modulus is |x|, so t is Math.sqrt(x) and must agree
+        // to the last bit; Math.sqrt has nothing in common with the code
+        for (int e = SQRT_MIN_EXP_D; e <= SQRT_MAX_EXP_D; ++e) {
+            for (double m : new double[] { 1.0, 2.5, 7.3 }) {
+                double x = m * Math.pow(10.0, e);
+                if (Double.isInfinite(x) || x == 0.0) {
+                    continue;
+                }
+                assertZ("sqrt(" + x + ")", Math.sqrt(x), 0.0, new ZdImpl(x, 0.0).sqrt());
+                assertZ("sqrt(-" + x + ")", 0.0, Math.sqrt(x), new ZdImpl(-x, 0.0).sqrt());
+            }
+        }
+        for (int e = SQRT_MIN_EXP_F; e <= SQRT_MAX_EXP_F; ++e) {
+            for (double m : new double[] { 1.0, 2.5, 7.3 }) {
+                float x = (float) (m * Math.pow(10.0, e));
+                if (Float.isInfinite(x) || x == 0.0f) {
+                    continue;
+                }
+                assertEquals("float sqrt(" + x + ")", (float) Math.sqrt(x),
+                        new ZfImpl(x, 0.0f).sqrt().re(), 0.0f);
+            }
+        }
+    }
+
+    @Test
+    public void testSqrtStaysFiniteAtBothEnds() {
+        // the sum |re| + |z| overflows above a modulus of 9e307 and turns
+        // subnormal below 2e-308; both ends must still come out of the range
+        for (int e = SQRT_MIN_EXP_D; e <= SQRT_MAX_EXP_D; ++e) {
+            double r = Math.pow(10.0, e);
+            for (int k = 0; k < ANGLES; ++k) {
+                double x = r * Math.cos(angle(k));
+                double y = r * Math.sin(angle(k));
+                if (Double.isInfinite(x) || Double.isInfinite(y)) {
+                    continue;
+                }
+                Zd s = new ZdImpl(x, y).sqrt();
+                assertTrue("finite at 1e" + e, !Double.isInfinite(s.re()) && !Double.isNaN(s.re())
+                        && !Double.isInfinite(s.im()) && !Double.isNaN(s.im()));
+                assertTrue("not zero at 1e" + e, s.re() != 0.0 || s.im() != 0.0);
+            }
+        }
+        for (int e = SQRT_MIN_EXP_F; e <= SQRT_MAX_EXP_F; ++e) {
+            double r = Math.pow(10.0, e);
+            for (int k = 0; k < ANGLES; ++k) {
+                float x = (float) (r * Math.cos(angle(k)));
+                float y = (float) (r * Math.sin(angle(k)));
+                if (Float.isInfinite(x) || Float.isInfinite(y)) {
+                    continue;
+                }
+                Zf s = new ZfImpl(x, y).sqrt();
+                assertTrue("float finite at 1e" + e, !Float.isInfinite(s.re()) && !Float.isNaN(s.re())
+                        && !Float.isInfinite(s.im()) && !Float.isNaN(s.im()));
+                assertTrue("float not zero at 1e" + e, s.re() != 0.0f || s.im() != 0.0f);
+            }
+        }
+        assertEquals("sqrt(9e307)", 9.486832980505138E153, new ZdImpl(9.0e307, 0.0).sqrt().re(), 0.0);
+        assertEquals("float sqrt(3.4e38)", (float) Math.sqrt(3.4e38f),
+                new ZfImpl(3.4e38f, 0.0f).sqrt().re(), 0.0f);
+    }
+
+    @Test
+    public void testSqrtWithVeryUnequalComponents() {
+        // where |b| is far below a > 0 the root is (sqrt(a), b/(2*sqrt(a))),
+        // and Math.sqrt says so to the last bit. Scaling the argument by more
+        // than a factor of four would push b/(2t) into the subnormal range and
+        // lose it here, which the ensemble above never reaches.
+        for (int ea = -300; ea <= SQRT_MAX_EXP_D; ++ea) {
+            double a = 1.7 * Math.pow(10.0, ea);
+            if (Double.isInfinite(a)) {
+                continue;
+            }
+            for (int d = 20; d <= 620; d += 20) {
+                double b = 3.1 * Math.pow(10.0, ea - d);
+                double wantIm = b / (2.0 * Math.sqrt(a));
+                if (b == 0.0 || wantIm == 0.0) {
+                    continue;
+                }
+                Zd s = new ZdImpl(a, b).sqrt();
+                assertEquals("sqrt re at (" + a + "," + b + ")", Math.sqrt(a), s.re(), 0.0);
+                // one ulp of a subnormal is all the factor of four may cost here
+                assertTrue("sqrt im at (" + a + "," + b + ") is " + s.im(),
+                        Math.abs(s.im() - wantIm) <= 1.0e-13 * Math.abs(wantIm));
+            }
+        }
+        for (int ea = -38; ea <= SQRT_MAX_EXP_F; ++ea) {
+            float a = (float) (1.7 * Math.pow(10.0, ea));
+            if (Float.isInfinite(a) || a == 0.0f) {
+                continue;
+            }
+            for (int d = 4; d <= 40; d += 2) {
+                float b = (float) (3.1 * Math.pow(10.0, ea - d));
+                double wantIm = b / (2.0 * Math.sqrt(a));
+                if (b == 0.0f || Math.abs(wantIm) < Float.MIN_NORMAL) {
+                    continue;
+                }
+                Zf s = new ZfImpl(a, b).sqrt();
+                assertTrue("float sqrt re at (" + a + "," + b + ") is " + s.re(),
+                        Math.abs(s.re() - Math.sqrt(a)) <= 1.0e-7 * Math.sqrt(a));
+                assertTrue("float sqrt im at (" + a + "," + b + ") is " + s.im(),
+                        Math.abs(s.im() - wantIm) <= 1.0e-7 * Math.abs(wantIm));
+            }
+        }
+    }
+
+    @Test
+    public void testSqrtInTheSubnormalBand() {
+        // the expected values come from 120 digit arithmetic, because squaring
+        // the root back underflows down here
+        subnormalRoot(1.0e-320, 1.0e-320, 1.0986779977260263990E-160, 4.5508732733903661602E-161);
+        subnormalRoot(1.0e-315, -2.0e-316, 3.1778954514264884631E-158, -3.1467366489798094928E-159);
+        subnormalRoot(-1.0e-310, 3.0e-311, 1.4837562281427940884E-156, 1.0109477362581718829E-155);
+        subnormalRootF(1.4e-45f, 1.4e-45f, 4.1128054643427787981E-23, 1.7035798027329537504E-23);
+        subnormalRootF(1.0e-42f, -3.0e-43f, 1.0111942368118900672E-21, -1.4827906471805593517E-22);
+        subnormalRootF(-1.0e-40f, 2.0e-41f, 9.9505519252915438348E-22, 1.0049357981847737337E-20);
+        // three points pinned to the bit, where taking the quotient of the
+        // modulus in float instead of double moves the answer away from the
+        // 120 digit value by a fraction of an ulp
+        assertZf("sqrt(-6.1964989e9, -1.12513096e10)", 57655.39f, -97573.78f,
+                new ZfImpl(-6.1964989E9f, -1.12513096E10f).sqrt());
+        assertZf("sqrt(2.10404086e10, 3.30625167e10)", 173536.83f, 95260.805f,
+                new ZfImpl(2.10404086E10f, 3.30625167E10f).sqrt());
+        assertZf("sqrt(-43.956238, 68.04957)", 4.3043847f, 7.90468f,
+                new ZfImpl(-43.956238f, 68.04957f).sqrt());
+    }
+
+    private static void subnormalRoot(double x, double y, double wantRe, double wantIm) {
+        Zd got = new ZdImpl(x, y).sqrt();
+        assertTrue("sqrt re at (" + x + "," + y + "): want " + wantRe + ", got " + got.re(),
+                Math.abs(got.re() - wantRe) <= 1.0e-15 * Math.abs(wantRe));
+        assertTrue("sqrt im at (" + x + "," + y + "): want " + wantIm + ", got " + got.im(),
+                Math.abs(got.im() - wantIm) <= 1.0e-15 * Math.abs(wantIm));
+    }
+
+    private static void subnormalRootF(float x, float y, double wantRe, double wantIm) {
+        Zf got = new ZfImpl(x, y).sqrt();
+        assertTrue("float sqrt re at (" + x + "," + y + "): want " + wantRe + ", got " + got.re(),
+                Math.abs(got.re() - wantRe) <= 1.0e-6 * Math.abs(wantRe));
+        assertTrue("float sqrt im at (" + x + "," + y + "): want " + wantIm + ", got " + got.im(),
+                Math.abs(got.im() - wantIm) <= 1.0e-6 * Math.abs(wantIm));
     }
 
     @Test

@@ -259,17 +259,35 @@ public final class ZfImpl implements Zf {
             re = 0.0f;
             return this;
         }
-        // Kahan: t is built from |re| so that nothing cancels
+        // Kahan: t is built from |re| so that nothing cancels, and the sum is
+        // taken in double, where no float can overflow or turn subnormal
         float b = im;
-        float t = (float) Math.sqrt((Math.abs(re) + abs()) / 2.0);
+        double t = Math.sqrt((Math.abs((double) re) + wideModulus(re, im)) / 2.0);
         if (re >= 0.0f) {
-            re = t;
-            im = b / (2.0f * t);
+            re = (float) t;
+            im = (float) (b / (2.0 * t));
         } else {
-            re = Math.abs(b) / (2.0f * t);
-            im = Math.copySign(t, b);
+            re = (float) (Math.abs((double) b) / (2.0 * t));
+            im = Math.copySign((float) t, b);
         }
         return this;
+    }
+
+    // the modulus in double, quotient included; abs() takes that quotient in
+    // float, and rounding it early costs the subnormals their digits
+    private static double wideModulus(float re, float im) {
+        if (Float.isInfinite(re) || Float.isInfinite(im)) {
+            return Double.POSITIVE_INFINITY;
+        }
+        if (im == 0.0f) {
+            return Math.abs((double) re);
+        } else if (Math.abs(re) > Math.abs(im)) {
+            double abs = (double) im / re;
+            return Math.abs((double) re) * Math.sqrt(1.0 + abs * abs);
+        } else {
+            double abs = (double) re / im;
+            return Math.abs((double) im) * Math.sqrt(1.0 + abs * abs);
+        }
     }
 
     @Override

@@ -265,15 +265,29 @@ public final class ZdImpl implements Zd {
             re = 0.0;
             return this;
         }
-        // Kahan: t is built from |re| so that nothing cancels
+        double a = re;
         double b = im;
-        double t = Math.sqrt((Math.abs(re) + abs()) / 2.0);
-        if (re >= 0.0) {
-            re = t;
-            im = b / (2.0 * t);
+        double out = 1.0;
+        // an exact power of four in and a power of two out, so that nothing in
+        // between moves: the sum below overflows above a modulus of 9e307 and
+        // goes subnormal below 2e-308
+        if (Math.abs(a) > 0x1p1000 || Math.abs(b) > 0x1p1000) {
+            a *= 0.25;
+            b *= 0.25;
+            out = 2.0;
+        } else if (Math.abs(a) < 0x1p-500 && Math.abs(b) < 0x1p-500) {
+            a *= 0x1p100;
+            b *= 0x1p100;
+            out = 0x1p-50;
+        }
+        // Kahan: t is built from |re| so that nothing cancels
+        double t = Math.sqrt((Math.abs(a) + modulus(a, b)) / 2.0);
+        if (a >= 0.0) {
+            re = t * out;
+            im = (b / (2.0 * t)) * out;
         } else {
-            re = Math.abs(b) / (2.0 * t);
-            im = Math.copySign(t, b);
+            re = (Math.abs(b) / (2.0 * t)) * out;
+            im = Math.copySign(t, b) * out;
         }
         return this;
     }
@@ -410,12 +424,14 @@ public final class ZdImpl implements Zd {
 
     @Override
     public final double abs() {
-        if (isInfinite()) {
+        return modulus(re(), im());
+    }
+
+    // sqrt(a^2 + b^2) without under/overflow, for a pair that need not be this one
+    private static double modulus(double re, double im) {
+        if (Double.isInfinite(re) || Double.isInfinite(im)) {
             return Double.POSITIVE_INFINITY;
         }
-        // sqrt(a^2 + b^2) without under/overflow
-        double re = re();
-        double im = im();
         if (im == 0.0) {
             return Math.abs(re);
         } else if (Math.abs(re) > Math.abs(im)) {
