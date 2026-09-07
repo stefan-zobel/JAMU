@@ -460,25 +460,22 @@ public final class ZdImpl implements Zd {
 
     @Override
     public String toString(String format) {
-        double re_ = re();
-        double im_ = im();
-        // fix negative zero
-        if (re_ == 0.0) {
-            re_ = 0.0;
-        }
-        if (im_ == 0.0) {
-            im_ = 0.0;
-        }
         StringBuilder buf = new StringBuilder(40);
-        if (re_ >= 0.0) {
+        if (needsPlus(re())) {
             buf.append("+");
         }
-        buf.append(String.format(format, re_)).append("  ");
-        if (im_ >= 0.0) {
+        buf.append(String.format(format, re())).append("  ");
+        if (needsPlus(im())) {
             buf.append("+");
         }
-        buf.append(String.format(format, im_)).append("i");
+        buf.append(String.format(format, im())).append("i");
         return buf.toString();
+    }
+
+    // format writes the sign itself, so prepend one only for a positive value;
+    // a negative zero keeps its sign, the branch cuts read it
+    private static boolean needsPlus(double x) {
+        return !Double.isNaN(x) && Math.copySign(1.0, x) > 0.0;
     }
 
     @Override

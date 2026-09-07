@@ -27,7 +27,8 @@ package net.jamu.complex;
  * componentwise too; only against an infinite operand does a NaN component
  * count as zero, so that the direction survives. {@code equals} compares the
  * two components bit for bit, as {@code Arrays.equals} does for a
- * {@code double[]}; {@code hashCode} follows.
+ * {@code double[]}; {@code hashCode} follows, and the printout keeps the
+ * sign of a zero too.
  */
 public interface Zd {
 

@@ -22,13 +22,30 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Tests for the mutable complex implementations.
  */
 public final class ZImplTest {
+
+    /** toString goes through String.format, which follows the default locale */
+    private static Locale saved;
+
+    @BeforeClass
+    public static void fixTheLocale() {
+        saved = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+    }
+
+    @AfterClass
+    public static void restoreTheLocale() {
+        Locale.setDefault(saved);
+    }
 
     /** the first exponent, the last one and the step of the test ensemble */
     private static final int MIN_EXP_D = -300;
@@ -898,5 +915,70 @@ public final class ZImplTest {
         Zf infF = new ZfImpl(Float.POSITIVE_INFINITY, 0.0f).inv();
         assertEquals(0.0f, infF.re(), 0.0f);
         assertEquals(0.0f, infF.im(), 0.0f);
+    }
+
+    @Test
+    public void testToStringTellsTheFourZerosApart() {
+        // printing both zeros alike is how a wrong expectation stays hidden
+        Zd[] zeros = { new ZdImpl(0.0, 0.0), new ZdImpl(-0.0, -0.0), new ZdImpl(0.0, -0.0),
+                new ZdImpl(-0.0, 0.0) };
+        java.util.HashSet<String> seen = new java.util.HashSet<String>();
+        for (int i = 0; i < zeros.length; ++i) {
+            seen.add(zeros[i].toString());
+        }
+        assertEquals("four zeros, four printouts", 4, seen.size());
+        assertEquals("+0.0000000000E+00  -0.0000000000E+00i", new ZdImpl(0.0, -0.0).toString());
+        assertEquals("-0.0000000000E+00  +0.0000000000E+00i", new ZdImpl(-0.0, 0.0).toString());
+        assertEquals("-0.00  +0.00i", new ZdImpl(-0.0, 0.0).toString("%.2f"));
+        // sqrt is one of the operations that tell the two apart
+        assertEquals("+0.0000000000E+00  +2.0000000000E+00i",
+                new ZdImpl(-4.0, 0.0).sqrt().toString());
+        assertEquals("+0.0000000000E+00  -2.0000000000E+00i",
+                new ZdImpl(-4.0, -0.0).sqrt().toString());
+        Zf[] fz = { new ZfImpl(0.0f, 0.0f), new ZfImpl(-0.0f, -0.0f), new ZfImpl(0.0f, -0.0f),
+                new ZfImpl(-0.0f, 0.0f) };
+        seen.clear();
+        for (int i = 0; i < fz.length; ++i) {
+            seen.add(fz[i].toString());
+        }
+        assertEquals("four float zeros, four printouts", 4, seen.size());
+        assertEquals("-0.000000E+00  -0.000000E+00i", new ZfImpl(-0.0f, -0.0f).toString());
+        assertEquals("-0.00  +0.00i", new ZfImpl(-0.0f, 0.0f).toString("%.2f"));
+    }
+
+    @Test
+    public void testToStringLeavesNanAndInfinityAlone() {
+        // only the zeros moved; format writes no sign of its own for a NaN
+        double nan = Double.NaN;
+        double inf = Double.POSITIVE_INFINITY;
+        assertEquals("NAN  NANi", new ZdImpl(nan, nan).toString());
+        assertEquals("a NaN carrying the sign bit", "NAN  NANi",
+                new ZdImpl(Double.longBitsToDouble(0xfff8000000000000L), nan).toString());
+        assertEquals("+INFINITY  -INFINITYi", new ZdImpl(inf, -inf).toString());
+        assertEquals("-INFINITY  +INFINITYi", new ZdImpl(-inf, inf).toString());
+        assertEquals("NAN  NANi", new ZfImpl(Float.NaN, Float.NaN).toString());
+        assertEquals("+INFINITY  -INFINITYi",
+                new ZfImpl(Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY).toString());
+    }
+
+    @Test
+    public void testToStringKeepsItsWidth() {
+        // the columns of Matrices.toString are laid out on this: the sign is
+        // written either way, so it must never change the length
+        double[] vals = { 0.0, -0.0, 1.5, -1.5, Double.NaN, Double.POSITIVE_INFINITY,
+                Double.NEGATIVE_INFINITY, 1.0e300, -4.9e-324 };
+        for (int i = 0; i < vals.length; ++i) {
+            for (int j = 0; j < vals.length; ++j) {
+                String got = new ZdImpl(vals[i], vals[j]).toString();
+                String pos = new ZdImpl(Math.abs(vals[i]), Math.abs(vals[j])).toString();
+                assertEquals("width at (" + vals[i] + ", " + vals[j] + "): " + got,
+                        pos.length(), got.length());
+                String gotF = new ZfImpl((float) vals[i], (float) vals[j]).toString();
+                String posF = new ZfImpl(Math.abs((float) vals[i]),
+                        Math.abs((float) vals[j])).toString();
+                assertEquals("float width at (" + vals[i] + ", " + vals[j] + "): " + gotF,
+                        posF.length(), gotF.length());
+            }
+        }
     }
 }

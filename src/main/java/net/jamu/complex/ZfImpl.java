@@ -456,25 +456,22 @@ public final class ZfImpl implements Zf {
 
     @Override
     public String toString(String format) {
-        float re_ = re();
-        float im_ = im();
-        // fix negative zero
-        if (re_ == 0.0f) {
-            re_ = 0.0f;
-        }
-        if (im_ == 0.0f) {
-            im_ = 0.0f;
-        }
         StringBuilder buf = new StringBuilder(40);
-        if (re_ >= 0.0f) {
+        if (needsPlus(re())) {
             buf.append("+");
         }
-        buf.append(String.format(format, re_)).append("  ");
-        if (im_ >= 0.0f) {
+        buf.append(String.format(format, re())).append("  ");
+        if (needsPlus(im())) {
             buf.append("+");
         }
-        buf.append(String.format(format, im_)).append("i");
+        buf.append(String.format(format, im())).append("i");
         return buf.toString();
+    }
+
+    // format writes the sign itself, so prepend one only for a positive value;
+    // a negative zero keeps its sign, the branch cuts read it
+    private static boolean needsPlus(float x) {
+        return !Float.isNaN(x) && Math.copySign(1.0f, x) > 0.0f;
     }
 
     @Override
