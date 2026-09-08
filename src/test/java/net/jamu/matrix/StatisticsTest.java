@@ -18,14 +18,17 @@ package net.jamu.matrix;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 import org.junit.Test;
 
 /**
- * Tests for Statistics. The z-score cases use data whose coefficient of
- * variation is of order one.
+ * Tests for Statistics.
  */
 public final class StatisticsTest {
 
+    private static final MathContext MC = new MathContext(60);
     private static final double TOL_D = 1.0e-12;
     private static final float TOL_F = 1.0e-4f;
 
@@ -322,5 +325,190 @@ public final class StatisticsTest {
             }
         }
         return true;
+    }
+
+    // the regimes where the unshifted accumulation used to lose everything;
+    private static final int HARD_N = 200;
+    private static final double TOL_HARD_D = 1.0e-12;
+    private static final float TOL_HARD_F = 1.0e-5f;
+
+    @Test
+    public void testTheReportedVarianceSurvivesASmallCoefficientOfVariation() {
+        for (int e = 0; e >= -9; --e) {
+            double cv = Math.pow(10.0, e);
+            String at = " at cv = " + cv;
+            double[] x = spread(HARD_N, 1.0, cv, 99L);
+            BigDecimal[] o = exactMoments(x);
+            BigDecimal[] of = exactMoments(toFloat(x));
+
+            Statistics.MomentsD mc = new Statistics.MomentsD();
+            Statistics.zscoreColumnsInplace(asColumnD(x), mc);
+            assertRel("MatrixD column variance" + at, o[1], mc.variances.get(0, 0), TOL_HARD_D);
+            assertRel("MatrixD column mean" + at, o[0], mc.means.get(0, 0), TOL_HARD_D);
+
+            Statistics.MomentsD mr = new Statistics.MomentsD();
+            Statistics.zscoreRowsInplace(asRowD(x), mr);
+            assertRel("MatrixD row variance" + at, o[1], mr.variances.get(0, 0), TOL_HARD_D);
+            assertRel("MatrixD row mean" + at, o[0], mr.means.get(0, 0), TOL_HARD_D);
+
+            Statistics.MomentsF fc = new Statistics.MomentsF();
+            Statistics.zscoreColumnsInplace(asColumnF(x), fc);
+            assertRel("MatrixF column variance" + at, of[1], fc.variances.get(0, 0), TOL_HARD_F);
+
+            Statistics.MomentsF fr = new Statistics.MomentsF();
+            Statistics.zscoreRowsInplace(asRowF(x), fr);
+            assertRel("MatrixF row variance" + at, of[1], fr.variances.get(0, 0), TOL_HARD_F);
+        }
+    }
+
+    @Test
+    public void testTheReportedVarianceSurvivesALargeOffset() {
+        for (int e = 0; e <= 12; e += 2) {
+            double center = Math.pow(10.0, e);
+            String at = " at center = " + center;
+            double[] x = spread(HARD_N, center, 1.0, 7L);
+            BigDecimal[] o = exactMoments(x);
+
+            Statistics.MomentsD mc = new Statistics.MomentsD();
+            Statistics.zscoreColumnsInplace(asColumnD(x), mc);
+            assertRel("MatrixD column variance" + at, o[1], mc.variances.get(0, 0), TOL_HARD_D);
+            assertRel("MatrixD column mean" + at, o[0], mc.means.get(0, 0), TOL_HARD_D);
+
+            Statistics.MomentsD mr = new Statistics.MomentsD();
+            Statistics.zscoreRowsInplace(asRowD(x), mr);
+            assertRel("MatrixD row variance" + at, o[1], mr.variances.get(0, 0), TOL_HARD_D);
+        }
+    }
+
+    @Test
+    public void testTheZScoreItselfSurvivesALargeOffset() {
+        // covers the two complex sites, which report no moments
+        double[] xd = spread(HARD_N, 1.0e8, 1.0, 7L);
+        assertUnit("MatrixD", moments(column(Statistics.zscoreColumns(asColumnD(xd)), 0)), 1.0e-6);
+        assertUnit("MatrixD rows", moments(row(Statistics.zscoreRows(asRowD(xd)), 0)), 1.0e-6);
+        ComplexMatrixD cd = Statistics.zscoreColumns(asColumnComplexD(xd));
+        assertUnit("ComplexMatrixD real", moments(complexColumn(cd, 0, true)), 1.0e-6);
+        assertUnit("ComplexMatrixD imag", moments(complexColumn(cd, 0, false)), 1.0e-6);
+
+        double[] xf = spread(HARD_N, 1.0e3, 1.0, 7L);
+        assertUnit("MatrixF", moments(column(Statistics.zscoreColumns(asColumnF(xf)), 0)), 1.0e-2);
+        assertUnit("MatrixF rows", moments(row(Statistics.zscoreRows(asRowF(xf)), 0)), 1.0e-2);
+        ComplexMatrixF cf = Statistics.zscoreColumns(asColumnComplexF(xf));
+        assertUnit("ComplexMatrixF real", moments(complexColumn(cf, 0, true)), 1.0e-2);
+        assertUnit("ComplexMatrixF imag", moments(complexColumn(cf, 0, false)), 1.0e-2);
+    }
+
+    @Test
+    public void testAnOutlierInTheFirstEntryIsHarmless() {
+        // the shift takes its origin from the first entry, so this is its weak spot
+        for (double mag : new double[] { 1.0e0, 1.0e3, 1.0e6, 1.0e9, 1.0e12 }) {
+            String at = " with a first entry of " + mag;
+            double[] x = spread(HARD_N, 1.0, 1.0e-6, 11L);
+            x[0] = mag;
+            BigDecimal[] o = exactMoments(x);
+            Statistics.MomentsD m = new Statistics.MomentsD();
+            Statistics.zscoreColumnsInplace(asColumnD(x), m);
+            assertRel("variance" + at, o[1], m.variances.get(0, 0), 1.0e-10);
+            assertRel("mean" + at, o[0], m.means.get(0, 0), 1.0e-10);
+        }
+    }
+
+    private static double[] spread(int n, double center, double spread, long seed) {
+        java.util.Random r = new java.util.Random(seed);
+        double[] x = new double[n];
+        for (int i = 0; i < n; ++i) {
+            x[i] = center + spread * (2.0 * r.nextDouble() - 1.0);
+        }
+        return x;
+    }
+
+    private static double[] toFloat(double[] x) {
+        double[] y = new double[x.length];
+        for (int i = 0; i < x.length; ++i) {
+            y[i] = (float) x[i];
+        }
+        return y;
+    }
+
+    private static MatrixD asColumnD(double[] x) {
+        MatrixD m = Matrices.createD(x.length, 1);
+        for (int i = 0; i < x.length; ++i) {
+            m.set(i, 0, x[i]);
+        }
+        return m;
+    }
+
+    private static MatrixD asRowD(double[] x) {
+        MatrixD m = Matrices.createD(1, x.length);
+        for (int i = 0; i < x.length; ++i) {
+            m.set(0, i, x[i]);
+        }
+        return m;
+    }
+
+    private static MatrixF asColumnF(double[] x) {
+        MatrixF m = Matrices.createF(x.length, 1);
+        for (int i = 0; i < x.length; ++i) {
+            m.set(i, 0, (float) x[i]);
+        }
+        return m;
+    }
+
+    private static MatrixF asRowF(double[] x) {
+        MatrixF m = Matrices.createF(1, x.length);
+        for (int i = 0; i < x.length; ++i) {
+            m.set(0, i, (float) x[i]);
+        }
+        return m;
+    }
+
+    private static ComplexMatrixD asColumnComplexD(double[] x) {
+        ComplexMatrixD m = Matrices.createComplexD(x.length, 1);
+        for (int i = 0; i < x.length; ++i) {
+            m.set(i, 0, x[i], x[i]);
+        }
+        return m;
+    }
+
+    private static ComplexMatrixF asColumnComplexF(double[] x) {
+        ComplexMatrixF m = Matrices.createComplexF(x.length, 1);
+        for (int i = 0; i < x.length; ++i) {
+            m.set(i, 0, (float) x[i], (float) x[i]);
+        }
+        return m;
+    }
+
+    // mean and population variance, exact, because a two-pass reference in
+    // double is itself only good to 1e-7 at an offset of 1e12
+    private static BigDecimal[] exactMoments(double[] x) {
+        BigDecimal n = new BigDecimal(x.length);
+        BigDecimal sum = BigDecimal.ZERO;
+        for (int i = 0; i < x.length; ++i) {
+            sum = sum.add(new BigDecimal(x[i]));
+        }
+        BigDecimal mean = sum.divide(n, MC);
+        BigDecimal s = BigDecimal.ZERO;
+        for (int i = 0; i < x.length; ++i) {
+            BigDecimal d = new BigDecimal(x[i]).subtract(mean);
+            s = s.add(d.multiply(d));
+        }
+        return new BigDecimal[] { mean, s.divide(n, MC) };
+    }
+
+    private static void assertRel(String what, BigDecimal expected, double actual, double tol) {
+        assertTrue(what + " : expected " + expected.doubleValue() + " but was " + actual,
+                !Double.isNaN(actual) && !Double.isInfinite(actual));
+        if (expected.signum() == 0) {
+            assertEquals(what, 0.0, actual, tol);
+            return;
+        }
+        double err = Math.abs(new BigDecimal(actual).subtract(expected).divide(expected, MC).doubleValue());
+        assertTrue(what + " : expected " + expected.doubleValue() + " but was " + actual + " (relative "
+                + err + ")", err <= tol);
+    }
+
+    private static void assertUnit(String what, double[] meanAndVariance, double tol) {
+        assertEquals(what + " mean", 0.0, meanAndVariance[0], tol);
+        assertEquals(what + " variance", 1.0, meanAndVariance[1], tol);
     }
 }
