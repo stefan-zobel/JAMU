@@ -182,7 +182,7 @@ public final class ExpmTest {
     }
 
     // exp(diag(x, x)) is exactly diag(exp(x), exp(x)); measured worst is
-    // 6.8e-15 in double and 4.3e-6 in single, see TODO.md
+    // 6.8e-15 in double and 4.3e-6 in single
     private static final double[] NEGATIVE_D = { -0.1, -1.0, -5.0, -20.0, -50.0 };
     private static final float[] NEGATIVE_F = { -0.1f, -1.0f, -5.0f, -50.0f };
 
