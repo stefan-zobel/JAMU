@@ -680,7 +680,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
     @Override
     public double normInf() {
         ZdImpl z = new ZdImpl(0.0);
-        double max = 0.0f;
+        double max = 0.0;
         int rows_ = rows;
         int cols_ = cols;
         for (int i = 0; i < rows_; i++) {
