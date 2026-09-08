@@ -359,7 +359,8 @@ public final class Statistics {
      *            z-scored
      * @param moments
      *            optional holder object for the first two moments of each
-     *            column, may be {@code null}
+     *            column, may be {@code null}. The variance is the population
+     *            variance, i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
@@ -400,8 +401,8 @@ public final class Statistics {
                 }
             }
             double y = computeScaledMean(scale, mean);
-            double oneOverSqrtRows = 1.0 / Math.sqrt(rows_);
-            double stddev = patchDev(scale * oneOverSqrtRows * Math.sqrt(sumsquared / rows_ - y * y));
+            double sd = scale * Math.sqrt(sumsquared / rows_ - y * y);
+            double stddev = patchDev(sd);
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 // subtract mean and divide by standard deviation
                 double xi = _a[i];
@@ -410,7 +411,7 @@ public final class Statistics {
             }
             if (moments != null) {
                 moments.means.setUnsafe(0, col, mean);
-                moments.variances.setUnsafe(0, col, stddev * stddev);
+                moments.variances.setUnsafe(0, col, sd * sd);
             }
         }
         return A;
@@ -448,7 +449,8 @@ public final class Statistics {
      *            z-scored
      * @param moments
      *            optional holder object for the first two moments of each
-     *            column, may be {@code null}
+     *            column, may be {@code null}. The variance is the population
+     *            variance, i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
@@ -489,8 +491,8 @@ public final class Statistics {
                 }
             }
             float y = computeScaledMean(scale, mean);
-            float oneOverSqrtRows = (float) (1.0 / Math.sqrt(rows_));
-            float stddev = patchDev(scale * oneOverSqrtRows * (float) Math.sqrt(sumsquared / rows_ - y * y));
+            float sd = scale * (float) Math.sqrt(sumsquared / rows_ - y * y);
+            float stddev = patchDev(sd);
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 // subtract mean and divide by standard deviation
                 float xi = _a[i];
@@ -499,7 +501,7 @@ public final class Statistics {
             }
             if (moments != null) {
                 moments.means.setUnsafe(0, col, mean);
-                moments.variances.setUnsafe(0, col, stddev * stddev);
+                moments.variances.setUnsafe(0, col, sd * sd);
             }
         }
         return A;
@@ -574,7 +576,8 @@ public final class Statistics {
      *            the matrix whose rows contain the observations to be z-scored
      * @param moments
      *            optional holder object for the first two moments of each row,
-     *            may be {@code null}
+     *            may be {@code null}. The variance is the population variance,
+     *            i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
@@ -615,8 +618,8 @@ public final class Statistics {
                 }
             }
             double y = computeScaledMean(scale, mean);
-            double oneOverSqrtCols = 1.0 / Math.sqrt(cols_);
-            double stddev = patchDev(scale * oneOverSqrtCols * Math.sqrt(sumsquared / cols_ - y * y));
+            double sd = scale * Math.sqrt(sumsquared / cols_ - y * y);
+            double stddev = patchDev(sd);
             for (int i = row; i < row + rows_ * cols_; i += rows_) {
                 // subtract mean and divide by standard deviation
                 double xi = _a[i];
@@ -625,7 +628,7 @@ public final class Statistics {
             }
             if (moments != null) {
                 moments.means.setUnsafe(row, 0, mean);
-                moments.variances.setUnsafe(row, 0, stddev * stddev);
+                moments.variances.setUnsafe(row, 0, sd * sd);
             }
         }
         return A;
@@ -662,7 +665,8 @@ public final class Statistics {
      *            the matrix whose rows contain the observations to be z-scored
      * @param moments
      *            optional holder object for the first two moments of each row,
-     *            may be {@code null}
+     *            may be {@code null}. The variance is the population variance,
+     *            i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
@@ -703,8 +707,8 @@ public final class Statistics {
                 }
             }
             float y = computeScaledMean(scale, mean);
-            float oneOverSqrtCols = (float) (1.0 / Math.sqrt(cols_));
-            float stddev = patchDev(scale * oneOverSqrtCols * (float) Math.sqrt(sumsquared / cols_ - y * y));
+            float sd = scale * (float) Math.sqrt(sumsquared / cols_ - y * y);
+            float stddev = patchDev(sd);
             for (int i = row; i < row + rows_ * cols_; i += rows_) {
                 // subtract mean and divide by standard deviation
                 float xi = _a[i];
@@ -713,7 +717,7 @@ public final class Statistics {
             }
             if (moments != null) {
                 moments.means.setUnsafe(row, 0, mean);
-                moments.variances.setUnsafe(row, 0, stddev * stddev);
+                moments.variances.setUnsafe(row, 0, sd * sd);
             }
         }
         return A;
@@ -880,9 +884,8 @@ public final class Statistics {
             //
             double reY = computeScaledMean(reScale, reMean);
             double imY = computeScaledMean(imScale, imMean);
-            double oneOverSqrtRows = 1.0 / Math.sqrt(rows_);
-            double reStddev = patchDev(reScale * oneOverSqrtRows * Math.sqrt(reSumSqr / rows_ - reY * reY));
-            double imStddev = patchDev(imScale * oneOverSqrtRows * Math.sqrt(imSumSqr / rows_ - imY * imY));
+            double reStddev = patchDev(reScale * Math.sqrt(reSumSqr / rows_ - reY * reY));
+            double imStddev = patchDev(imScale * Math.sqrt(imSumSqr / rows_ - imY * imY));
             //
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation
@@ -956,9 +959,8 @@ public final class Statistics {
             //
             float reY = computeScaledMean(reScale, reMean);
             float imY = computeScaledMean(imScale, imMean);
-            float oneOverSqrtRows = (float) (1.0 / Math.sqrt(rows_));
-            float reStddev = patchDev(reScale * oneOverSqrtRows * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
-            float imStddev = patchDev(imScale * oneOverSqrtRows * (float) Math.sqrt(imSumSqr / rows_ - imY * imY));
+            float reStddev = patchDev(reScale * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
+            float imStddev = patchDev(imScale * (float) Math.sqrt(imSumSqr / rows_ - imY * imY));
             //
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation
