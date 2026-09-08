@@ -747,6 +747,21 @@ public interface MatrixD extends MatrixDimensions, MatrixDConduct {
     MatrixD zeroizeSubEpsilonInplace(int k);
 
     /**
+     * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-53</sup> * max</code>
+     * to {@code 0.0}, where {@code max} is the largest finite magnitude in this
+     * matrix and {@code k} is a positive integer {@code >= 1}. Non-finite
+     * elements are left alone and do not contribute to {@code max}.
+     * 
+     * @param k
+     *            positive integer {@code >= 1}
+     * @return this matrix zeroed in-place
+     * @throws IllegalArgumentException
+     *             if {@code k < 1}
+     * @since 1.4.8
+     */
+    MatrixD zeroizeSubEpsilonRelativeInplace(int k);
+
+    /**
      * Set all elements that are either NaN, positive or negative infinity to
      * the respective ersatz value provided by the {@code nanSurrogate},
      * {@code posInfSurrogate} and {@code negInfSurrogate} arguments. This is a

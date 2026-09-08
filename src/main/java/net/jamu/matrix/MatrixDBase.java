@@ -725,6 +725,38 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD zeroizeSubEpsilonRelativeInplace(int k) {
+        if (k < 1) {
+            throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);
+        }
+        double threshold = k * MACH_EPS_DBL * maxFiniteAbs();
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            if (Math.abs(_a[i]) <= threshold) {
+                _a[i] = 0.0;
+            }
+        }
+        return this;
+    }
+
+    // normMaxAbs() answers infinity when one entry is infinite, which would
+    // put every finite entry below the threshold
+    private double maxFiniteAbs() {
+        double max = 0.0;
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            double x = Math.abs(_a[i]);
+            if (x > max && x != Double.POSITIVE_INFINITY) {
+                max = x;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD sanitizeNonFiniteInplace(double nanSurrogate, double posInfSurrogate, double negInfSurrogate) {
         boolean subNan = (nanSurrogate == nanSurrogate);
         boolean subPInf = (posInfSurrogate != Double.POSITIVE_INFINITY);

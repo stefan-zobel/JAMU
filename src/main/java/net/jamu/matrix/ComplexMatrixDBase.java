@@ -761,6 +761,44 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixD zeroizeSubEpsilonRelativeInplace(int k) {
+        if (k < 1) {
+            throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);
+        }
+        double threshold = k * MACH_EPS_DBL * maxFiniteAbs();
+        double[] _a = a;
+        for (int i = 0; i < _a.length; i += 2) {
+            double re = _a[i];
+            double im = _a[i + 1];
+            double abs = (im == 0.0) ? Math.abs(re) : ZdImpl.abs(re, im);
+            if (abs <= threshold) {
+                _a[i] = 0.0;
+                _a[i + 1] = 0.0;
+            }
+        }
+        return this;
+    }
+
+    // normMaxAbs() answers infinity when one entry is infinite, which would
+    // put every finite entry below the threshold
+    private double maxFiniteAbs() {
+        double max = 0.0;
+        double[] _a = a;
+        for (int i = 0; i < _a.length; i += 2) {
+            double re = _a[i];
+            double im = _a[i + 1];
+            double abs = (im == 0.0) ? Math.abs(re) : ZdImpl.abs(re, im);
+            if (abs > max && abs != Double.POSITIVE_INFINITY) {
+                max = abs;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixD sanitizeNonFiniteInplace(double nanSurrogate, double posInfSurrogate,
             double negInfSurrogate) {
         boolean subNan = (nanSurrogate == nanSurrogate);
