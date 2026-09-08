@@ -35,7 +35,7 @@ final class MatrixChain {
         dims[1] = A0.numColumns();
         dims[2] = A1.numColumns();
         for (int i = 3; i < dims.length; ++i) {
-            dims[i] = Ai[i - 3].numColumns(); // "lgtm[java/index-out-of-bounds]"
+            dims[i] = Ai[i - 3].numColumns();
         }
         d = dims;
     }
