@@ -71,9 +71,9 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] _a = a;
         for (int i = 0; i < _a.length; i += 2) {
             double ai = _a[i];
-            double aip1 = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            double aip1 = _a[i + 1];
             _a[i] = ai * alphar - aip1 * alphai;
-            _a[i + 1] = ai * alphai + aip1 * alphar; // "lgtm[java/index-out-of-bounds]"
+            _a[i + 1] = ai * alphai + aip1 * alphar;
         }
         return this;
     }
@@ -94,7 +94,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
             double ai = _a[i];
             double aip1 = _a[i + 1];
             _b[i] = ai * alphar - aip1 * alphai;
-            _b[i + 1] = ai * alphai + aip1 * alphar; // "lgtm[java/index-out-of-bounds]"
+            _b[i + 1] = ai * alphai + aip1 * alphar;
         }
         return B;
     }
@@ -164,7 +164,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _b.length; i += 2) {
             double bi = _b[i];
-            double bip1 = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            double bip1 = _b[i + 1];
             _a[i] += (bi * alphar - bip1 * alphai);
             _a[i + 1] += (bi * alphai + bip1 * alphar);
         }
@@ -195,7 +195,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
                 double bi = _b[i];
                 double bip1 = _b[i + 1];
                 _c[i] = _a[i] + (bi * alphar - bip1 * alphai);
-                _c[i + 1] = _a[i + 1] + (bi * alphai + bip1 * alphar); // "lgtm[java/index-out-of-bounds]"
+                _c[i + 1] = _a[i + 1] + (bi * alphai + bip1 * alphar);
             }
         }
         return C;
@@ -358,7 +358,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] _b = other.getArrayUnsafe();
         for (int i = 0; i < _b.length; i += 2) {
             double bi = _b[i];
-            double bip1 = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            double bip1 = _b[i + 1];
             _a[i] = bi * alphar - bip1 * alphai;
             _a[i + 1] = bi * alphai + bip1 * alphar;
         }
@@ -665,7 +665,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] _a = a;
         for (int i = 0; i < _a.length; i += 2) {
             double re = _a[i];
-            double im = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            double im = _a[i + 1];
             double abs = (im == 0.0) ? Math.abs(re) : ZdImpl.abs(re, im);
             if (abs > max) {
                 max = abs;
@@ -763,7 +763,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
     @Override
     public ComplexMatrixD sanitizeNonFiniteInplace(double nanSurrogate, double posInfSurrogate,
             double negInfSurrogate) {
-        boolean subNan = (nanSurrogate == nanSurrogate); // "lgtm[java/comparison-of-identical-expressions]"
+        boolean subNan = (nanSurrogate == nanSurrogate);
         boolean subPInf = (posInfSurrogate != Double.POSITIVE_INFINITY);
         boolean subNInf = (negInfSurrogate != Double.NEGATIVE_INFINITY);
         if (!subNan && !subPInf && !subNInf) {
@@ -772,7 +772,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         double[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
             double x = _a[i];
-            if (x != x && subNan) { // "lgtm[java/comparison-of-identical-expressions]"
+            if (x != x && subNan) {
                 _a[i] = nanSurrogate;
             } else if (x == Double.POSITIVE_INFINITY && subPInf) {
                 _a[i] = posInfSurrogate;
@@ -1112,9 +1112,10 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
     protected abstract ComplexMatrixD create(int rows, int cols, double[] data);
 
     protected static void checkArrayLength(double[] array, int rows, int cols) {
-        if (array.length != 2 * (rows * cols)) {
+        long needed = 2L * (long) rows * (long) cols;
+        if (array.length != needed) {
             throw new IllegalArgumentException(
-                    "data array has wrong length. Needed : " + 2 * (rows * cols) + " , Is : " + array.length);
+                    "data array has wrong length. Needed : " + needed + " , Is : " + array.length);
         }
     }
 }
