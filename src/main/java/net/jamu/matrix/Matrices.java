@@ -220,7 +220,8 @@ public final class Matrices {
      * @return a {@code MatrixD} of the same shape as {@code data} filled with
      *         the content of {@code data}.
      * @throws IllegalArgumentException
-     *             if not all rows have the same length
+     *             if the array is empty, a row is {@code null}, or not all rows
+     *             have the same length
      */
     public static MatrixD fromJaggedArrayD(double[][] data) {
         double[] copy = Checks.checkJaggedArrayD(data);
@@ -228,6 +229,9 @@ public final class Matrices {
         int _cols = data[0].length;
         for (int row = 0; row < _rows; ++row) {
             double[] row_i = data[row];
+            if (row_i == null) {
+                throw Checks.getNullRowException(row);
+            }
             if (row_i.length != _cols) {
                 Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
             }
@@ -255,8 +259,8 @@ public final class Matrices {
      * @return a {@code ComplexMatrixD} of the same shape as {@code complexdata}
      *         filled with the content of {@code complexdata}.
      * @throws IllegalArgumentException
-     *             if not all rows have the same length or if that length is not
-     *             an even number
+     *             if the array is empty, a row is {@code null}, not all rows
+     *             have the same length, or that length is not an even number
      */
     public static ComplexMatrixD fromJaggedComplexArrayD(double[][] complexdata) {
         double[] copy = Checks.checkJaggedComplexArrayD(complexdata);
@@ -264,6 +268,9 @@ public final class Matrices {
         int _cols = complexdata[0].length;
         for (int row = 0; row < _rows; ++row) {
             double[] row_i = complexdata[row];
+            if (row_i == null) {
+                throw Checks.getNullRowException(row);
+            }
             if (row_i.length != _cols) {
                 Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
             }
@@ -291,7 +298,8 @@ public final class Matrices {
      * @return a {@code MatrixF} of the same shape as {@code data} filled with
      *         the content of {@code data}.
      * @throws IllegalArgumentException
-     *             if not all rows have the same length
+     *             if the array is empty, a row is {@code null}, or not all rows
+     *             have the same length
      */
     public static MatrixF fromJaggedArrayF(float[][] data) {
         float[] copy = Checks.checkJaggedArrayF(data);
@@ -299,6 +307,9 @@ public final class Matrices {
         int _cols = data[0].length;
         for (int row = 0; row < _rows; ++row) {
             float[] row_i = data[row];
+            if (row_i == null) {
+                throw Checks.getNullRowException(row);
+            }
             if (row_i.length != _cols) {
                 Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
             }
@@ -326,8 +337,8 @@ public final class Matrices {
      * @return a {@code ComplexMatrixF} of the same shape as {@code complexdata}
      *         filled with the content of {@code complexdata}.
      * @throws IllegalArgumentException
-     *             if not all rows have the same length or if that length is not
-     *             an even number
+     *             if the array is empty, a row is {@code null}, not all rows
+     *             have the same length, or that length is not an even number
      */
     public static ComplexMatrixF fromJaggedComplexArrayF(float[][] complexdata) {
         float[] copy = Checks.checkJaggedComplexArrayF(complexdata);
@@ -335,6 +346,9 @@ public final class Matrices {
         int _cols = complexdata[0].length;
         for (int row = 0; row < _rows; ++row) {
             float[] row_i = complexdata[row];
+            if (row_i == null) {
+                throw Checks.getNullRowException(row);
+            }
             if (row_i.length != _cols) {
                 Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
             }
