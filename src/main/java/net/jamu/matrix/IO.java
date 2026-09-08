@@ -37,9 +37,10 @@ final class IO {
         checkDatatype(datatype);
         os.write(BIG_ENDIAN);
         os.write(datatype);
-        putIntB(rows, bytes, os);
-        putIntB(cols, bytes, os);
-        return 10L;
+        long sz = 2L;
+        sz += putIntB(rows, bytes, os);
+        sz += putIntB(cols, bytes, os);
+        return sz;
     }
 
     static long writeMatrixHeaderL(int rows, int cols, int datatype,
@@ -47,9 +48,10 @@ final class IO {
         checkDatatype(datatype);
         os.write(LITTLE_ENDIAN);
         os.write(datatype);
-        putIntL(rows, bytes, os);
-        putIntL(cols, bytes, os);
-        return 10L;
+        long sz = 2L;
+        sz += putIntL(rows, bytes, os);
+        sz += putIntL(cols, bytes, os);
+        return sz;
     }
 
     private static void checkDatatype(int datatype) throws IllegalArgumentException {
@@ -146,12 +148,12 @@ final class IO {
     }
 
     private static long putIntB(int x, byte[] bytes /* byte[4] */, OutputStream os) throws IOException {
-        os.write(putIntB(x, bytes));
+        os.write(putIntB(x, bytes), 0, 4);
         return 4L;
     }
 
     private static long putIntL(int x, byte[] bytes /* byte[4] */, OutputStream os) throws IOException {
-        os.write(putIntL(x, bytes));
+        os.write(putIntL(x, bytes), 0, 4);
         return 4L;
     }
 
