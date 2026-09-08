@@ -327,7 +327,7 @@ public final class StatisticsTest {
         return true;
     }
 
-    // the regimes where the unshifted accumulation used to lose everything;
+    // the regimes where the unshifted accumulation used to lose everything
     private static final int HARD_N = 200;
     private static final double TOL_HARD_D = 1.0e-12;
     private static final float TOL_HARD_F = 1.0e-5f;
