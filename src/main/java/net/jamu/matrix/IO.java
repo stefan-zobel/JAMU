@@ -15,6 +15,7 @@
  */
 package net.jamu.matrix;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -67,7 +68,7 @@ final class IO {
     }
 
     static boolean isBigendian(byte[] bytes /* byte[4] */, InputStream is) throws IOException {
-        is.read(bytes, 0, 1);
+        readFully(bytes, 1, is);
         if (BIG_ENDIAN == bytes[0]) {
             return true;
         } else if (LITTLE_ENDIAN == bytes[0]) {
@@ -77,7 +78,7 @@ final class IO {
     }
 
     static boolean isDoubleType(byte[] bytes /* byte[4] */, InputStream is) throws IOException {
-        is.read(bytes, 0, 1);
+        readFully(bytes, 1, is);
         byte type = bytes[0];
         if (DT_DOUBLE == type || DT_COMPLEX_DOUBLE == type) {
             return true;
@@ -98,12 +99,12 @@ final class IO {
     }
 
     static int readRows(boolean bigendian, byte[] bytes /* byte[4] */, InputStream is) throws IOException {
-        is.read(bytes, 0, 4);
+        readFully(bytes, 4, is);
         return bigendian ? getIntB(bytes) : getIntL(bytes);
     }
 
     static int readCols(boolean bigendian, byte[] bytes /* byte[4] */, InputStream is) throws IOException {
-        is.read(bytes, 0, 4);
+        readFully(bytes, 4, is);
         return bigendian ? getIntB(bytes) : getIntL(bytes);
     }
 
@@ -113,7 +114,7 @@ final class IO {
     }
 
     static double getDoubleL(byte[] bytes /* byte[8] */, InputStream is) throws IOException {
-        is.read(bytes, 0, 8);
+        readFully(bytes, 8, is);
         return getDoubleL(bytes);
     }
 
@@ -123,7 +124,7 @@ final class IO {
     }
 
     static double getDoubleB(byte[] bytes /* byte[8] */, InputStream is) throws IOException {
-        is.read(bytes, 0, 8);
+        readFully(bytes, 8, is);
         return getDoubleB(bytes);
     }
 
@@ -133,7 +134,7 @@ final class IO {
     }
 
     static float getFloatL(byte[] bytes /* byte[4] */, InputStream is) throws IOException {
-        is.read(bytes, 0, 4);
+        readFully(bytes, 4, is);
         return getFloatL(bytes);
     }
 
@@ -143,7 +144,7 @@ final class IO {
     }
 
     static float getFloatB(byte[] bytes /* byte[4] */, InputStream is) throws IOException {
-        is.read(bytes, 0, 4);
+        readFully(bytes, 4, is);
         return getFloatB(bytes);
     }
 
@@ -155,6 +156,18 @@ final class IO {
     private static long putIntL(int x, byte[] bytes /* byte[4] */, OutputStream os) throws IOException {
         os.write(putIntL(x, bytes), 0, 4);
         return 4L;
+    }
+
+    // InputStream.read may return fewer bytes than asked for, and -1 at the end
+    private static void readFully(byte[] bytes, int len, InputStream is) throws IOException {
+        int off = 0;
+        while (off < len) {
+            int n = is.read(bytes, off, len - off);
+            if (n < 0) {
+                throw new EOFException("end of stream after " + off + " of " + len + " bytes");
+            }
+            off += n;
+        }
     }
 
     private static byte[] putLongB(long x, byte[] bytes) {

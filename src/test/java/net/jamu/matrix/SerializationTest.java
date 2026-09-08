@@ -21,7 +21,9 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -274,6 +276,104 @@ public final class SerializationTest {
         }
     }
 
+
+    private static final int[] CHUNKS = { 1, 2, 3, 4, 5, 7, 8, 16, 1024 };
+    // 0 and 1 stop inside the two marker bytes, 5 and 9 inside rows and cols,
+    // 10 leaves the header complete with no element, 105 is one byte short
+    private static final int[] KEEP = { 0, 1, 2, 5, 9, 10, 11, 50, 66, 105 };
+
+    @Test
+    public void testTheRoundTripSurvivesShortReads() throws IOException {
+        MatrixD d = Matrices.randomUniformD(4, 3, -1.0, 1.0, 11L);
+        MatrixF f = Matrices.randomUniformF(4, 3, -1.0f, 1.0f, 11L);
+        ComplexMatrixD cd = Matrices.randomUniformComplexD(4, 3, -1.0, 1.0, 11L);
+        ComplexMatrixF cf = Matrices.randomUniformComplexF(4, 3, -1.0f, 1.0f, 11L);
+        for (int k : CHUNKS) {
+            String at = " at chunk " + k;
+            assertBitsD("MatrixD" + at, d.getArrayUnsafe(),
+                    Matrices.deserializeD(new Choppy(bytes(d), k)).getArrayUnsafe());
+            assertBitsF("MatrixF" + at, f.getArrayUnsafe(),
+                    Matrices.deserializeF(new Choppy(bytes(f), k)).getArrayUnsafe());
+            assertBitsD("ComplexMatrixD" + at, cd.getArrayUnsafe(),
+                    Matrices.deserializeComplexD(new Choppy(bytes(cd), k)).getArrayUnsafe());
+            assertBitsF("ComplexMatrixF" + at, cf.getArrayUnsafe(),
+                    Matrices.deserializeComplexF(new Choppy(bytes(cf), k)).getArrayUnsafe());
+        }
+    }
+
+    @Test
+    public void testATruncatedStreamIsRejected() throws IOException {
+        byte[] d = bytes(Matrices.randomUniformD(4, 3, -1.0, 1.0, 11L));
+        assertEquals("the fixture must be 106 bytes", 106, d.length);
+        for (int keep : KEEP) {
+            atEof("MatrixD truncated to " + keep, () -> Matrices.deserializeD(in(cut(d, keep))));
+        }
+        byte[] f = bytes(Matrices.randomUniformF(4, 3, -1.0f, 1.0f, 11L));
+        atEof("MatrixF truncated to 30", () -> Matrices.deserializeF(in(cut(f, 30))));
+        byte[] cd = bytes(Matrices.randomUniformComplexD(4, 3, -1.0, 1.0, 11L));
+        atEof("ComplexMatrixD truncated to 30", () -> Matrices.deserializeComplexD(in(cut(cd, 30))));
+        byte[] cf = bytes(Matrices.randomUniformComplexF(4, 3, -1.0f, 1.0f, 11L));
+        atEof("ComplexMatrixF truncated to 30", () -> Matrices.deserializeComplexF(in(cut(cf, 30))));
+    }
+
+    @Test
+    public void testATruncatedFileIsRejected() throws IOException {
+        Path p = Files.createTempFile("jamu", ".bin");
+        try {
+            MatrixD d = Matrices.randomUniformD(40, 30, -1.0, 1.0, 9L);
+            Matrices.serializeD(d, p);
+            byte[] all = Files.readAllBytes(p);
+            Files.write(p, cut(all, all.length - 1));
+            atEof("a file one byte short", () -> Matrices.deserializeD(p));
+        } finally {
+            Files.deleteIfExists(p);
+        }
+    }
+
+    private static byte[] cut(byte[] all, int keep) {
+        byte[] c = new byte[keep];
+        System.arraycopy(all, 0, c, 0, keep);
+        return c;
+    }
+
+    private static void atEof(String what, Body body) {
+        try {
+            body.run();
+            fail(what + " : expected an EOFException but none was thrown");
+        } catch (EOFException expected) {
+            // the reader noticed that the stream ran out
+        } catch (IOException other) {
+            fail(what + " : expected an EOFException but got " + other);
+        }
+    }
+
+    /** a legal InputStream that hands out at most n bytes per read */
+    private static final class Choppy extends InputStream {
+        private final byte[] b;
+        private final int n;
+        private int pos;
+
+        Choppy(byte[] b, int n) {
+            this.b = b;
+            this.n = n;
+        }
+
+        @Override
+        public int read() {
+            return (pos < b.length) ? (b[pos++] & 0xFF) : -1;
+        }
+
+        @Override
+        public int read(byte[] dst, int off, int len) {
+            if (pos >= b.length) {
+                return -1;
+            }
+            int k = Math.min(Math.min(len, n), b.length - pos);
+            System.arraycopy(b, pos, dst, off, k);
+            pos += k;
+            return k;
+        }
+    }
     private interface Body {
         void run() throws IOException;
     }
