@@ -602,7 +602,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("Matrix exponentiation is only defined for square matrices");
         }
-        return Expm.expmComplexF(this, normMaxAbs());
+        return Expm.expmComplexF(this, norm1());
     }
 
     /**

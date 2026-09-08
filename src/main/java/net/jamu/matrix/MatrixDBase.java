@@ -566,7 +566,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("Matrix exponentiation is only defined for square matrices");
         }
-        return Expm.expmD(this, normMaxAbs());
+        return Expm.expmD(this, norm1());
     }
 
     /**
@@ -619,7 +619,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         double max = Double.NEGATIVE_INFINITY;
         double[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
-            double xi = _a[i];
+            double xi = Math.abs(_a[i]);
             if (xi > max) {
                 max = xi;
             }

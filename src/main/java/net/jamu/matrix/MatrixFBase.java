@@ -566,7 +566,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("Matrix exponentiation is only defined for square matrices");
         }
-        return Expm.expmF(this, normMaxAbs());
+        return Expm.expmF(this, norm1());
     }
 
     /**
@@ -619,7 +619,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         float max = Float.NEGATIVE_INFINITY;
         float[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
-            float xi = _a[i];
+            float xi = Math.abs(_a[i]);
             if (xi > max) {
                 max = xi;
             }
