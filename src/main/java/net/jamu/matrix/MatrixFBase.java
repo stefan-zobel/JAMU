@@ -201,6 +201,62 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      * {@inheritDoc}
      */
     @Override
+    public MatrixF mulBroadcastedVectorInplace(MatrixF B) {
+        Checks.checkSameRows(this, B);
+        float[] _a = a;
+        float[] _b = B.getArrayUnsafe();
+        if (this.numColumns() == B.numColumns()) {
+            for (int i = 0; i < _a.length; ++i) {
+                _a[i] *= _b[i];
+            }
+            return this;
+        }
+        if (B.numColumns() == 1) {
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                for (int row = 0; row < rows_; ++row) {
+                    _a[idx(row, col)] *= _b[row];
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameColsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixF divBroadcastedVectorInplace(MatrixF B) {
+        Checks.checkSameRows(this, B);
+        float[] _a = a;
+        float[] _b = B.getArrayUnsafe();
+        if (this.numColumns() == B.numColumns()) {
+            for (int i = 0; i < _a.length; ++i) {
+                _a[i] /= _b[i];
+            }
+            return this;
+        }
+        if (B.numColumns() == 1) {
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                for (int row = 0; row < rows_; ++row) {
+                    _a[idx(row, col)] /= _b[row];
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameColsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixF mult(MatrixF B, MatrixF C) {
         return mult(1.0f, B, C);
     }
@@ -1144,6 +1200,22 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     @Override
     public MatrixF plusBroadcastedVector(MatrixF B) {
         return copy().addBroadcastedVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixF mulBroadcastedVector(MatrixF B) {
+        return copy().mulBroadcastedVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixF divBroadcastedVector(MatrixF B) {
+        return copy().divBroadcastedVectorInplace(B);
     }
 
     /**

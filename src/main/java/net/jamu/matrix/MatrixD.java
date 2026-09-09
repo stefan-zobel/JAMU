@@ -740,6 +740,49 @@ public interface MatrixD extends MatrixDimensions, MatrixDConduct {
     MatrixD addBroadcastedVectorInplace(MatrixD B);
 
     /**
+     * If {@code B} is a column vector with the same number of rows as this
+     * matrix a "stretched" version of {@code B} with a compatible number of
+     * columns (where the "additional" columns are simple copies of the original
+     * {@code B} column vector) gets multiplied into this matrix inplace,
+     * elementwise. If {@code B}'s dimension is the same as the dimension of
+     * this matrix this operation is the elementwise (Hadamard) product of this
+     * matrix and {@code B}. Any other dimension of {@code B} is treated as a
+     * mismatch and results in an IndexOutOfBoundsException.
+     * 
+     * @param B
+     *            a column vector with dimension {@code (this.numRows() x 1)}
+     * @return this matrix (mutated)
+     * @throws IndexOutOfBoundsException
+     *             if the dimension of {@code B} doesn't match in the sense
+     *             described above
+     * @since 1.4.9
+     */
+    MatrixD mulBroadcastedVectorInplace(MatrixD B);
+
+    /**
+     * If {@code B} is a column vector with the same number of rows as this
+     * matrix this matrix gets divided inplace, elementwise, by a "stretched"
+     * version of {@code B} with a compatible number of columns (where the
+     * "additional" columns are simple copies of the original {@code B} column
+     * vector). If {@code B}'s dimension is the same as the dimension of this
+     * matrix this operation is the elementwise division of this matrix by
+     * {@code B}. Any other dimension of {@code B} is treated as a mismatch and
+     * results in an IndexOutOfBoundsException.
+     * <p>
+     * Division by zero is not checked for. It follows IEEE 754 and yields an
+     * infinity or a NaN like any other double division.
+     * 
+     * @param B
+     *            a column vector with dimension {@code (this.numRows() x 1)}
+     * @return this matrix (mutated)
+     * @throws IndexOutOfBoundsException
+     *             if the dimension of {@code B} doesn't match in the sense
+     *             described above
+     * @since 1.4.9
+     */
+    MatrixD divBroadcastedVectorInplace(MatrixD B);
+
+    /**
      * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-53</sup></code>
      * ({@code k} times the machine epsilon for doubles) to {@code 0.0} where
      * {@code k} is a positive integer {@code >= 1}.

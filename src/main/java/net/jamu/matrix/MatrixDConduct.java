@@ -400,6 +400,51 @@ public interface MatrixDConduct {
     MatrixD plusBroadcastedVector(MatrixD B);
 
     /**
+     * If {@code B} is a column vector with the same number of rows as this
+     * matrix a copy of this matrix gets multiplied elementwise by a "stretched"
+     * version of {@code B} with a compatible number of columns (where the
+     * "additional" columns are simple copies of the original {@code B} column
+     * vector). If {@code B}'s dimension is the same as the dimension of this
+     * matrix this operation behaves exactly like {@link #hadamard(MatrixD)}.
+     * Any other dimension of {@code B} is treated as a mismatch and results in
+     * an IndexOutOfBoundsException.
+     * 
+     * @param B
+     *            a column vector with dimension {@code (this.numRows() x 1)}
+     * @return a copy of this matrix multiplied by the column vector {@code B}
+     *         as described above
+     * @throws IndexOutOfBoundsException
+     *             if the dimension of {@code B} doesn't match in the sense
+     *             described above
+     * @since 1.4.9
+     */
+    MatrixD mulBroadcastedVector(MatrixD B);
+
+    /**
+     * If {@code B} is a column vector with the same number of rows as this
+     * matrix a copy of this matrix gets divided elementwise by a "stretched"
+     * version of {@code B} with a compatible number of columns (where the
+     * "additional" columns are simple copies of the original {@code B} column
+     * vector). If {@code B}'s dimension is the same as the dimension of this
+     * matrix this operation is the elementwise division of this matrix by
+     * {@code B}. Any other dimension of {@code B} is treated as a mismatch and
+     * results in an IndexOutOfBoundsException.
+     * <p>
+     * Division by zero is not checked for. It follows IEEE 754 and yields an
+     * infinity or a NaN like any other double division.
+     * 
+     * @param B
+     *            a column vector with dimension {@code (this.numRows() x 1)}
+     * @return a copy of this matrix divided by the column vector {@code B} as
+     *         described above
+     * @throws IndexOutOfBoundsException
+     *             if the dimension of {@code B} doesn't match in the sense
+     *             described above
+     * @since 1.4.9
+     */
+    MatrixD divBroadcastedVector(MatrixD B);
+
+    /**
      * Reshapes this matrix into a new matrix of dimension {@code rows x cols}
      * where the elements in this matrix are read in Fortran-style column-major
      * order. For example, the {@code 3 x 2} matrix {@code A}
