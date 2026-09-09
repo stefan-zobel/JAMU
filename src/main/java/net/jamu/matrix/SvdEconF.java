@@ -33,8 +33,8 @@ public final class SvdEconF extends SvdF {
     /**
      * The left singular vectors (column-wise).
      * 
-     * @return reduced m-by-r semi-orthogonal matrix where {@code r} is the rank
-     *         of {@code A}
+     * @return reduced m-by-k semi-orthogonal matrix where {@code k} is
+     *         {@code min(m, n)}
      */
     @Override
     public MatrixF getU() {
@@ -47,8 +47,8 @@ public final class SvdEconF extends SvdF {
      * Note that the algorithm returns <code>V<sup>T</sup></code>, not
      * {@code V}.
      * 
-     * @return reduced n-by-r semi-orthogonal matrix where {@code r} is the rank
-     *         of {@code A}
+     * @return reduced k-by-n semi-orthogonal matrix where {@code k} is
+     *         {@code min(m, n)}
      */
     @Override
     public MatrixF getVt() {
@@ -56,10 +56,10 @@ public final class SvdEconF extends SvdF {
     }
 
     /**
-     * The non-zero singular values in descending order.
+     * The singular values in descending order, including any that are zero.
      * 
-     * @return array of size {@code r <= min(m, n)} containing the non-zero
-     *         singular values in descending order
+     * @return array of size {@code min(m, n)} containing the singular values in
+     *         descending order
      */
     @Override
     public float[] getS() {
