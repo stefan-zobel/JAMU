@@ -126,7 +126,7 @@ public final class MatrixAbsTest {
         for (int i = 0; i < a.length; i += 2) {
             // the sign bit is clear for every nonnegative value, -0.0 included
             assertTrue("element " + (i / 2) + " carries a sign, " + a[i], Double.doubleToLongBits(a[i]) >= 0L);
-            same("element " + (i / 2) + " im", 0.0, a[i + 1]);
+            same("element " + (i / 2) + " im", 0.0, a[i + 1]); // codeql[java/index-out-of-bounds]
         }
         same("|(-3,4)| re", 5.0, abs.get(0, 1).re());
         same("|(2,-0.0)| re", 2.0, abs.get(1, 0).re());
