@@ -299,7 +299,6 @@ public final class ZeroizeTest {
         double[] a = m.getArrayUnsafe();
         int c = 0;
         for (int i = 0; i < a.length; i += 2) {
-            // codeql[java/index-out-of-bounds]
             if (a[i] != 0.0 || a[i + 1] != 0.0) {
                 ++c;
             }
@@ -311,7 +310,6 @@ public final class ZeroizeTest {
         float[] a = m.getArrayUnsafe();
         int c = 0;
         for (int i = 0; i < a.length; i += 2) {
-            // codeql[java/index-out-of-bounds]
             if (a[i] != 0.0f || a[i + 1] != 0.0f) {
                 ++c;
             }
@@ -331,7 +329,6 @@ public final class ZeroizeTest {
         double[] a = m.getArrayUnsafe();
         double max = 0.0;
         for (int i = 0; i < a.length; i += 2) {
-            // codeql[java/index-out-of-bounds]
             max = Math.max(max, Math.hypot(a[i], a[i + 1]));
         }
         return max;

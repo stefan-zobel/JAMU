@@ -758,7 +758,6 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      */
     @Override
     public MatrixF sanitizeNonFiniteInplace(float nanSurrogate, float posInfSurrogate, float negInfSurrogate) {
-        // codeql[java/comparison-of-identical-expressions]
         boolean subNan = (nanSurrogate == nanSurrogate);
         boolean subPInf = (posInfSurrogate != Float.POSITIVE_INFINITY);
         boolean subNInf = (negInfSurrogate != Float.NEGATIVE_INFINITY);
@@ -768,7 +767,6 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         float[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
             float x = _a[i];
-            // codeql[java/comparison-of-identical-expressions]
             if (x != x && subNan) {
                 _a[i] = nanSurrogate;
             } else if (x == Float.POSITIVE_INFINITY && subPInf) {

@@ -277,7 +277,6 @@ public final class Matrices {
             for (int col = 0; col < row_i.length; col += 2) {
                 int i = 2 * ((col / 2) * _rows + row);
                 copy[i] = row_i[col];
-                // codeql[java/index-out-of-bounds]
                 copy[i + 1] = row_i[col + 1];
 
             }
@@ -356,7 +355,6 @@ public final class Matrices {
             for (int col = 0; col < row_i.length; col += 2) {
                 int i = 2 * ((col / 2) * _rows + row);
                 copy[i] = row_i[col];
-                // codeql[java/index-out-of-bounds]
                 copy[i + 1] = row_i[col + 1];
 
             }
@@ -2567,10 +2565,8 @@ public final class Matrices {
         double d1 = 0.0;
         for (int i = 0; i < _a.length; i += 2) {
             double rea = _a[i];
-            // codeql[java/index-out-of-bounds]
             double ima = _a[i + 1];
             double reb = _b[i];
-            // codeql[java/index-out-of-bounds]
             double imb = _b[i + 1];
             if (rea != reb || ima != imb) {
                 d1 += ZdImpl.abs(rea - reb, ima - imb);
@@ -2611,10 +2607,8 @@ public final class Matrices {
         for (int i = 0; i < _a.length; i += 2) {
             // use higher precision internally
             double rea = _a[i];
-            // codeql[java/index-out-of-bounds]
             double ima = _a[i + 1];
             double reb = _b[i];
-            // codeql[java/index-out-of-bounds]
             double imb = _b[i + 1];
             if (rea != reb || ima != imb) {
                 d1 += ZdImpl.abs(rea - reb, ima - imb);
@@ -2996,10 +2990,8 @@ public final class Matrices {
         double[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _a.length; i += 2) {
             double a_re = _a[i];
-            // codeql[java/index-out-of-bounds]
             double a_im = _a[i + 1];
             double b_re = _b[i];
-            // codeql[java/index-out-of-bounds]
             double b_im = _b[i + 1];
             if (a_re != b_re || a_im != b_im) {
                 double diff = ZdImpl.abs(a_re - b_re, a_im - b_im);
@@ -3129,10 +3121,8 @@ public final class Matrices {
         float[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _a.length; i += 2) {
             float a_re = _a[i];
-            // codeql[java/index-out-of-bounds]
             float a_im = _a[i + 1];
             float b_re = _b[i];
-            // codeql[java/index-out-of-bounds]
             float b_im = _b[i + 1];
             if (a_re != b_re || a_im != b_im) {
                 double diff = ZfImpl.abs(a_re - b_re, a_im - b_im);

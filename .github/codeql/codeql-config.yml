@@ -1,0 +1,15 @@
+name: "JAMU CodeQL config"
+
+queries:
+  - uses: security-and-quality
+
+# Both are quality queries, in no security suite. They only ever fire on two
+# deliberate idioms, and inline suppression comments have no effect here.
+query-filters:
+  # a[i + 1] in a stride 2 loop over a.length: the interleaved complex layout,
+  # whose length is even by construction
+  - exclude:
+      id: java/index-out-of-bounds
+  # the intended NaN checks, nanSurrogate == nanSurrogate and x != x
+  - exclude:
+      id: java/comparison-of-identical-expressions
