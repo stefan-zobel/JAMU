@@ -220,7 +220,8 @@ public final class Matrices {
      * @return a {@code MatrixD} of the same shape as {@code data} filled with
      *         the content of {@code data}.
      * @throws IllegalArgumentException
-     *             if not all rows have the same length
+     *             if the array is empty, a row is {@code null}, or not all rows
+     *             have the same length
      */
     public static MatrixD fromJaggedArrayD(double[][] data) {
         double[] copy = Checks.checkJaggedArrayD(data);
@@ -228,6 +229,9 @@ public final class Matrices {
         int _cols = data[0].length;
         for (int row = 0; row < _rows; ++row) {
             double[] row_i = data[row];
+            if (row_i == null) {
+                throw Checks.getNullRowException(row);
+            }
             if (row_i.length != _cols) {
                 Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
             }
@@ -255,8 +259,8 @@ public final class Matrices {
      * @return a {@code ComplexMatrixD} of the same shape as {@code complexdata}
      *         filled with the content of {@code complexdata}.
      * @throws IllegalArgumentException
-     *             if not all rows have the same length or if that length is not
-     *             an even number
+     *             if the array is empty, a row is {@code null}, not all rows
+     *             have the same length, or that length is not an even number
      */
     public static ComplexMatrixD fromJaggedComplexArrayD(double[][] complexdata) {
         double[] copy = Checks.checkJaggedComplexArrayD(complexdata);
@@ -264,13 +268,16 @@ public final class Matrices {
         int _cols = complexdata[0].length;
         for (int row = 0; row < _rows; ++row) {
             double[] row_i = complexdata[row];
+            if (row_i == null) {
+                throw Checks.getNullRowException(row);
+            }
             if (row_i.length != _cols) {
                 Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
             }
             for (int col = 0; col < row_i.length; col += 2) {
                 int i = 2 * ((col / 2) * _rows + row);
                 copy[i] = row_i[col];
-                copy[i + 1] = row_i[col + 1]; // "lgtm[java/index-out-of-bounds]"
+                copy[i + 1] = row_i[col + 1];
 
             }
         }
@@ -291,7 +298,8 @@ public final class Matrices {
      * @return a {@code MatrixF} of the same shape as {@code data} filled with
      *         the content of {@code data}.
      * @throws IllegalArgumentException
-     *             if not all rows have the same length
+     *             if the array is empty, a row is {@code null}, or not all rows
+     *             have the same length
      */
     public static MatrixF fromJaggedArrayF(float[][] data) {
         float[] copy = Checks.checkJaggedArrayF(data);
@@ -299,6 +307,9 @@ public final class Matrices {
         int _cols = data[0].length;
         for (int row = 0; row < _rows; ++row) {
             float[] row_i = data[row];
+            if (row_i == null) {
+                throw Checks.getNullRowException(row);
+            }
             if (row_i.length != _cols) {
                 Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
             }
@@ -326,8 +337,8 @@ public final class Matrices {
      * @return a {@code ComplexMatrixF} of the same shape as {@code complexdata}
      *         filled with the content of {@code complexdata}.
      * @throws IllegalArgumentException
-     *             if not all rows have the same length or if that length is not
-     *             an even number
+     *             if the array is empty, a row is {@code null}, not all rows
+     *             have the same length, or that length is not an even number
      */
     public static ComplexMatrixF fromJaggedComplexArrayF(float[][] complexdata) {
         float[] copy = Checks.checkJaggedComplexArrayF(complexdata);
@@ -335,13 +346,16 @@ public final class Matrices {
         int _cols = complexdata[0].length;
         for (int row = 0; row < _rows; ++row) {
             float[] row_i = complexdata[row];
+            if (row_i == null) {
+                throw Checks.getNullRowException(row);
+            }
             if (row_i.length != _cols) {
                 Checks.throwInconsistentRowLengths(_cols, row, row_i.length);
             }
             for (int col = 0; col < row_i.length; col += 2) {
                 int i = 2 * ((col / 2) * _rows + row);
                 copy[i] = row_i[col];
-                copy[i + 1] = row_i[col + 1]; // "lgtm[java/index-out-of-bounds]"
+                copy[i + 1] = row_i[col + 1];
 
             }
         }
@@ -2551,7 +2565,7 @@ public final class Matrices {
         double d1 = 0.0;
         for (int i = 0; i < _a.length; i += 2) {
             double rea = _a[i];
-            double ima = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            double ima = _a[i + 1];
             double reb = _b[i];
             double imb = _b[i + 1];
             if (rea != reb || ima != imb) {
@@ -2593,9 +2607,9 @@ public final class Matrices {
         for (int i = 0; i < _a.length; i += 2) {
             // use higher precision internally
             double rea = _a[i];
-            double ima = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            double ima = _a[i + 1];
             double reb = _b[i];
-            double imb = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            double imb = _b[i + 1];
             if (rea != reb || ima != imb) {
                 d1 += ZdImpl.abs(rea - reb, ima - imb);
             }
@@ -2976,9 +2990,9 @@ public final class Matrices {
         double[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _a.length; i += 2) {
             double a_re = _a[i];
-            double a_im = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            double a_im = _a[i + 1];
             double b_re = _b[i];
-            double b_im = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            double b_im = _b[i + 1];
             if (a_re != b_re || a_im != b_im) {
                 double diff = ZdImpl.abs(a_re - b_re, a_im - b_im);
                 if (!((diff <= relTol * Math.max(ZdImpl.abs(a_re, a_im), ZdImpl.abs(b_re, b_im)))
@@ -3107,9 +3121,9 @@ public final class Matrices {
         float[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _a.length; i += 2) {
             float a_re = _a[i];
-            float a_im = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            float a_im = _a[i + 1];
             float b_re = _b[i];
-            float b_im = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            float b_im = _b[i + 1];
             if (a_re != b_re || a_im != b_im) {
                 double diff = ZfImpl.abs(a_re - b_re, a_im - b_im);
                 if (!((diff <= relTol * Math.max(ZfImpl.abs(a_re, a_im), ZfImpl.abs(b_re, b_im)))
@@ -3159,7 +3173,7 @@ public final class Matrices {
     public static int numericalRank(MatrixD A, double tol) {
         tol = checkTol(tol, DimensionsBase.MACH_EPS_DBL);
         double[] sigma = A.singularValues();
-        if (sigma[0] <= DimensionsBase.MACH_EPS_DBL) {
+        if (!(sigma[0] > 0.0)) {
             return 0;
         }
         return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
@@ -3203,7 +3217,7 @@ public final class Matrices {
     public static int numericalRank(MatrixF A, float tol) {
         tol = (float) checkTol(tol, DimensionsBase.MACH_EPS_FLT);
         float[] sigma = A.singularValues();
-        if (sigma[0] <= DimensionsBase.MACH_EPS_FLT) {
+        if (!(sigma[0] > 0.0f)) {
             return 0;
         }
         return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
@@ -3247,7 +3261,7 @@ public final class Matrices {
     public static int numericalRank(ComplexMatrixD A, double tol) {
         tol = checkTol(tol, DimensionsBase.MACH_EPS_DBL);
         double[] sigma = A.singularValues();
-        if (sigma[0] <= DimensionsBase.MACH_EPS_DBL) {
+        if (!(sigma[0] > 0.0)) {
             return 0;
         }
         return numpyRank(A.numRows(), A.numColumns(), sigma, tol);
@@ -3291,7 +3305,7 @@ public final class Matrices {
     public static int numericalRank(ComplexMatrixF A, float tol) {
         tol = (float) checkTol(tol, DimensionsBase.MACH_EPS_FLT);
         float[] sigma = A.singularValues();
-        if (sigma[0] <= DimensionsBase.MACH_EPS_FLT) {
+        if (!(sigma[0] > 0.0f)) {
             return 0;
         }
         return numpyRank(A.numRows(), A.numColumns(), sigma, tol);

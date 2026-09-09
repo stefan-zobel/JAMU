@@ -71,9 +71,9 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         float[] _a = a;
         for (int i = 0; i < _a.length; i += 2) {
             float ai = _a[i];
-            float aip1 = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            float aip1 = _a[i + 1];
             _a[i] = ai * alphar - aip1 * alphai;
-            _a[i + 1] = ai * alphai + aip1 * alphar; // "lgtm[java/index-out-of-bounds]"
+            _a[i + 1] = ai * alphai + aip1 * alphar;
         }
         return this;
     }
@@ -94,7 +94,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
             float ai = _a[i];
             float aip1 = _a[i + 1];
             _b[i] = ai * alphar - aip1 * alphai;
-            _b[i + 1] = ai * alphai + aip1 * alphar; // "lgtm[java/index-out-of-bounds]"
+            _b[i + 1] = ai * alphai + aip1 * alphar;
         }
         return B;
     }
@@ -164,7 +164,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         float[] _b = B.getArrayUnsafe();
         for (int i = 0; i < _b.length; i += 2) {
             float bi = _b[i];
-            float bip1 = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            float bip1 = _b[i + 1];
             _a[i] += (bi * alphar - bip1 * alphai);
             _a[i + 1] += (bi * alphai + bip1 * alphar);
         }
@@ -195,7 +195,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
                 float bi = _b[i];
                 float bip1 = _b[i + 1];
                 _c[i] = _a[i] + (bi * alphar - bip1 * alphai);
-                _c[i + 1] = _a[i + 1] + (bi * alphai + bip1 * alphar); // "lgtm[java/index-out-of-bounds]"
+                _c[i + 1] = _a[i + 1] + (bi * alphai + bip1 * alphar);
             }
         }
         return C;
@@ -358,7 +358,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         float[] _b = other.getArrayUnsafe();
         for (int i = 0; i < _b.length; i += 2) {
             float bi = _b[i];
-            float bip1 = _b[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            float bip1 = _b[i + 1];
             _a[i] = bi * alphar - bip1 * alphai;
             _a[i + 1] = bi * alphai + bip1 * alphar;
         }
@@ -575,9 +575,6 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixF pseudoInv() {
-        if (this.isSquareMatrix()) {
-            return inv(create(rows, cols));
-        }
         SvdComplexF svd = svd(true);
         float tol = MACH_EPS_FLT * Math.max(rows, cols) * svd.norm2();
         float[] sigma = svd.getS();
@@ -605,7 +602,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("Matrix exponentiation is only defined for square matrices");
         }
-        return Expm.expmComplexF(this, normMaxAbs());
+        return Expm.expmComplexF(this, norm1());
     }
 
     /**
@@ -668,7 +665,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         float[] _a = a;
         for (int i = 0; i < _a.length; i += 2) {
             float re = _a[i];
-            float im = _a[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            float im = _a[i + 1];
             float abs = (im == 0.0f) ? Math.abs(re) : ZfImpl.abs(re, im);
             if (abs > max) {
                 max = abs;
@@ -764,8 +761,46 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      * {@inheritDoc}
      */
     @Override
+    public ComplexMatrixF zeroizeSubEpsilonRelativeInplace(int k) {
+        if (k < 1) {
+            throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);
+        }
+        float threshold = k * MACH_EPS_FLT * maxFiniteAbs();
+        float[] _a = a;
+        for (int i = 0; i < _a.length; i += 2) {
+            float re = _a[i];
+            float im = _a[i + 1];
+            float abs = (im == 0.0f) ? Math.abs(re) : ZfImpl.abs(re, im);
+            if (abs <= threshold) {
+                _a[i] = 0.0f;
+                _a[i + 1] = 0.0f;
+            }
+        }
+        return this;
+    }
+
+    // normMaxAbs() answers infinity when one entry is infinite, which would
+    // put every finite entry below the threshold
+    private float maxFiniteAbs() {
+        float max = 0.0f;
+        float[] _a = a;
+        for (int i = 0; i < _a.length; i += 2) {
+            float re = _a[i];
+            float im = _a[i + 1];
+            float abs = (im == 0.0f) ? Math.abs(re) : ZfImpl.abs(re, im);
+            if (abs > max && abs != Float.POSITIVE_INFINITY) {
+                max = abs;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ComplexMatrixF sanitizeNonFiniteInplace(float nanSurrogate, float posInfSurrogate, float negInfSurrogate) {
-        boolean subNan = (nanSurrogate == nanSurrogate); // "lgtm[java/comparison-of-identical-expressions]"
+        boolean subNan = (nanSurrogate == nanSurrogate);
         boolean subPInf = (posInfSurrogate != Float.POSITIVE_INFINITY);
         boolean subNInf = (negInfSurrogate != Float.NEGATIVE_INFINITY);
         if (!subNan && !subPInf && !subNInf) {
@@ -774,7 +809,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         float[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
             float x = _a[i];
-            if (x != x && subNan) { // "lgtm[java/comparison-of-identical-expressions]"
+            if (x != x && subNan) {
                 _a[i] = nanSurrogate;
             } else if (x == Float.POSITIVE_INFINITY && subPInf) {
                 _a[i] = posInfSurrogate;
@@ -1039,15 +1074,14 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         float[] b_ = m.getArrayUnsafe();
         for (int i = 0; i < b_.length; i += 2) {
             float re = b_[i];
-            float im = b_[i + 1]; // "lgtm[java/index-out-of-bounds]"
+            float im = b_[i + 1];
             // nano-optimize
             if (im == 0.0f) {
-                if (re < 0.0f) {
-                    b_[i] = -re;
-                }
+                b_[i] = Math.abs(re);
+                b_[i + 1] = 0.0f;
             } else {
                 b_[i] = ZfImpl.abs(re, im);
-                b_[i + 1] = 0.0f; // "lgtm[java/index-out-of-bounds]"
+                b_[i + 1] = 0.0f;
             }
         }
         return m;
@@ -1115,9 +1149,10 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     protected abstract ComplexMatrixF create(int rows, int cols, float[] data);
 
     protected static void checkArrayLength(float[] array, int rows, int cols) {
-        if (array.length != 2 * (rows * cols)) {
+        long needed = 2L * (long) rows * (long) cols;
+        if (array.length != needed) {
             throw new IllegalArgumentException(
-                    "data array has wrong length. Needed : " + 2 * (rows * cols) + " , Is : " + array.length);
+                    "data array has wrong length. Needed : " + needed + " , Is : " + array.length);
         }
     }
 }

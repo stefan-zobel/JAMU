@@ -48,8 +48,8 @@ jobs:
       with:
         languages: ${{ matrix.language }}
 
-        # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-        queries: security-and-quality
+        # the query suite and the excluded queries live in the config file
+        config-file: ./.github/codeql/codeql-config.yml
 
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).

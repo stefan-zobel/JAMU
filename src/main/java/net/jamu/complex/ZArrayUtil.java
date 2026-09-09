@@ -248,30 +248,24 @@ public final class ZArrayUtil {
             return 0.0;
         }
         checkEvenLength(a);
+        // the overflow resistant loop from MatrixDBase.normF()
         double scale = 0.0;
-        for (int i = 0; i < a.length; i += 2) {
-            double xr = a[i];
-            double xi = a[i + 1]; // "lgtm[java/index-out-of-bounds]"
-            if (xr != 0.0 || xi != 0.0) {
-                scale = Math.max(scale, Math.abs(xr) + Math.abs(xi));
-            }
-        }
-        if (scale == 0.0) {
-            return 0.0;
-        }
-        while (scale <= 1.1) {
-            scale = scale * 1000.0;
-        }
-        scale = 1.0 / scale;
-        double sumsquared = 0.0;
+        double sumsquared = 1.0;
         for (int i = 0; i < a.length; ++i) {
-            double x = a[i];
-            if (x != 0.0) {
-                double scaled = scale * x;
-                sumsquared += (scaled * scaled);
+            double xi = a[i];
+            if (xi != 0.0) {
+                double absxi = Math.abs(xi);
+                if (scale < absxi) {
+                    double unsquared = scale / absxi;
+                    sumsquared = 1.0 + sumsquared * (unsquared * unsquared);
+                    scale = absxi;
+                } else {
+                    double unsquared = absxi / scale;
+                    sumsquared = sumsquared + (unsquared * unsquared);
+                }
             }
         }
-        return Math.sqrt(sumsquared) / scale;
+        return scale * Math.sqrt(sumsquared);
     }
 
     /**
@@ -288,30 +282,24 @@ public final class ZArrayUtil {
             return 0.0f;
         }
         checkEvenLength(a);
+        // the overflow resistant loop from MatrixFBase.normF()
         double scale = 0.0;
-        for (int i = 0; i < a.length; i += 2) {
-            double xr = a[i];
-            double xi = a[i + 1]; // "lgtm[java/index-out-of-bounds]"
-            if (xr != 0.0 || xi != 0.0) {
-                scale = Math.max(scale, Math.abs(xr) + Math.abs(xi));
-            }
-        }
-        if (scale == 0.0) {
-            return 0.0f;
-        }
-        while (scale <= 1.1) {
-            scale = scale * 1000.0;
-        }
-        scale = 1.0 / scale;
-        double sumsquared = 0.0;
+        double sumsquared = 1.0;
         for (int i = 0; i < a.length; ++i) {
-            double x = a[i];
-            if (x != 0.0) {
-                double scaled = scale * x;
-                sumsquared += (scaled * scaled);
+            double xi = a[i];
+            if (xi != 0.0) {
+                double absxi = Math.abs(xi);
+                if (scale < absxi) {
+                    double unsquared = scale / absxi;
+                    sumsquared = 1.0 + sumsquared * (unsquared * unsquared);
+                    scale = absxi;
+                } else {
+                    double unsquared = absxi / scale;
+                    sumsquared = sumsquared + (unsquared * unsquared);
+                }
             }
         }
-        return (float) (Math.sqrt(sumsquared) / scale);
+        return (float) (scale * Math.sqrt(sumsquared));
     }
 
     private static void checkEvenLength(float[] a) {

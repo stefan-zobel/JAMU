@@ -514,7 +514,9 @@ public interface MatrixD extends MatrixDimensions, MatrixDConduct {
     MatrixD solve(MatrixD B, MatrixD X);
 
     /**
-     * Matrix inverse for quadratic matrices.
+     * Matrix inverse for quadratic matrices. No condition estimation is
+     * done: a numerically singular matrix yields a meaningless result rather
+     * than an exception.
      * 
      * @param inverse
      *            matrix where the inverse is stored. Must have the same
@@ -530,7 +532,8 @@ public interface MatrixD extends MatrixDimensions, MatrixDConduct {
     MatrixD inv(MatrixD inverse);
 
     /**
-     * Compute the Moore-Penrose pseudoinverse.
+     * Compute the Moore-Penrose pseudoinverse. Uses the SVD; for an
+     * invertible square matrix {@link #inverse()} is faster.
      * 
      * @return the Moore-Penrose Pseudo-Inverse
      * @throws NotConvergedException
@@ -742,6 +745,21 @@ public interface MatrixD extends MatrixDimensions, MatrixDConduct {
      *             if {@code k < 1}
      */
     MatrixD zeroizeSubEpsilonInplace(int k);
+
+    /**
+     * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-53</sup> * max</code>
+     * to {@code 0.0}, where {@code max} is the largest finite magnitude in this
+     * matrix and {@code k} is a positive integer {@code >= 1}. Non-finite
+     * elements are left alone and do not contribute to {@code max}.
+     * 
+     * @param k
+     *            positive integer {@code >= 1}
+     * @return this matrix zeroed in-place
+     * @throws IllegalArgumentException
+     *             if {@code k < 1}
+     * @since 1.4.8
+     */
+    MatrixD zeroizeSubEpsilonRelativeInplace(int k);
 
     /**
      * Set all elements that are either NaN, positive or negative infinity to

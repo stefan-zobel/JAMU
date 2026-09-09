@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, 2025 Stefan Zobel
+ * Copyright 2018, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,18 @@ package net.jamu.complex;
 
 /**
  * A mutable single-precision complex number.
+ * <p>
+ * Infinity keeps its direction (C99 Annex G): only a result that has none
+ * collapses to {@link #Inf()} - the inverse of zero, a quotient by zero, a
+ * divergent {@link #pow(float)}. {@code 0 * inf} and {@code 0 / 0} are
+ * {@link #NaN()}. Sum, difference, negation, conjugation and {@link #ln()} are
+ * componentwise, while {@link #exp()} keeps an exact zero, so a real argument
+ * stays real even where the modulus is not a number. A NaN spreads
+ * componentwise too; only against an infinite operand does a NaN component
+ * count as zero, so that the direction survives. {@code equals} compares the
+ * two components bit for bit, as {@code Arrays.equals} does for a
+ * {@code float[]}; {@code hashCode} follows, and the printout keeps the
+ * sign of a zero too.
  */
 public interface Zf {
 
@@ -88,6 +100,13 @@ public interface Zf {
      * @return {@code e} to the power of this complex number
      */
     Zf exp();
+
+    /**
+     * Principal square root: the root whose real part is not negative.
+     *
+     * @return the principal square root of this complex number
+     */
+    Zf sqrt();
 
     /**
      * Power function of this complex base with a real exponent.

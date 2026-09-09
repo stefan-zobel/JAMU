@@ -142,7 +142,7 @@ public final class LudComplexD {
         for (int col = 0; col < cols; ++col) {
             for (int row = 0; row < rows; ++row) {
                 if (row == col) {
-                    l_.set(row, col, 1.0, 1.0);
+                    l_.set(row, col, 1.0, 0.0);
                 } else if (row > col) {
                     AA.getUnsafe(row, col, z);
                     l_.set(row, col, z.re(), z.im());

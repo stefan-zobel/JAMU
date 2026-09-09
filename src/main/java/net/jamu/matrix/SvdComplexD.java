@@ -114,12 +114,12 @@ public class SvdComplexD {
     }
 
     private void computeSvdInplace(ComplexMatrixD A) {
-        // The only case where A must be copied before calling the complex
-        // '?gesdd' is when jobz == 'O' (TSvdJob.OVERWRITE) which we never use
-        // here
-        int m = A.numRows();
-        int n = A.numColumns();
-        PlainLapack.zgesdd(Lapack.getInstance(), jobType, m, n, A.getArrayUnsafe(), Math.max(1, m), S,
+        // Note: this wouldn't work for TSvdJob.OVERWRITE as A gets overwritten
+        // in that case
+        ComplexMatrixD AA = A.copy();
+        int m = AA.numRows();
+        int n = AA.numColumns();
+        PlainLapack.zgesdd(Lapack.getInstance(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
                 hasSingularVectors() ? U.getArrayUnsafe() : new double[0], Math.max(1, m),
                 hasSingularVectors() ? Vh.getArrayUnsafe() : new double[0], Math.max(1, n));
     }

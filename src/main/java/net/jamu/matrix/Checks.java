@@ -86,7 +86,8 @@ final class Checks {
         if (cols <= 0) {
             throw new IllegalArgumentException("cols must be strictly positive: " + cols);
         }
-        if (rows * cols != A.numRows() * A.numColumns()) {
+        long len = (long) rows * (long) cols;
+        if (len != (long) A.numRows() * (long) A.numColumns()) {
             throw new IllegalArgumentException("dimensions are not compatible: (" + A.numRows() + " x " + A.numColumns()
                     + ") cannot be reshaped to (" + rows + " x " + cols + ")");
         }
@@ -240,7 +241,7 @@ final class Checks {
 
     static double[] checkJaggedArrayD(double[][] data) {
         int _rows = data.length;
-        int _cols = data[0].length;
+        int _cols = (_rows < 1) ? 0 : rowLength(data, 0);
         if (_rows < 1 || _cols < 1) {
             throw new IllegalArgumentException(
                     "number of rows and columns must be strictly positive : (" + _rows + " x " + _cols + ")");
@@ -250,7 +251,7 @@ final class Checks {
 
     static float[] checkJaggedArrayF(float[][] data) {
         int _rows = data.length;
-        int _cols = data[0].length;
+        int _cols = (_rows < 1) ? 0 : rowLength(data, 0);
         if (_rows < 1 || _cols < 1) {
             throw new IllegalArgumentException(
                     "number of rows and columns must be strictly positive : (" + _rows + " x " + _cols + ")");
@@ -260,7 +261,7 @@ final class Checks {
 
     static double[] checkJaggedComplexArrayD(double[][] complexdata) {
         int _rows = complexdata.length;
-        int _cols = complexdata[0].length;
+        int _cols = (_rows < 1) ? 0 : rowLength(complexdata, 0);
         if (_cols % 2 != 0) {
             throw new IllegalArgumentException("complexdata[0].length must be even: " + _cols);
         }
@@ -274,7 +275,7 @@ final class Checks {
 
     static float[] checkJaggedComplexArrayF(float[][] complexdata) {
         int _rows = complexdata.length;
-        int _cols = complexdata[0].length;
+        int _cols = (_rows < 1) ? 0 : rowLength(complexdata, 0);
         if (_cols % 2 != 0) {
             throw new IllegalArgumentException("complexdata[0].length must be even: " + _cols);
         }
@@ -315,6 +316,26 @@ final class Checks {
     static void throwInconsistentRowLengths(int cols, int rowIdx, int rowLength) {
         throw new IllegalArgumentException("All rows must have the same length: " + cols + " (row " + rowIdx
                 + " has length " + rowLength + ")");
+    }
+
+    static IllegalArgumentException getNullRowException(int rowIdx) {
+        return new IllegalArgumentException("row " + rowIdx + " is null");
+    }
+
+    private static int rowLength(double[][] data, int idx) {
+        double[] row = data[idx];
+        if (row == null) {
+            throw getNullRowException(idx);
+        }
+        return row.length;
+    }
+
+    private static int rowLength(float[][] data, int idx) {
+        float[] row = data[idx];
+        if (row == null) {
+            throw getNullRowException(idx);
+        }
+        return row.length;
     }
 
     static IndexOutOfBoundsException getSameColsException(Dimensions A, Dimensions B) {

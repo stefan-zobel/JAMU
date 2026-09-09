@@ -171,12 +171,14 @@ public final class ZdImplTest {
         Assert.assertTrue(x.div(w).equals(Zd.Zero()));
 
         Zd z = w.div(new ZdImpl(3, 4));
-        Assert.assertTrue(Double.isNaN(z.re()));
+        // arg 3pi/4 - atan2(4,3), so both parts are positive
+        Assert.assertEquals(inf, z.re(), 0);
         Assert.assertEquals(inf, z.im(), 0);
 
         w = new ZdImpl(inf, inf);
         z = w.div(new ZdImpl(3, 4));
-        Assert.assertTrue(Double.isNaN(z.im()));
+        // arg pi/4 - atan2(4,3) is negative
+        Assert.assertEquals(neginf, z.im(), 0);
         Assert.assertEquals(inf, z.re(), 0);
 
         w = new ZdImpl(1, inf);
@@ -189,7 +191,8 @@ public final class ZdImplTest {
     public void testDivideZero() {
         Zd x = new ZdImpl(3.0, 4.0);
         Zd z = x.div(Zd.Zero());
-        Assert.assertEquals(z, Zd.NaN());
+        // nonzero over zero is what inv(0) gives
+        Assert.assertEquals(z, Zd.Inf());
     }
 
     @Test
@@ -209,7 +212,8 @@ public final class ZdImplTest {
     @Test
     public void testDivideNaNInf() {
         Zd z = oneInf().div(Zd.One());
-        Assert.assertTrue(Double.isNaN(z.re()));
+        // arg pi/2, so the quotient is purely imaginary
+        Assert.assertEquals(0.0, z.re(), 0);
         Assert.assertEquals(inf, z.im(), 0);
 
         z = negInfNegInf().div(oneNaN());
@@ -217,8 +221,9 @@ public final class ZdImplTest {
         Assert.assertTrue(Double.isNaN(z.im()));
 
         z = negInfInf().div(Zd.One());
-        Assert.assertTrue(Double.isNaN(z.re()));
-        Assert.assertTrue(Double.isNaN(z.im()));
+        // arg 3pi/4, so the second quadrant
+        Assert.assertEquals(neginf, z.re(), 0);
+        Assert.assertEquals(inf, z.im(), 0);
     }
 
     @Test
@@ -234,7 +239,8 @@ public final class ZdImplTest {
     @Test
     public void testInvReal() {
         Zd z = new ZdImpl(-2.0, 0.0);
-        Assert.assertEquals(new ZdImpl(-0.5, 0.0), z.inv());
+        // the imaginary part is -0/4, so it carries its sign; the C library agrees
+        Assert.assertEquals(new ZdImpl(-0.5, -0.0), z.inv());
     }
 
     @Test
@@ -303,12 +309,15 @@ public final class ZdImplTest {
 
         // multiplications with infinity
         Assert.assertTrue(new ZdImpl(1, 0).mul(infInf()).equals(Zd.Inf()));
-        Assert.assertTrue(new ZdImpl(-1, 0).mul(infInf()).equals(Zd.Inf()));
-        Assert.assertTrue(new ZdImpl(1, 0).mul(negInfZero()).equals(Zd.Inf()));
+        // arg pi + pi/4, so the direction is the third quadrant
+        Assert.assertTrue(new ZdImpl(-1, 0).mul(infInf()).equals(negInfNegInf()));
+        // arg pi, so the result stays on the real axis
+        Assert.assertTrue(new ZdImpl(1, 0).mul(negInfZero()).equals(negInfZero()));
 
+        // arg pi/2 - pi/2, so the result is real
         w = oneInf().mul(oneNegInf());
         Assert.assertEquals(w.re(), inf, 0);
-        Assert.assertEquals(w.im(), inf, 0);
+        Assert.assertEquals(w.im(), 0.0, 0);
 
         w = negInfNegInf().mul(oneNaN());
         // TODO: better use isNaN()?
@@ -318,7 +327,8 @@ public final class ZdImplTest {
         Assert.assertTrue(Double.isInfinite(w.im()));
 
         z = new ZdImpl(1, neginf);
-        Assert.assertEquals(Zd.Inf(), z.mul(z));
+        // arg -pi/2 doubled is -pi, so the square is negative real
+        Assert.assertEquals(new ZdImpl(neginf, -0.0), z.mul(z));
     }
 
     @Test
@@ -326,10 +336,10 @@ public final class ZdImplTest {
         Zd x = new ZdImpl(3.0, 4.0);
         double yDouble = 2.0;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.mul(yZdImpl), x.scale(yDouble));
+        Assert.assertEquals(x.copy().mul(yZdImpl), x.copy().scale(yDouble));
         int zInt = -5;
         Zd zZdImpl = new ZdImpl(zInt);
-        Assert.assertEquals(x.mul(zZdImpl), x.scale(zInt));
+        Assert.assertEquals(x.copy().mul(zZdImpl), x.copy().scale(zInt));
     }
 
     @Test
@@ -337,7 +347,7 @@ public final class ZdImplTest {
         Zd x = new ZdImpl(3.0, 4.0);
         double yDouble = Double.NaN;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.mul(yZdImpl), x.scale(yDouble));
+        Assert.assertEquals(x.copy().mul(yZdImpl), x.copy().scale(yDouble));
     }
 
     @Test
@@ -345,11 +355,11 @@ public final class ZdImplTest {
         Zd x = new ZdImpl(1, 1);
         double yDouble = Double.POSITIVE_INFINITY;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.mul(yZdImpl), x.scale(yDouble));
+        Assert.assertEquals(x.copy().mul(yZdImpl), x.copy().scale(yDouble));
 
         yDouble = Double.NEGATIVE_INFINITY;
         yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.mul(yZdImpl), x.scale(yDouble));
+        Assert.assertEquals(x.copy().mul(yZdImpl), x.copy().scale(yDouble));
     }
 
     @Test
@@ -441,9 +451,11 @@ public final class ZdImplTest {
         Zd realNaN = new ZdImpl(Double.NaN, 0.0);
         Zd imaginaryNaN = new ZdImpl(0.0, Double.NaN);
         Zd complexNaN = Zd.NaN();
-        Assert.assertTrue(realNaN.equals(imaginaryNaN));
-        Assert.assertTrue(imaginaryNaN.equals(complexNaN));
-        Assert.assertTrue(realNaN.equals(complexNaN));
+        // a NaN component says nothing about the other one
+        Assert.assertFalse(realNaN.equals(imaginaryNaN));
+        Assert.assertFalse(imaginaryNaN.equals(complexNaN));
+        Assert.assertFalse(realNaN.equals(complexNaN));
+        Assert.assertTrue(complexNaN.equals(Zd.NaN()));
     }
 
     @Test
@@ -524,6 +536,7 @@ public final class ZdImplTest {
 
     @Test
     public void testPowInf() {
+        // a degenerate base follows Math.pow, not the NaN convention
         TestUtils.assertSame(Zd.NaN(), Zd.One().pow(oneInf()));
         TestUtils.assertSame(Zd.NaN(), Zd.One().pow(oneNegInf()));
         TestUtils.assertSame(Zd.NaN(), Zd.One().pow(infOne()));
@@ -531,12 +544,12 @@ public final class ZdImplTest {
         TestUtils.assertSame(Zd.NaN(), Zd.One().pow(infNegInf()));
         TestUtils.assertSame(Zd.NaN(), Zd.One().pow(negInfInf()));
         TestUtils.assertSame(Zd.NaN(), Zd.One().pow(negInfNegInf()));
-        TestUtils.assertSame(Zd.NaN(), infOne().pow(Zd.One()));
-        TestUtils.assertSame(Zd.NaN(), negInfOne().pow(Zd.One()));
-        TestUtils.assertSame(Zd.NaN(), infInf().pow(Zd.One()));
-        TestUtils.assertSame(Zd.NaN(), infNegInf().pow(Zd.One()));
-        TestUtils.assertSame(Zd.NaN(), negInfInf().pow(Zd.One()));
-        TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(Zd.One()));
+        TestUtils.assertSame(Zd.Inf(), infOne().pow(Zd.One()));
+        TestUtils.assertSame(Zd.Inf(), negInfOne().pow(Zd.One()));
+        TestUtils.assertSame(Zd.Inf(), infInf().pow(Zd.One()));
+        TestUtils.assertSame(Zd.Inf(), infNegInf().pow(Zd.One()));
+        TestUtils.assertSame(Zd.Inf(), negInfInf().pow(Zd.One()));
+        TestUtils.assertSame(Zd.Inf(), negInfNegInf().pow(Zd.One()));
         TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(infNegInf()));
         TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(negInfNegInf()));
         TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(infInf()));
@@ -550,8 +563,9 @@ public final class ZdImplTest {
 
     @Test
     public void testPowZero() {
-        TestUtils.assertSame(Zd.NaN(), Zd.Zero().pow(Zd.One()));
-        TestUtils.assertSame(Zd.NaN(), Zd.Zero().pow(Zd.Zero()));
+        // a degenerate base follows Math.pow, not the NaN convention
+        TestUtils.assertSame(Zd.Zero(), Zd.Zero().pow(Zd.One()));
+        TestUtils.assertSame(Zd.One(), Zd.Zero().pow(Zd.Zero()));
         TestUtils.assertSame(Zd.NaN(), Zd.Zero().pow(Zd.I()));
         TestUtils.assertEquals(Zd.One(), Zd.One().pow(Zd.Zero()), 10e-12);
         TestUtils.assertEquals(Zd.One(), Zd.I().pow(Zd.Zero()), 10e-12);
@@ -563,7 +577,7 @@ public final class ZdImplTest {
         Zd x = new ZdImpl(3, 4);
         double yDouble = 5.0;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.pow(yZdImpl), x.pow(yDouble));
+        Assert.assertEquals(x.copy().pow(yZdImpl), x.copy().pow(yDouble));
     }
 
     @Test
@@ -571,7 +585,7 @@ public final class ZdImplTest {
         Zd x = Zd.NaN();
         double yDouble = 5.0;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.pow(yZdImpl), x.pow(yDouble));
+        Assert.assertEquals(x.copy().pow(yZdImpl), x.copy().pow(yDouble));
     }
 
     @Test
@@ -579,31 +593,33 @@ public final class ZdImplTest {
         Zd x = new ZdImpl(3, 4);
         double yDouble = Double.NaN;
         Zd yZdImpl = new ZdImpl(yDouble);
-        Assert.assertEquals(x.pow(yZdImpl), x.pow(yDouble));
+        Assert.assertEquals(x.copy().pow(yZdImpl), x.copy().pow(yDouble));
     }
 
     @Test
     public void testScalarPowInf() {
+        // a degenerate base follows Math.pow, not the NaN convention
         TestUtils.assertSame(Zd.NaN(), Zd.One().pow(Double.POSITIVE_INFINITY));
         TestUtils.assertSame(Zd.NaN(), Zd.One().pow(Double.NEGATIVE_INFINITY));
-        TestUtils.assertSame(Zd.NaN(), infOne().pow(1.0));
-        TestUtils.assertSame(Zd.NaN(), negInfOne().pow(1.0));
-        TestUtils.assertSame(Zd.NaN(), infInf().pow(1.0));
-        TestUtils.assertSame(Zd.NaN(), infNegInf().pow(1.0));
-        TestUtils.assertSame(Zd.NaN(), negInfInf().pow(10));
-        TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(1.0));
-        TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(Double.POSITIVE_INFINITY));
-        TestUtils.assertSame(Zd.NaN(), negInfNegInf().pow(Double.POSITIVE_INFINITY));
-        TestUtils.assertSame(Zd.NaN(), infInf().pow(Double.POSITIVE_INFINITY));
-        TestUtils.assertSame(Zd.NaN(), infInf().pow(Double.NEGATIVE_INFINITY));
-        TestUtils.assertSame(Zd.NaN(), infNegInf().pow(Double.NEGATIVE_INFINITY));
-        TestUtils.assertSame(Zd.NaN(), infNegInf().pow(Double.POSITIVE_INFINITY));
+        TestUtils.assertSame(Zd.Inf(), infOne().pow(1.0));
+        TestUtils.assertSame(Zd.Inf(), negInfOne().pow(1.0));
+        TestUtils.assertSame(Zd.Inf(), infInf().pow(1.0));
+        TestUtils.assertSame(Zd.Inf(), infNegInf().pow(1.0));
+        TestUtils.assertSame(Zd.Inf(), negInfInf().pow(10));
+        TestUtils.assertSame(Zd.Inf(), negInfNegInf().pow(1.0));
+        TestUtils.assertSame(Zd.Inf(), negInfNegInf().pow(Double.POSITIVE_INFINITY));
+        TestUtils.assertSame(Zd.Inf(), negInfNegInf().pow(Double.POSITIVE_INFINITY));
+        TestUtils.assertSame(Zd.Inf(), infInf().pow(Double.POSITIVE_INFINITY));
+        TestUtils.assertSame(Zd.Zero(), infInf().pow(Double.NEGATIVE_INFINITY));
+        TestUtils.assertSame(Zd.Zero(), infNegInf().pow(Double.NEGATIVE_INFINITY));
+        TestUtils.assertSame(Zd.Inf(), infNegInf().pow(Double.POSITIVE_INFINITY));
     }
 
     @Test
     public void testScalarPowZero() {
-        TestUtils.assertSame(Zd.NaN(), Zd.Zero().pow(1.0));
-        TestUtils.assertSame(Zd.NaN(), Zd.Zero().pow(0.0));
+        // a degenerate base follows Math.pow, not the NaN convention
+        TestUtils.assertSame(Zd.Zero(), Zd.Zero().pow(1.0));
+        TestUtils.assertSame(Zd.One(), Zd.Zero().pow(0.0));
         TestUtils.assertEquals(Zd.One(), Zd.One().pow(0.0), 10e-12);
         TestUtils.assertEquals(Zd.One(), Zd.I().pow(0.0), 10e-12);
         TestUtils.assertEquals(Zd.One(), new ZdImpl(-1, 3).pow(0.0), 10e-12);
@@ -616,7 +632,8 @@ public final class ZdImplTest {
 
     @Test
     public void testEqualsIssue() {
-        Assert.assertEquals(new ZdImpl(0, -1), new ZdImpl(0, 1).mul(new ZdImpl(-1, 0)));
+        // 0*(-1) - 1*0 is -0, not +0; the C library agrees
+        Assert.assertEquals(new ZdImpl(-0.0, -1.0), new ZdImpl(0, 1).mul(new ZdImpl(-1, 0)));
     }
 
     /**

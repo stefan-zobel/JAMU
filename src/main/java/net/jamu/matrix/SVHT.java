@@ -18,12 +18,21 @@ package net.jamu.matrix;
 /**
  * Approximately optimal Singular Value truncation ("Singular Values Hard
  * Threshold (SVHT)") after Gavish and Donoho (2014).
- * 
+ * <p>
+ * Every method here expects the singular values in descending order, as LAPACK
+ * hands them out. The median and the sum are taken over the whole spectrum with
+ * nothing discarded first: the small trailing values are the noise the median is
+ * a statistic of, and dropping them leaves the median a signal value and the
+ * cutoff above every entry. Only ratios are compared, so the answer does not
+ * depend on how the input happened to be scaled.
+ *
  * @see "https://arxiv.org/pdf/1305.5870.pdf"
  */
 class SVHT {
 
+    /** used by getSigmaMin, relative to the largest singular value */
     static final double TOL_DBL = 5.0 * DimensionsBase.MACH_EPS_DBL;
+    /** used by getSigmaMin, relative to the largest singular value */
     static final float TOL_FLT = 5.0f * DimensionsBase.MACH_EPS_FLT;
     static final double BROAD_SHARE_DBL = 1.0 - 1e-4;
     static final float BROAD_SHARE_FLT = 1.0f - 1e-4f;
@@ -31,7 +40,9 @@ class SVHT {
     static int threshold(int rows, int cols, double[] singularValues) {
         DimensionsBase.checkRows(rows);
         DimensionsBase.checkCols(cols);
-        if (singularValues[0] <= DimensionsBase.MACH_EPS_DBL) {
+        // there is nothing to threshold without a positive largest singular
+        // value, and the negated comparison rejects a NaN as well
+        if (!(singularValues[0] > 0.0)) {
             return 0;
         }
         double omega = computeOmega(rows, cols);
@@ -43,7 +54,9 @@ class SVHT {
     static int threshold(int rows, int cols, float[] singularValues) {
         DimensionsBase.checkRows(rows);
         DimensionsBase.checkCols(cols);
-        if (singularValues[0] <= DimensionsBase.MACH_EPS_FLT) {
+        // there is nothing to threshold without a positive largest singular
+        // value, and the negated comparison rejects a NaN as well
+        if (!(singularValues[0] > 0.0f)) {
             return 0;
         }
         float omega = (float) computeOmega(rows, cols);
@@ -53,8 +66,9 @@ class SVHT {
     }
 
     static double getSigmaMin(double[] singularValues) {
+        double tol = TOL_DBL * singularValues[0];
         for (int i = singularValues.length - 1; i >= 0; --i) {
-            if (singularValues[i] > TOL_DBL) {
+            if (singularValues[i] > tol) {
                 return singularValues[i];
             }
         }
@@ -62,8 +76,9 @@ class SVHT {
     }
 
     static float getSigmaMin(float[] singularValues) {
+        float tol = TOL_FLT * singularValues[0];
         for (int i = singularValues.length - 1; i >= 0; --i) {
-            if (singularValues[i] > TOL_FLT) {
+            if (singularValues[i] > tol) {
                 return singularValues[i];
             }
         }
@@ -72,16 +87,6 @@ class SVHT {
 
     static double median(double[] values) {
         int len = values.length;
-        int endIdx = len - 1;
-        for (int i = endIdx; i >= 0; --i) {
-            if (values[i] > TOL_DBL) {
-                endIdx = i;
-                break;
-            }
-        }
-        if (endIdx < len - 1) {
-            len = endIdx + 1;
-        }
         if (len % 2 != 0) {
             return values[(len - 1) / 2];
         } else {
@@ -92,16 +97,6 @@ class SVHT {
 
     static float median(float[] values) {
         int len = values.length;
-        int endIdx = len - 1;
-        for (int i = endIdx; i >= 0; --i) {
-            if (values[i] > TOL_FLT) {
-                endIdx = i;
-                break;
-            }
-        }
-        if (endIdx < len - 1) {
-            len = endIdx + 1;
-        }
         if (len % 2 != 0) {
             return values[(len - 1) / 2];
         } else {
@@ -176,11 +171,7 @@ class SVHT {
     static double sum(double[] values) {
         double sum = 0.0;
         for (int i = 0; i < values.length; ++i) {
-            double sv = values[i];
-            if (sv <= TOL_DBL) {
-                break;
-            }
-            sum += sv;
+            sum += values[i];
         }
         return sum;
     }
@@ -188,11 +179,7 @@ class SVHT {
     static float sum(float[] values) {
         float sum = 0.0f;
         for (int i = 0; i < values.length; ++i) {
-            float sv = values[i];
-            if (sv <= TOL_FLT) {
-                break;
-            }
-            sum += sv;
+            sum += values[i];
         }
         return sum;
     }

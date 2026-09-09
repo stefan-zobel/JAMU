@@ -180,4 +180,107 @@ public final class ExpmTest {
         expm.set(1, 1, 1.0);
         assertTrue(Matrices.approxEqual(expm, eA5));
     }
+
+    // exp(diag(x, x)) is exactly diag(exp(x), exp(x)); measured worst is
+    // 6.8e-15 in double and 4.3e-6 in single
+    private static final double[] NEGATIVE_D = { -0.1, -1.0, -5.0, -20.0, -50.0 };
+    private static final float[] NEGATIVE_F = { -0.1f, -1.0f, -5.0f, -50.0f };
+
+    private static final int[] ONES_DIMS = { 2, 3, 5, 10, 20, 40 };
+
+    private static final double TOL_D = 1.0e-12;
+    private static final float TOL_F = 1.0e-4f;
+
+    @Test
+    public void testNegativeDiagonalReal() {
+        for (double x : NEGATIVE_D) {
+            MatrixD A = Matrices.createD(2, 2);
+            A.set(0, 0, x);
+            A.set(1, 1, x);
+            assertRelD("MatrixD at " + x, Math.exp(x), A.expm().get(0, 0), TOL_D);
+        }
+        for (float x : NEGATIVE_F) {
+            MatrixF A = Matrices.createF(2, 2);
+            A.set(0, 0, x);
+            A.set(1, 1, x);
+            assertRelF("MatrixF at " + x, (float) Math.exp(x), A.expm().get(0, 0), TOL_F);
+        }
+    }
+
+    @Test
+    public void testNegativeDiagonalComplex() {
+        for (double x : NEGATIVE_D) {
+            ComplexMatrixD A = Matrices.createComplexD(2, 2);
+            A.set(0, 0, x, 0.0);
+            A.set(1, 1, x, 0.0);
+            assertRelD("ComplexMatrixD at " + x, Math.exp(x), A.expm().get(0, 0).re(), TOL_D);
+        }
+        for (float x : NEGATIVE_F) {
+            ComplexMatrixF A = Matrices.createComplexF(2, 2);
+            A.set(0, 0, x, 0.0f);
+            A.set(1, 1, x, 0.0f);
+            assertRelF("ComplexMatrixF at " + x, (float) Math.exp(x), A.expm().get(0, 0).re(), TOL_F);
+        }
+    }
+
+    // exp(ones(n, n)) is I + ((e^n - 1) / n) * ones. The max norm of ones(n, n)
+    // is 1 whatever n is, so this is the case a submultiplicative norm is
+    // needed for
+    @Test
+    public void testOnesMatrixReal() {
+        for (int n : ONES_DIMS) {
+            double off = Math.expm1(n) / n;
+            MatrixD eA = Matrices.onesD(n, n).expm();
+            assertRelD("MatrixD diagonal at n = " + n, 1.0 + off, eA.get(0, 0), TOL_D);
+            assertRelD("MatrixD off-diagonal at n = " + n, off, eA.get(0, 1), TOL_D);
+            MatrixF eB = Matrices.onesF(n, n).expm();
+            assertRelF("MatrixF diagonal at n = " + n, (float) (1.0 + off), eB.get(0, 0), TOL_F);
+            assertRelF("MatrixF off-diagonal at n = " + n, (float) off, eB.get(0, 1), TOL_F);
+        }
+    }
+
+    @Test
+    public void testOnesMatrixComplex() {
+        for (int n : ONES_DIMS) {
+            double off = Math.expm1(n) / n;
+            ComplexMatrixD eA = onesComplexD(n).expm();
+            assertRelD("ComplexMatrixD diagonal at n = " + n, 1.0 + off, eA.get(0, 0).re(), TOL_D);
+            assertRelD("ComplexMatrixD off-diagonal at n = " + n, off, eA.get(0, 1).re(), TOL_D);
+            ComplexMatrixF eB = onesComplexF(n).expm();
+            assertRelF("ComplexMatrixF diagonal at n = " + n, (float) (1.0 + off), eB.get(0, 0).re(), TOL_F);
+            assertRelF("ComplexMatrixF off-diagonal at n = " + n, (float) off, eB.get(0, 1).re(), TOL_F);
+        }
+    }
+
+    private static ComplexMatrixD onesComplexD(int n) {
+        ComplexMatrixD m = Matrices.createComplexD(n, n);
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                m.set(i, j, 1.0, 0.0);
+            }
+        }
+        return m;
+    }
+
+    private static ComplexMatrixF onesComplexF(int n) {
+        ComplexMatrixF m = Matrices.createComplexF(n, n);
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                m.set(i, j, 1.0f, 0.0f);
+            }
+        }
+        return m;
+    }
+
+    private static void assertRelD(String what, double expected, double actual, double tol) {
+        double err = Math.abs(actual - expected) / Math.abs(expected);
+        assertTrue(what + " : expected " + expected + " but was " + actual + " (relative " + err + ")",
+                err <= tol);
+    }
+
+    private static void assertRelF(String what, float expected, float actual, float tol) {
+        float err = Math.abs(actual - expected) / Math.abs(expected);
+        assertTrue(what + " : expected " + expected + " but was " + actual + " (relative " + err + ")",
+                err <= tol);
+    }
 }

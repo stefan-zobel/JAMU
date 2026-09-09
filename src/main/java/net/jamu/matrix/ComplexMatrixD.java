@@ -581,7 +581,9 @@ public interface ComplexMatrixD extends MatrixDimensions, ComplexMatrixDConduct 
     ComplexMatrixD solve(ComplexMatrixD B, ComplexMatrixD X);
 
     /**
-     * Matrix inverse for quadratic matrices.
+     * Matrix inverse for quadratic matrices. No condition estimation is
+     * done: a numerically singular matrix yields a meaningless result rather
+     * than an exception.
      * 
      * @param inverse
      *            matrix where the inverse is stored. Must have the same
@@ -597,7 +599,8 @@ public interface ComplexMatrixD extends MatrixDimensions, ComplexMatrixDConduct 
     ComplexMatrixD inv(ComplexMatrixD inverse);
 
     /**
-     * Compute the Moore-Penrose pseudoinverse.
+     * Compute the Moore-Penrose pseudoinverse. Uses the SVD; for an
+     * invertible square matrix {@link #inverse()} is faster.
      * 
      * @return the Moore-Penrose Pseudo-Inverse
      * @throws NotConvergedException
@@ -769,6 +772,22 @@ public interface ComplexMatrixD extends MatrixDimensions, ComplexMatrixDConduct 
      *             if {@code k < 1}
      */
     ComplexMatrixD zeroizeSubEpsilonInplace(int k);
+
+    /**
+     * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-53</sup> * max</code>
+     * to {@code 0.0}, where {@code max} is the largest finite modulus in this
+     * matrix and {@code k} is a positive integer {@code >= 1}. An element is
+     * judged by its modulus, so both parts fall together. Non-finite elements
+     * are left alone and do not contribute to {@code max}.
+     * 
+     * @param k
+     *            positive integer {@code >= 1}
+     * @return this matrix zeroed in-place
+     * @throws IllegalArgumentException
+     *             if {@code k < 1}
+     * @since 1.4.8
+     */
+    ComplexMatrixD zeroizeSubEpsilonRelativeInplace(int k);
 
     /**
      * Set all elements that are either NaN, positive or negative infinity to

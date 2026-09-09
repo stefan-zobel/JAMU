@@ -359,7 +359,8 @@ public final class Statistics {
      *            z-scored
      * @param moments
      *            optional holder object for the first two moments of each
-     *            column, may be {@code null}
+     *            column, may be {@code null}. The variance is the population
+     *            variance, i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
@@ -377,16 +378,18 @@ public final class Statistics {
         }
         double[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
-            // overflow resistant implementation
+            // overflow resistant implementation, shifted by the first entry
+            // so that nothing large is ever squared
+            double k = _a[col * rows_];
             int count = 0;
-            double mean = 0.0;
+            double shiftMean = 0.0;
             double scale = 0.0;
             double sumsquared = 1.0;
             // determine mean and sum squared
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 ++count;
-                double xi = _a[i];
-                mean = (((count - 1) * mean) + xi) / count;
+                double xi = _a[i] - k;
+                shiftMean = (((count - 1) * shiftMean) + xi) / count;
                 if (xi != 0.0) {
                     double absxi = Math.abs(xi);
                     if (scale < absxi) {
@@ -399,9 +402,10 @@ public final class Statistics {
                     }
                 }
             }
-            double y = computeScaledMean(scale, mean);
-            double oneOverSqrtRows = 1.0 / Math.sqrt(rows_);
-            double stddev = patchDev(scale * oneOverSqrtRows * Math.sqrt(sumsquared / rows_ - y * y));
+            double mean = k + shiftMean;
+            double y = computeScaledMean(scale, shiftMean);
+            double sd = scale * Math.sqrt(sumsquared / rows_ - y * y);
+            double stddev = patchDev(sd);
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 // subtract mean and divide by standard deviation
                 double xi = _a[i];
@@ -410,7 +414,7 @@ public final class Statistics {
             }
             if (moments != null) {
                 moments.means.setUnsafe(0, col, mean);
-                moments.variances.setUnsafe(0, col, stddev * stddev);
+                moments.variances.setUnsafe(0, col, sd * sd);
             }
         }
         return A;
@@ -448,7 +452,8 @@ public final class Statistics {
      *            z-scored
      * @param moments
      *            optional holder object for the first two moments of each
-     *            column, may be {@code null}
+     *            column, may be {@code null}. The variance is the population
+     *            variance, i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
@@ -466,16 +471,18 @@ public final class Statistics {
         }
         float[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
-            // overflow resistant implementation
+            // overflow resistant implementation, shifted by the first entry
+            // so that nothing large is ever squared
+            float k = _a[col * rows_];
             int count = 0;
-            float mean = 0.0f;
+            float shiftMean = 0.0f;
             float scale = 0.0f;
             float sumsquared = 1.0f;
             // determine mean and sum squared
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 ++count;
-                float xi = _a[i];
-                mean = (((count - 1) * mean) + xi) / count;
+                float xi = _a[i] - k;
+                shiftMean = (((count - 1) * shiftMean) + xi) / count;
                 if (xi != 0.0f) {
                     float absxi = Math.abs(xi);
                     if (scale < absxi) {
@@ -488,9 +495,10 @@ public final class Statistics {
                     }
                 }
             }
-            float y = computeScaledMean(scale, mean);
-            float oneOverSqrtRows = (float) (1.0 / Math.sqrt(rows_));
-            float stddev = patchDev(scale * oneOverSqrtRows * (float) Math.sqrt(sumsquared / rows_ - y * y));
+            float mean = k + shiftMean;
+            float y = computeScaledMean(scale, shiftMean);
+            float sd = scale * (float) Math.sqrt(sumsquared / rows_ - y * y);
+            float stddev = patchDev(sd);
             for (int i = col * rows_; i < (col + 1) * rows_; ++i) {
                 // subtract mean and divide by standard deviation
                 float xi = _a[i];
@@ -499,7 +507,7 @@ public final class Statistics {
             }
             if (moments != null) {
                 moments.means.setUnsafe(0, col, mean);
-                moments.variances.setUnsafe(0, col, stddev * stddev);
+                moments.variances.setUnsafe(0, col, sd * sd);
             }
         }
         return A;
@@ -574,7 +582,8 @@ public final class Statistics {
      *            the matrix whose rows contain the observations to be z-scored
      * @param moments
      *            optional holder object for the first two moments of each row,
-     *            may be {@code null}
+     *            may be {@code null}. The variance is the population variance,
+     *            i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
@@ -592,16 +601,18 @@ public final class Statistics {
         }
         double[] _a = A.getArrayUnsafe();
         for (int row = 0; row < rows_; ++row) {
-            // overflow resistant implementation
+            // overflow resistant implementation, shifted by the first entry
+            // so that nothing large is ever squared
+            double k = _a[row];
             int count = 0;
-            double mean = 0.0;
+            double shiftMean = 0.0;
             double scale = 0.0;
             double sumsquared = 1.0;
             // determine mean and sum squared
             for (int i = row; i < row + rows_ * cols_; i += rows_) {
                 ++count;
-                double xi = _a[i];
-                mean = (((count - 1) * mean) + xi) / count;
+                double xi = _a[i] - k;
+                shiftMean = (((count - 1) * shiftMean) + xi) / count;
                 if (xi != 0.0) {
                     double absxi = Math.abs(xi);
                     if (scale < absxi) {
@@ -614,9 +625,10 @@ public final class Statistics {
                     }
                 }
             }
-            double y = computeScaledMean(scale, mean);
-            double oneOverSqrtCols = 1.0 / Math.sqrt(cols_);
-            double stddev = patchDev(scale * oneOverSqrtCols * Math.sqrt(sumsquared / cols_ - y * y));
+            double mean = k + shiftMean;
+            double y = computeScaledMean(scale, shiftMean);
+            double sd = scale * Math.sqrt(sumsquared / cols_ - y * y);
+            double stddev = patchDev(sd);
             for (int i = row; i < row + rows_ * cols_; i += rows_) {
                 // subtract mean and divide by standard deviation
                 double xi = _a[i];
@@ -625,7 +637,7 @@ public final class Statistics {
             }
             if (moments != null) {
                 moments.means.setUnsafe(row, 0, mean);
-                moments.variances.setUnsafe(row, 0, stddev * stddev);
+                moments.variances.setUnsafe(row, 0, sd * sd);
             }
         }
         return A;
@@ -662,7 +674,8 @@ public final class Statistics {
      *            the matrix whose rows contain the observations to be z-scored
      * @param moments
      *            optional holder object for the first two moments of each row,
-     *            may be {@code null}
+     *            may be {@code null}. The variance is the population variance,
+     *            i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
      * @since 1.4.6
      */
@@ -680,16 +693,18 @@ public final class Statistics {
         }
         float[] _a = A.getArrayUnsafe();
         for (int row = 0; row < rows_; ++row) {
-            // overflow resistant implementation
+            // overflow resistant implementation, shifted by the first entry
+            // so that nothing large is ever squared
+            float k = _a[row];
             int count = 0;
-            float mean = 0.0f;
+            float shiftMean = 0.0f;
             float scale = 0.0f;
             float sumsquared = 1.0f;
             // determine mean and sum squared
             for (int i = row; i < row + rows_ * cols_; i += rows_) {
                 ++count;
-                float xi = _a[i];
-                mean = (((count - 1) * mean) + xi) / count;
+                float xi = _a[i] - k;
+                shiftMean = (((count - 1) * shiftMean) + xi) / count;
                 if (xi != 0.0f) {
                     float absxi = Math.abs(xi);
                     if (scale < absxi) {
@@ -702,9 +717,10 @@ public final class Statistics {
                     }
                 }
             }
-            float y = computeScaledMean(scale, mean);
-            float oneOverSqrtCols = (float) (1.0 / Math.sqrt(cols_));
-            float stddev = patchDev(scale * oneOverSqrtCols * (float) Math.sqrt(sumsquared / cols_ - y * y));
+            float mean = k + shiftMean;
+            float y = computeScaledMean(scale, shiftMean);
+            float sd = scale * (float) Math.sqrt(sumsquared / cols_ - y * y);
+            float stddev = patchDev(sd);
             for (int i = row; i < row + rows_ * cols_; i += rows_) {
                 // subtract mean and divide by standard deviation
                 float xi = _a[i];
@@ -713,7 +729,7 @@ public final class Statistics {
             }
             if (moments != null) {
                 moments.means.setUnsafe(row, 0, mean);
-                moments.variances.setUnsafe(row, 0, stddev * stddev);
+                moments.variances.setUnsafe(row, 0, sd * sd);
             }
         }
         return A;
@@ -839,10 +855,13 @@ public final class Statistics {
         int cols_ = A.numColumns();
         double[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
-            // overflow resistant implementation
+            // overflow resistant implementation, shifted by the first entry
+            // so that nothing large is ever squared
+            double reK = _a[2 * col * rows_];
+            double imK = _a[2 * col * rows_ + 1];
             int count = 0;
-            double reMean = 0.0;
-            double imMean = 0.0;
+            double reShiftMean = 0.0;
+            double imShiftMean = 0.0;
             double reScale = 0.0;
             double imScale = 0.0;
             double reSumSqr = 1.0;
@@ -850,10 +869,10 @@ public final class Statistics {
             // determine mean and sum squared
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 ++count;
-                double xre = _a[i];
-                double xim = _a[i + 1];
-                reMean = (((count - 1) * reMean) + xre) / count;
-                imMean = (((count - 1) * imMean) + xim) / count;
+                double xre = _a[i] - reK;
+                double xim = _a[i + 1] - imK;
+                reShiftMean = (((count - 1) * reShiftMean) + xre) / count;
+                imShiftMean = (((count - 1) * imShiftMean) + xim) / count;
                 if (xre != 0.0) {
                     double absxre = Math.abs(xre);
                     if (reScale < absxre) {
@@ -878,11 +897,12 @@ public final class Statistics {
                 }
             }
             //
-            double reY = computeScaledMean(reScale, reMean);
-            double imY = computeScaledMean(imScale, imMean);
-            double oneOverSqrtRows = 1.0 / Math.sqrt(rows_);
-            double reStddev = patchDev(reScale * oneOverSqrtRows * Math.sqrt(reSumSqr / rows_ - reY * reY));
-            double imStddev = patchDev(imScale * oneOverSqrtRows * Math.sqrt(imSumSqr / rows_ - imY * imY));
+            double reMean = reK + reShiftMean;
+            double imMean = imK + imShiftMean;
+            double reY = computeScaledMean(reScale, reShiftMean);
+            double imY = computeScaledMean(imScale, imShiftMean);
+            double reStddev = patchDev(reScale * Math.sqrt(reSumSqr / rows_ - reY * reY));
+            double imStddev = patchDev(imScale * Math.sqrt(imSumSqr / rows_ - imY * imY));
             //
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation
@@ -915,10 +935,13 @@ public final class Statistics {
         int cols_ = A.numColumns();
         float[] _a = A.getArrayUnsafe();
         for (int col = 0; col < cols_; ++col) {
-            // overflow resistant implementation
+            // overflow resistant implementation, shifted by the first entry
+            // so that nothing large is ever squared
+            float reK = _a[2 * col * rows_];
+            float imK = _a[2 * col * rows_ + 1];
             int count = 0;
-            float reMean = 0.0f;
-            float imMean = 0.0f;
+            float reShiftMean = 0.0f;
+            float imShiftMean = 0.0f;
             float reScale = 0.0f;
             float imScale = 0.0f;
             float reSumSqr = 1.0f;
@@ -926,10 +949,10 @@ public final class Statistics {
             // determine mean and sum squared
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 ++count;
-                float xre = _a[i];
-                float xim = _a[i + 1];
-                reMean = (((count - 1) * reMean) + xre) / count;
-                imMean = (((count - 1) * imMean) + xim) / count;
+                float xre = _a[i] - reK;
+                float xim = _a[i + 1] - imK;
+                reShiftMean = (((count - 1) * reShiftMean) + xre) / count;
+                imShiftMean = (((count - 1) * imShiftMean) + xim) / count;
                 if (xre != 0.0f) {
                     float absxre = Math.abs(xre);
                     if (reScale < absxre) {
@@ -954,11 +977,12 @@ public final class Statistics {
                 }
             }
             //
-            float reY = computeScaledMean(reScale, reMean);
-            float imY = computeScaledMean(imScale, imMean);
-            float oneOverSqrtRows = (float) (1.0 / Math.sqrt(rows_));
-            float reStddev = patchDev(reScale * oneOverSqrtRows * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
-            float imStddev = patchDev(imScale * oneOverSqrtRows * (float) Math.sqrt(imSumSqr / rows_ - imY * imY));
+            float reMean = reK + reShiftMean;
+            float imMean = imK + imShiftMean;
+            float reY = computeScaledMean(reScale, reShiftMean);
+            float imY = computeScaledMean(imScale, imShiftMean);
+            float reStddev = patchDev(reScale * (float) Math.sqrt(reSumSqr / rows_ - reY * reY));
+            float imStddev = patchDev(imScale * (float) Math.sqrt(imSumSqr / rows_ - imY * imY));
             //
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation

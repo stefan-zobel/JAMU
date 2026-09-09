@@ -150,9 +150,9 @@ final class Permutation {
         ComplexMatrixD permMatrix = Matrices.createComplexD(dim, dim);
         for (int i = 0; i < dim; ++i) {
             if (i < n) {
-                permMatrix.set(perm[i] - 1, i, 1.0, 1.0);
+                permMatrix.set(perm[i] - 1, i, 1.0, 0.0);
             } else {
-                permMatrix.set(i, i, 1.0, 1.0);
+                permMatrix.set(i, i, 1.0, 0.0);
             }
         }
         return permMatrix;
@@ -163,9 +163,9 @@ final class Permutation {
         ComplexMatrixF permMatrix = Matrices.createComplexF(dim, dim);
         for (int i = 0; i < dim; ++i) {
             if (i < n) {
-                permMatrix.set(perm[i] - 1, i, 1.0f, 1.0f);
+                permMatrix.set(perm[i] - 1, i, 1.0f, 0.0f);
             } else {
-                permMatrix.set(i, i, 1.0f, 1.0f);
+                permMatrix.set(i, i, 1.0f, 0.0f);
             }
         }
         return permMatrix;

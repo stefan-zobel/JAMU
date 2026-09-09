@@ -35,8 +35,8 @@ public final class SvdEconComplexF extends SvdComplexF {
     /**
      * The left singular vectors (column-wise).
      * 
-     * @return reduced m-by-r semi-unitary matrix {@code U} where {@code r} is
-     *         the rank of {@code A}
+     * @return reduced m-by-k semi-unitary matrix {@code U} where {@code k} is
+     *         {@code min(m, n)}
      */
     @Override
     public ComplexMatrixF getU() {
@@ -49,8 +49,8 @@ public final class SvdEconComplexF extends SvdComplexF {
      * Note that the algorithm returns <code>V<sup>*</sup></code>, (i.e., the
      * conjugate transpose), not {@code V}.
      * 
-     * @return reduced n-by-r semi-unitary matrix <code>V<sup>*</sup></code>
-     *         where {@code r} is the rank of {@code A}
+     * @return reduced k-by-n semi-unitary matrix <code>V<sup>*</sup></code>
+     *         where {@code k} is {@code min(m, n)}
      */
     @Override
     public ComplexMatrixF getVh() {
@@ -58,10 +58,10 @@ public final class SvdEconComplexF extends SvdComplexF {
     }
 
     /**
-     * The non-zero singular values in descending order.
+     * The singular values in descending order, including any that are zero.
      * 
-     * @return array of size {@code r <= min(m, n)} containing the non-zero
-     *         singular values in descending order
+     * @return array of size {@code min(m, n)} containing the singular values in
+     *         descending order
      */
     @Override
     public float[] getS() {
@@ -87,12 +87,12 @@ public final class SvdEconComplexF extends SvdComplexF {
     }
 
     private void computeSvdInplace(ComplexMatrixF A) {
-        // The only case where A must be copied before calling the complex
-        // '?gesdd' is when jobz == 'O' (TSvdJob.OVERWRITE) which we never use
-        // here
-        int m = A.numRows();
-        int n = A.numColumns();
-        PlainLapack.cgesdd(Lapack.getInstance(), jobType, m, n, A.getArrayUnsafe(), Math.max(1, m), S,
+        // Note: this wouldn't work for TSvdJob.OVERWRITE as A gets overwritten
+        // in that case
+        ComplexMatrixF AA = A.copy();
+        int m = AA.numRows();
+        int n = AA.numColumns();
+        PlainLapack.cgesdd(Lapack.getInstance(), jobType, m, n, AA.getArrayUnsafe(), Math.max(1, m), S,
                 U.getArrayUnsafe(), Math.max(1, U.numRows()), Vh.getArrayUnsafe(), Math.max(1, Vh.numRows()));
     }
 }

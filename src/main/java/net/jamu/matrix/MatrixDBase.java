@@ -540,9 +540,6 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      */
     @Override
     public MatrixD pseudoInv() {
-        if (this.isSquareMatrix()) {
-            return inv(create(rows, cols));
-        }
         SvdD svd = svd(true);
         double[] sigma = svd.getS();
         double tol = MACH_EPS_DBL * Math.max(rows, cols) * sigma[0];
@@ -569,7 +566,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         if (!this.isSquareMatrix()) {
             throw new IllegalArgumentException("Matrix exponentiation is only defined for square matrices");
         }
-        return Expm.expmD(this, normMaxAbs());
+        return Expm.expmD(this, norm1());
     }
 
     /**
@@ -622,7 +619,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         double max = Double.NEGATIVE_INFINITY;
         double[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
-            double xi = _a[i];
+            double xi = Math.abs(_a[i]);
             if (xi > max) {
                 max = xi;
             }
@@ -728,8 +725,40 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD zeroizeSubEpsilonRelativeInplace(int k) {
+        if (k < 1) {
+            throw new IllegalArgumentException("Illegal multiplier < 1 : " + k);
+        }
+        double threshold = k * MACH_EPS_DBL * maxFiniteAbs();
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            if (Math.abs(_a[i]) <= threshold) {
+                _a[i] = 0.0;
+            }
+        }
+        return this;
+    }
+
+    // normMaxAbs() answers infinity when one entry is infinite, which would
+    // put every finite entry below the threshold
+    private double maxFiniteAbs() {
+        double max = 0.0;
+        double[] _a = a;
+        for (int i = 0; i < _a.length; ++i) {
+            double x = Math.abs(_a[i]);
+            if (x > max && x != Double.POSITIVE_INFINITY) {
+                max = x;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD sanitizeNonFiniteInplace(double nanSurrogate, double posInfSurrogate, double negInfSurrogate) {
-        boolean subNan = (nanSurrogate == nanSurrogate); // "lgtm[java/comparison-of-identical-expressions]"
+        boolean subNan = (nanSurrogate == nanSurrogate);
         boolean subPInf = (posInfSurrogate != Double.POSITIVE_INFINITY);
         boolean subNInf = (negInfSurrogate != Double.NEGATIVE_INFINITY);
         if (!subNan && !subPInf && !subNInf) {
@@ -738,7 +767,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         double[] _a = a;
         for (int i = 0; i < _a.length; ++i) {
             double x = _a[i];
-            if (x != x && subNan) { // "lgtm[java/comparison-of-identical-expressions]"
+            if (x != x && subNan) {
                 _a[i] = nanSurrogate;
             } else if (x == Double.POSITIVE_INFINITY && subPInf) {
                 _a[i] = posInfSurrogate;
@@ -1068,10 +1097,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         MatrixD m = copy();
         double[] b_ = m.getArrayUnsafe();
         for (int i = 0; i < b_.length; ++i) {
-            double x = b_[i]; 
-            if (x < 0.0) {
-                b_[i] = -x;
-            }
+            b_[i] = Math.abs(b_[i]);
         }
         return m;
     }
@@ -1124,9 +1150,10 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     protected abstract MatrixD create(int rows, int cols, double[] data);
 
     protected static void checkArrayLength(double[] array, int rows, int cols) {
-        if (array.length != rows * cols) {
+        long needed = (long) rows * (long) cols;
+        if (array.length != needed) {
             throw new IllegalArgumentException(
-                    "data array has wrong length. Needed : " + rows * cols + " , Is : " + array.length);
+                    "data array has wrong length. Needed : " + needed + " , Is : " + array.length);
         }
     }
 }
