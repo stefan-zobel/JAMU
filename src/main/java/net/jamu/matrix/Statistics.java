@@ -870,7 +870,8 @@ public final class Statistics {
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 ++count;
                 double xre = _a[i] - reK;
-                double xim = _a[i + 1] - imK; // codeql[java/index-out-of-bounds]
+                // codeql[java/index-out-of-bounds]
+                double xim = _a[i + 1] - imK;
                 reShiftMean = (((count - 1) * reShiftMean) + xre) / count;
                 imShiftMean = (((count - 1) * imShiftMean) + xim) / count;
                 if (xre != 0.0) {
@@ -907,11 +908,13 @@ public final class Statistics {
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation
                 double xre = _a[i];
-                double xim = _a[i + 1]; // codeql[java/index-out-of-bounds]
+                // codeql[java/index-out-of-bounds]
+                double xim = _a[i + 1];
                 xre = (xre - reMean) / reStddev;
                 xim = (xim - imMean) / imStddev;
                 _a[i] = xre;
-                _a[i + 1] = xim; // codeql[java/index-out-of-bounds]
+                // codeql[java/index-out-of-bounds]
+                _a[i + 1] = xim;
             }
         }
         return A;
@@ -950,7 +953,8 @@ public final class Statistics {
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 ++count;
                 float xre = _a[i] - reK;
-                float xim = _a[i + 1] - imK; // codeql[java/index-out-of-bounds]
+                // codeql[java/index-out-of-bounds]
+                float xim = _a[i + 1] - imK;
                 reShiftMean = (((count - 1) * reShiftMean) + xre) / count;
                 imShiftMean = (((count - 1) * imShiftMean) + xim) / count;
                 if (xre != 0.0f) {
@@ -987,11 +991,13 @@ public final class Statistics {
             for (int i = 2 * col * rows_; i < 2 * (col + 1) * rows_; i += 2) {
                 // subtract mean and divide by standard deviation
                 float xre = _a[i];
-                float xim = _a[i + 1]; // codeql[java/index-out-of-bounds]
+                // codeql[java/index-out-of-bounds]
+                float xim = _a[i + 1];
                 xre = (xre - reMean) / reStddev;
                 xim = (xim - imMean) / imStddev;
                 _a[i] = xre;
-                _a[i + 1] = xim; // codeql[java/index-out-of-bounds]
+                // codeql[java/index-out-of-bounds]
+                _a[i + 1] = xim;
             }
         }
         return A;

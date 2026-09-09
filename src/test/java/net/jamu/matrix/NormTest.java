@@ -206,7 +206,8 @@ public final class NormTest {
     private static double maxAbsComplex(double[] a) {
         double max = 0.0;
         for (int i = 0; i < a.length; i += 2) {
-            max = Math.max(max, Math.hypot(a[i], a[i + 1])); // codeql[java/index-out-of-bounds]
+            // codeql[java/index-out-of-bounds]
+            max = Math.max(max, Math.hypot(a[i], a[i + 1]));
         }
         return max;
     }
