@@ -408,13 +408,27 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         checkSubmatrixIndexes(r0, c0, r1, c1);
         B.checkIndex(rb, cb);
         B.checkIndex(rb + r1 - r0, cb + c1 - c0);
-        int rbStart = rb;
-        for (int col = c0; col <= c1; ++col) {
-            for (int row = r0; row <= r1; ++row) {
-                B.setUnsafe(rb++, cb, this.getUnsafe(row, col));
+        int len = r1 - r0 + 1;
+        if (len < MIN_ARRAYCOPY_LEN) {
+            int rbStart = rb;
+            for (int col = c0; col <= c1; ++col) {
+                for (int row = r0; row <= r1; ++row) {
+                    B.setUnsafe(rb++, cb, this.getUnsafe(row, col));
+                }
+                rb = rbStart;
+                cb++;
             }
-            rb = rbStart;
-            cb++;
+            return B;
+        }
+        double[] dst = B.getArrayUnsafe();
+        int dstStride = B.numRows();
+        int srcPos = c0 * rows + r0;
+        int dstPos = cb * dstStride + rb;
+        // a row block is contiguous within a column, so one block move per column
+        for (int col = c0; col <= c1; ++col) {
+            System.arraycopy(a, srcPos, dst, dstPos, len);
+            srcPos += rows;
+            dstPos += dstStride;
         }
         return B;
     }
@@ -437,13 +451,27 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         B.checkSubmatrixIndexes(rb0, cb0, rb1, cb1);
         checkIndex(r0, c0);
         checkIndex(r0 + rb1 - rb0, c0 + cb1 - cb0);
-        int r0Start = r0;
-        for (int col = cb0; col <= cb1; ++col) {
-            for (int row = rb0; row <= rb1; ++row) {
-                this.setUnsafe(r0++, c0, B.getUnsafe(row, col));
+        int len = rb1 - rb0 + 1;
+        if (len < MIN_ARRAYCOPY_LEN) {
+            int r0Start = r0;
+            for (int col = cb0; col <= cb1; ++col) {
+                for (int row = rb0; row <= rb1; ++row) {
+                    this.setUnsafe(r0++, c0, B.getUnsafe(row, col));
+                }
+                r0 = r0Start;
+                c0++;
             }
-            r0 = r0Start;
-            c0++;
+            return this;
+        }
+        double[] src = B.getArrayUnsafe();
+        int srcStride = B.numRows();
+        int srcPos = cb0 * srcStride + rb0;
+        int dstPos = c0 * rows + r0;
+        // a row block is contiguous within a column, so one block move per column
+        for (int col = cb0; col <= cb1; ++col) {
+            System.arraycopy(src, srcPos, a, dstPos, len);
+            srcPos += srcStride;
+            dstPos += rows;
         }
         return this;
     }
