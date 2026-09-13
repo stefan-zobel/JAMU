@@ -3681,7 +3681,6 @@ public final class Matrices {
         ComplexMatrixD s = createComplexD(A.numRows(), 1);
         double[] _a = A.getArrayUnsafe();
         double[] _s = s.getArrayUnsafe();
-        int rows_ = A.numRows();
         int cols_ = A.numColumns();
         int idx = 0;
         for (int col = 0; col < cols_; ++col) {
