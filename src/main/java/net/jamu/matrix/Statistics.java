@@ -1056,6 +1056,40 @@ public final class Statistics {
     }
 
     /**
+     * Randomly permutes the columns in a copy of matrix {@code A} using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability. Matrix
+     * {@code A} doesn't get mutated.
+     *
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return a copy of matrix {@code A} with columns randomly permuted
+     * @since 1.4.9
+     */
+    public static MatrixD shuffleColumns(MatrixD A, long seed) {
+        return shuffleColumnsInplace(A.copy(), new XoShiRo256StarStar(seed));
+    }
+
+    /**
+     * Randomly permutes the columns in a copy of matrix {@code A} using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability. Matrix
+     * {@code A} doesn't get mutated.
+     *
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return a copy of matrix {@code A} with columns randomly permuted
+     * @since 1.4.9
+     */
+    public static MatrixF shuffleColumns(MatrixF A, long seed) {
+        return shuffleColumnsInplace(A.copy(), new XoShiRo256StarStar(seed));
+    }
+
+    /**
      * Randomly permutes the columns in matrix {@code A} in place using a
      * default source of randomness. All permutations occur with approximately
      * equal probability.
@@ -1173,6 +1207,40 @@ public final class Statistics {
      */
     public static MatrixF shuffleRows(MatrixF A) {
         return shuffleRowsInplace(A.copy(), null);
+    }
+
+    /**
+     * Randomly permutes the rows in a copy of matrix {@code A} using a default
+     * source of randomness seeded by the given {@code seed}. All permutations
+     * occur with approximately equal probability. Matrix {@code A} doesn't get
+     * mutated.
+     *
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return a copy of matrix {@code A} with rows randomly permuted
+     * @since 1.4.9
+     */
+    public static MatrixD shuffleRows(MatrixD A, long seed) {
+        return shuffleRowsInplace(A.copy(), new XoShiRo256StarStar(seed));
+    }
+
+    /**
+     * Randomly permutes the rows in a copy of matrix {@code A} using a default
+     * source of randomness seeded by the given {@code seed}. All permutations
+     * occur with approximately equal probability. Matrix {@code A} doesn't get
+     * mutated.
+     *
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return a copy of matrix {@code A} with rows randomly permuted
+     * @since 1.4.9
+     */
+    public static MatrixF shuffleRows(MatrixF A, long seed) {
+        return shuffleRowsInplace(A.copy(), new XoShiRo256StarStar(seed));
     }
 
     /**

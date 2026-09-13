@@ -18,6 +18,7 @@ package net.jamu.matrix;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -68,6 +69,35 @@ public final class ShuffleRowsTest {
     }
 
     @Test
+    public void testSeededCopyMatchesSeededInplaceOnACopy() {
+        for (int[] s : SHAPES) {
+            for (long seed : SEEDS) {
+                String at = " at " + s[0] + "x" + s[1] + " seed " + seed;
+                MatrixD A = Matrices.randomUniformD(s[0], s[1], -1.0, 1.0, 5L);
+                MatrixD expected = Statistics.shuffleRowsInplace(A.copy(), seed);
+                assertBits("MatrixD" + at, expected.getArrayUnsafe(),
+                        Statistics.shuffleRows(A, seed).getArrayUnsafe());
+                MatrixF F = Matrices.randomUniformF(s[0], s[1], -1.0f, 1.0f, 5L);
+                MatrixF fExpected = Statistics.shuffleRowsInplace(F.copy(), seed);
+                assertBits("MatrixF" + at, fExpected.getArrayUnsafe(),
+                        Statistics.shuffleRows(F, seed).getArrayUnsafe());
+            }
+        }
+    }
+
+    // pins existing behaviour, not a desired property: XoShiRo256StarStar
+    // maps seed 0 to -1 before mixing, so both seeds shuffle alike
+    @Test
+    public void testSeedZeroShufflesLikeSeedMinusOne() {
+        MatrixD A = Matrices.randomUniformD(200, 50, -1.0, 1.0, 5L);
+        assertBits("MatrixD", Statistics.shuffleRowsInplace(A.copy(), 0L).getArrayUnsafe(),
+                Statistics.shuffleRowsInplace(A.copy(), -1L).getArrayUnsafe());
+        MatrixF F = Matrices.randomUniformF(200, 50, -1.0f, 1.0f, 5L);
+        assertBits("MatrixF", Statistics.shuffleRowsInplace(F.copy(), 0L).getArrayUnsafe(),
+                Statistics.shuffleRowsInplace(F.copy(), -1L).getArrayUnsafe());
+    }
+
+    @Test
     public void testTheSeededShuffleActuallyMovesRows() {
         MatrixD A = Matrices.randomUniformD(200, 50, -1.0, 1.0, 5L);
         double[] before = A.getArrayUnsafe().clone();
@@ -83,11 +113,13 @@ public final class ShuffleRowsTest {
             String at = " at " + s[0] + "x" + s[1];
             MatrixD A = Matrices.randomUniformD(s[0], s[1], -1.0, 1.0, 9L);
             assertTrue("shuffleRows(MatrixD)" + at, sameRows(A, Statistics.shuffleRows(A)));
+            assertTrue("shuffleRows(MatrixD, seed)" + at, sameRows(A, Statistics.shuffleRows(A, 3L)));
             assertTrue("shuffleRowsInplace(MatrixD)" + at, sameRows(A, Statistics.shuffleRowsInplace(A.copy())));
             assertTrue("shuffleRowsInplace(MatrixD, seed)" + at,
                     sameRows(A, Statistics.shuffleRowsInplace(A.copy(), 3L)));
             MatrixF F = Matrices.randomUniformF(s[0], s[1], -1.0f, 1.0f, 9L);
             assertTrue("shuffleRows(MatrixF)" + at, sameRows(F, Statistics.shuffleRows(F)));
+            assertTrue("shuffleRows(MatrixF, seed)" + at, sameRows(F, Statistics.shuffleRows(F, 3L)));
             assertTrue("shuffleRowsInplace(MatrixF)" + at, sameRows(F, Statistics.shuffleRowsInplace(F.copy())));
             assertTrue("shuffleRowsInplace(MatrixF, seed)" + at,
                     sameRows(F, Statistics.shuffleRowsInplace(F.copy(), 3L)));
@@ -95,15 +127,19 @@ public final class ShuffleRowsTest {
     }
 
     @Test
-    public void testTheCopyingVariantLeavesTheArgumentUntouched() {
+    public void testTheCopyingVariantsLeaveTheArgumentUntouched() {
         MatrixD A = Matrices.randomUniformD(20, 15, -1.0, 1.0, 11L);
         double[] before = A.getArrayUnsafe().clone();
-        Statistics.shuffleRows(A);
+        assertNotSame("MatrixD", A, Statistics.shuffleRows(A));
         assertArrayEquals("MatrixD", before, A.getArrayUnsafe(), 0.0);
+        assertNotSame("MatrixD seeded", A, Statistics.shuffleRows(A, 42L));
+        assertArrayEquals("MatrixD seeded", before, A.getArrayUnsafe(), 0.0);
         MatrixF F = Matrices.randomUniformF(20, 15, -1.0f, 1.0f, 11L);
         float[] fBefore = F.getArrayUnsafe().clone();
-        Statistics.shuffleRows(F);
+        assertNotSame("MatrixF", F, Statistics.shuffleRows(F));
         assertArrayEquals("MatrixF", fBefore, F.getArrayUnsafe(), 0.0f);
+        assertNotSame("MatrixF seeded", F, Statistics.shuffleRows(F, 42L));
+        assertArrayEquals("MatrixF seeded", fBefore, F.getArrayUnsafe(), 0.0f);
     }
 
     @Test
