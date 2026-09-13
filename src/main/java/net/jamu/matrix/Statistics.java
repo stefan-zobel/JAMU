@@ -1207,54 +1207,67 @@ public final class Statistics {
 
     private static MatrixD shuffleRowsInplace(MatrixD A, XoShiRo256StarStar rng) {
         int rows = A.numRows();
-        int cols = A.numColumns();
+        int[] perm = rowPermutation(rows, rng);
+        if (perm == null) {
+            return A;
+        }
+        // gather column by column, so that the array is traversed sequentially
         double[] a = A.getArrayUnsafe();
-        double[] tmp = new double[cols];
-        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
-        for (int i = rows; i > 1; --i) {
-            int sourceRow = rnd.nextInt(i);
-            int targetRow = i - 1;
-            if (sourceRow != targetRow) {
-                swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+        double[] tmp = new double[rows];
+        for (int off = 0; off < a.length; off += rows) {
+            for (int row = 0; row < rows; ++row) {
+                tmp[row] = a[off + perm[row]];
             }
+            System.arraycopy(tmp, 0, a, off, rows);
         }
         return A;
     }
 
     private static MatrixF shuffleRowsInplace(MatrixF A, XoShiRo256StarStar rng) {
         int rows = A.numRows();
-        int cols = A.numColumns();
+        int[] perm = rowPermutation(rows, rng);
+        if (perm == null) {
+            return A;
+        }
+        // gather column by column, so that the array is traversed sequentially
         float[] a = A.getArrayUnsafe();
-        float[] tmp = new float[cols];
-        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
-        for (int i = rows; i > 1; --i) {
-            int sourceRow = rnd.nextInt(i);
-            int targetRow = i - 1;
-            if (sourceRow != targetRow) {
-                swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+        float[] tmp = new float[rows];
+        for (int off = 0; off < a.length; off += rows) {
+            for (int row = 0; row < rows; ++row) {
+                tmp[row] = a[off + perm[row]];
             }
+            System.arraycopy(tmp, 0, a, off, rows);
         }
         return A;
     }
 
-    private static void swapRows(int aoff1, double[] a, double[] tmp, int len, int skip, int aoff2) {
-        int j = 0;
-        for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
-            tmp[j] = a[i];
-            a[i] = a[aoff2];
-            a[aoff2] = tmp[j];
-            ++j;
+    /**
+     * Fisher-Yates over the row indices: {@code perm[row]} is the original row
+     * that ends up at {@code row}. Draws exactly the same random numbers as
+     * swapping the rows themselves would, so a seed keeps its permutation.
+     * Returns {@code null} if no row moves.
+     */
+    private static int[] rowPermutation(int rows, XoShiRo256StarStar rng) {
+        if (rows < 2) {
+            return null;
         }
-    }
-
-    private static void swapRows(int aoff1, float[] a, float[] tmp, int len, int skip, int aoff2) {
-        int j = 0;
-        for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
-            tmp[j] = a[i];
-            a[i] = a[aoff2];
-            a[aoff2] = tmp[j];
-            ++j;
+        int[] perm = new int[rows];
+        for (int row = 0; row < rows; ++row) {
+            perm[row] = row;
         }
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        boolean swapped = false;
+        for (int i = rows; i > 1; --i) {
+            int sourceRow = rnd.nextInt(i);
+            int targetRow = i - 1;
+            if (sourceRow != targetRow) {
+                int t = perm[targetRow];
+                perm[targetRow] = perm[sourceRow];
+                perm[sourceRow] = t;
+                swapped = true;
+            }
+        }
+        return swapped ? perm : null;
     }
 
     private static int checkNotRowVector(MatrixDimensions A) {
