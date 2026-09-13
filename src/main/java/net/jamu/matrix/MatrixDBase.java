@@ -257,6 +257,93 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD addBroadcastedRowVectorInplace(MatrixD B) {
+        Checks.checkSameCols(this, B);
+        if (this.numRows() == B.numRows()) {
+            return addInplace(B);
+        }
+        if (B.numRows() == 1) {
+            double[] _a = a;
+            double[] _b = B.getArrayUnsafe();
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                double bc = _b[col];
+                int end = (col + 1) * rows_;
+                for (int i = col * rows_; i < end; ++i) {
+                    _a[i] += bc;
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameRowsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD mulBroadcastedRowVectorInplace(MatrixD B) {
+        Checks.checkSameCols(this, B);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        if (this.numRows() == B.numRows()) {
+            for (int i = 0; i < _a.length; ++i) {
+                _a[i] *= _b[i];
+            }
+            return this;
+        }
+        if (B.numRows() == 1) {
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                double bc = _b[col];
+                int end = (col + 1) * rows_;
+                for (int i = col * rows_; i < end; ++i) {
+                    _a[i] *= bc;
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameRowsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD divBroadcastedRowVectorInplace(MatrixD B) {
+        Checks.checkSameCols(this, B);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        if (this.numRows() == B.numRows()) {
+            for (int i = 0; i < _a.length; ++i) {
+                _a[i] /= _b[i];
+            }
+            return this;
+        }
+        if (B.numRows() == 1) {
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                double bc = _b[col];
+                int end = (col + 1) * rows_;
+                for (int i = col * rows_; i < end; ++i) {
+                    _a[i] /= bc;
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameRowsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD mult(MatrixD B, MatrixD C) {
         return mult(1.0, B, C);
     }
@@ -1216,6 +1303,30 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     @Override
     public MatrixD divBroadcastedVector(MatrixD B) {
         return copy().divBroadcastedVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD plusBroadcastedRowVector(MatrixD B) {
+        return copy().addBroadcastedRowVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD mulBroadcastedRowVector(MatrixD B) {
+        return copy().mulBroadcastedRowVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD divBroadcastedRowVector(MatrixD B) {
+        return copy().divBroadcastedRowVectorInplace(B);
     }
 
     /**

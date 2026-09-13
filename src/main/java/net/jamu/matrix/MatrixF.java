@@ -783,6 +783,69 @@ public interface MatrixF extends MatrixDimensions, MatrixFConduct {
     MatrixF divBroadcastedVectorInplace(MatrixF B);
 
     /**
+     * If {@code B} is a row vector with the same number of columns as this
+     * matrix a "stretched" version of {@code B} with a compatible number of
+     * rows (where the "additional" rows are simple copies of the original
+     * {@code B} row vector) gets added to this matrix inplace. If {@code B}'s
+     * dimension is the same as the dimension of this matrix this operation
+     * behaves exactly like {@link #addInplace(MatrixF)}. Any other dimension of
+     * {@code B} is treated as a mismatch and results in an
+     * IndexOutOfBoundsException.
+     *
+     * @param B
+     *            a row vector with dimension {@code (1 x this.numColumns())}
+     * @return this matrix (mutated)
+     * @throws IndexOutOfBoundsException
+     *             if the dimension of {@code B} doesn't match in the sense
+     *             described above
+     * @since 1.4.9
+     */
+    MatrixF addBroadcastedRowVectorInplace(MatrixF B);
+
+    /**
+     * If {@code B} is a row vector with the same number of columns as this
+     * matrix a "stretched" version of {@code B} with a compatible number of
+     * rows (where the "additional" rows are simple copies of the original
+     * {@code B} row vector) gets multiplied into this matrix inplace,
+     * elementwise. If {@code B}'s dimension is the same as the dimension of
+     * this matrix this operation is the elementwise (Hadamard) product of this
+     * matrix and {@code B}. Any other dimension of {@code B} is treated as a
+     * mismatch and results in an IndexOutOfBoundsException.
+     *
+     * @param B
+     *            a row vector with dimension {@code (1 x this.numColumns())}
+     * @return this matrix (mutated)
+     * @throws IndexOutOfBoundsException
+     *             if the dimension of {@code B} doesn't match in the sense
+     *             described above
+     * @since 1.4.9
+     */
+    MatrixF mulBroadcastedRowVectorInplace(MatrixF B);
+
+    /**
+     * If {@code B} is a row vector with the same number of columns as this
+     * matrix this matrix gets divided inplace, elementwise, by a "stretched"
+     * version of {@code B} with a compatible number of rows (where the
+     * "additional" rows are simple copies of the original {@code B} row
+     * vector). If {@code B}'s dimension is the same as the dimension of this
+     * matrix this operation is the elementwise division of this matrix by
+     * {@code B}. Any other dimension of {@code B} is treated as a mismatch and
+     * results in an IndexOutOfBoundsException.
+     * <p>
+     * Division by zero is not checked for. It follows IEEE 754 and yields an
+     * infinity or a NaN like any other float division.
+     *
+     * @param B
+     *            a row vector with dimension {@code (1 x this.numColumns())}
+     * @return this matrix (mutated)
+     * @throws IndexOutOfBoundsException
+     *             if the dimension of {@code B} doesn't match in the sense
+     *             described above
+     * @since 1.4.9
+     */
+    MatrixF divBroadcastedRowVectorInplace(MatrixF B);
+
+    /**
      * Set all elements <code>|x<sub>ij</sub>| &le; k * 2<sup>-24</sup></code>
      * ({@code k} times the machine epsilon for floats) to {@code 0.0f} where
      * {@code k} is a positive integer {@code >= 1}.
