@@ -205,7 +205,7 @@ public final class ComplexMatrixFViewTest {
         for (int[] shape : SHAPES) {
             int rows = shape[0];
             int cols = shape[1];
-            ComplexMatrixF A = Matrices.randomUniformComplexF(rows, cols, SEED + 100 * rows + cols);
+            ComplexMatrixF A = Matrices.randomUniformComplexF(rows, cols, SEED + 100L * rows + cols);
             for (int draw = 0; draw < 20; ++draw) {
                 int[] reg = region(rnd, rows, cols);
                 ComplexMatrixF V = A.view(reg[0], reg[1], reg[2], reg[3]);

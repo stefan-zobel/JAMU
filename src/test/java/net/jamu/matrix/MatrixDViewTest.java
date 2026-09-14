@@ -190,7 +190,7 @@ public final class MatrixDViewTest {
         for (int[] shape : SHAPES) {
             int rows = shape[0];
             int cols = shape[1];
-            MatrixD A = Matrices.randomUniformD(rows, cols, SEED + 100 * rows + cols);
+            MatrixD A = Matrices.randomUniformD(rows, cols, SEED + 100L * rows + cols);
             for (int draw = 0; draw < 20; ++draw) {
                 int[] reg = region(rnd, rows, cols);
                 MatrixD V = A.view(reg[0], reg[1], reg[2], reg[3]);
