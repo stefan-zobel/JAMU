@@ -28,8 +28,8 @@ import org.junit.Assume;
 import org.junit.Test;
 
 /**
- * Pins the copies that {@code solve}, its callers and {@code timesMany} make on a
- * view, and that {@code solve} and {@code inv} may write into their own matrix.
+ * Pins the copies that views and the solvers make, and that {@code solve},
+ * {@code inv}, {@code trans} and {@code conjTrans} may write into their own matrix.
  */
 public final class ViewCopyTest {
 
@@ -295,6 +295,309 @@ public final class ViewCopyTest {
                 () -> sqzf.mldivide(bzf), () -> sqzf.copy().mldivide(bzf));
     }
 
+    // ---------------------------------------------------------------- mrdivide
+
+    @Test
+    public void testMrdivideMatchesTheTransposeFormula() {
+        // B square (LU), tall and wide transposed (QR)
+        for (int m : new int[] { 5, 3, 7 }) {
+            String what = " B " + m + " x 5";
+            MatrixD ad = Matrices.randomUniformD(4, 5, SEED + 21);
+            MatrixD bd = (m == 5) ? dominantD(5, SEED + 22) : Matrices.randomUniformD(m, 5, SEED + 22);
+            MatrixD wd = bd.transpose().mldivide(ad.transpose()).transpose();
+            assertClose("MatrixD" + what, wd, ad.mrdivide(bd));
+            MatrixD pd = Matrices.randomUniformD(7, 8, SEED + 23);
+            pd.setSubmatrixInplace(1, 2, ad, 0, 0, 3, 4);
+            MatrixD vd = Matrices.view(pd, 1, 2, 4, 6);
+            assertClose("MatrixD view" + what, wd, vd.mrdivide(bd));
+            MatrixD qd = Matrices.randomUniformD(m + 1, 6, SEED + 24);
+            qd.setSubmatrixInplace(1, 1, bd, 0, 0, m - 1, 4);
+            assertClose("MatrixD view B" + what, wd, ad.mrdivide(Matrices.view(qd, 1, 1, m, 5)));
+
+            MatrixF af = Matrices.convert(ad);
+            MatrixF bf = Matrices.convert(bd);
+            MatrixF wf = bf.transpose().mldivide(af.transpose()).transpose();
+            assertClose("MatrixF" + what, wf, af.mrdivide(bf));
+            MatrixF pf = Matrices.convert(pd);
+            assertClose("MatrixF view" + what, wf, Matrices.view(pf, 1, 2, 4, 6).mrdivide(bf));
+            assertClose("MatrixF view B" + what, wf, af.mrdivide(Matrices.view(Matrices.convert(qd), 1, 1, m, 5)));
+
+            ComplexMatrixD azd = Matrices.randomUniformComplexD(4, 5, SEED + 21);
+            ComplexMatrixD bzd = (m == 5) ? dominantComplexD(5, SEED + 22)
+                    : Matrices.randomUniformComplexD(m, 5, SEED + 22);
+            ComplexMatrixD wzd = bzd.conjugateTranspose().mldivide(azd.conjugateTranspose()).conjugateTranspose();
+            assertClose("ComplexMatrixD" + what, wzd, azd.mrdivide(bzd));
+            ComplexMatrixD pzd = Matrices.randomUniformComplexD(7, 8, SEED + 23);
+            pzd.setSubmatrixInplace(1, 2, azd, 0, 0, 3, 4);
+            assertClose("ComplexMatrixD view" + what, wzd, Matrices.view(pzd, 1, 2, 4, 6).mrdivide(bzd));
+            ComplexMatrixD qzd = Matrices.randomUniformComplexD(m + 1, 6, SEED + 24);
+            qzd.setSubmatrixInplace(1, 1, bzd, 0, 0, m - 1, 4);
+            assertClose("ComplexMatrixD view B" + what, wzd, azd.mrdivide(Matrices.view(qzd, 1, 1, m, 5)));
+
+            ComplexMatrixF azf = Matrices.convert(azd);
+            ComplexMatrixF bzf = Matrices.convert(bzd);
+            ComplexMatrixF wzf = bzf.conjugateTranspose().mldivide(azf.conjugateTranspose()).conjugateTranspose();
+            assertClose("ComplexMatrixF" + what, wzf, azf.mrdivide(bzf));
+            assertClose("ComplexMatrixF view" + what, wzf,
+                Matrices.view(Matrices.convert(pzd), 1, 2, 4, 6).mrdivide(bzf));
+            assertClose("ComplexMatrixF view B" + what, wzf,
+                    azf.mrdivide(Matrices.view(Matrices.convert(qzd), 1, 1, m, 5)));
+        }
+    }
+
+    @Test
+    public void testMrdivideByItselfAndByAViewOfItself() {
+        MatrixD ad = dominantD(5, SEED + 25);
+        assertClose("MatrixD A / A", ad.transpose().mldivide(ad.transpose()).transpose(), ad.mrdivide(ad));
+        MatrixD td = Matrices.randomUniformD(6, 5, SEED + 26);
+        td.setSubmatrixInplace(1, 0, dominantD(5, SEED + 27), 0, 0, 4, 4);
+        MatrixD tvd = Matrices.view(td, 1, 0, 5, 4);
+        assertClose("MatrixD A / view of A", td.mrdivide(tvd.copy()), td.mrdivide(tvd));
+
+        MatrixF af = Matrices.convert(ad);
+        assertClose("MatrixF A / A", af.transpose().mldivide(af.transpose()).transpose(), af.mrdivide(af));
+        MatrixF tf = Matrices.convert(td);
+        MatrixF tvf = Matrices.view(tf, 1, 0, 5, 4);
+        assertClose("MatrixF A / view of A", tf.mrdivide(tvf.copy()), tf.mrdivide(tvf));
+
+        ComplexMatrixD azd = dominantComplexD(5, SEED + 25);
+        assertClose("ComplexMatrixD A / A",
+                azd.conjugateTranspose().mldivide(azd.conjugateTranspose()).conjugateTranspose(), azd.mrdivide(azd));
+        ComplexMatrixD tzd = Matrices.randomUniformComplexD(6, 5, SEED + 26);
+        tzd.setSubmatrixInplace(1, 0, dominantComplexD(5, SEED + 27), 0, 0, 4, 4);
+        ComplexMatrixD tvzd = Matrices.view(tzd, 1, 0, 5, 4);
+        assertClose("ComplexMatrixD A / view of A", tzd.mrdivide(tvzd.copy()), tzd.mrdivide(tvzd));
+
+        ComplexMatrixF azf = Matrices.convert(azd);
+        assertClose("ComplexMatrixF A / A",
+                azf.conjugateTranspose().mldivide(azf.conjugateTranspose()).conjugateTranspose(), azf.mrdivide(azf));
+        ComplexMatrixF tzf = Matrices.convert(tzd);
+        ComplexMatrixF tvzf = Matrices.view(tzf, 1, 0, 5, 4);
+        assertClose("ComplexMatrixF A / view of A", tzf.mrdivide(tvzf.copy()), tzf.mrdivide(tvzf));
+    }
+
+    @Test
+    public void testMrdivideSkipsTheTemporaryCopies() {
+        Method bytes = allocatedBytes();
+        Assume.assumeTrue("thread allocation counter not available", bytes != null);
+        int h = 2 * N / 3;
+
+        MatrixD ad = Matrices.randomUniformD(N, N, SEED + 28);
+        MatrixD bd = dominantD(N, SEED + 29);
+        MatrixD cd = Matrices.randomUniformD(h, N, SEED + 30);
+        MatrixD vd = Matrices.view(Matrices.randomUniformD(N + 1, N + 1, SEED + 31), 1, 1, N, N);
+        // B^T is not cloned and the LU path solves in A^T itself, two copies less
+        assertSaves(bytes, "MatrixD square", 3L * 8L * N * N, () -> ad.mrdivide(bd),
+                () -> bd.transpose().mldivide(ad.transpose()).transpose());
+        assertSaves(bytes, "MatrixD non-square", 8L * h * N, () -> ad.mrdivide(cd),
+                () -> cd.transpose().mldivide(ad.transpose()).transpose());
+        assertSaves(bytes, "MatrixD view", 8L * N * N, () -> vd.mrdivide(bd), () -> vd.copy().mrdivide(bd));
+
+        MatrixF af = Matrices.randomUniformF(N, N, SEED + 28);
+        MatrixF bf = dominantF(N, SEED + 29);
+        MatrixF cf = Matrices.randomUniformF(h, N, SEED + 30);
+        MatrixF vf = Matrices.view(Matrices.randomUniformF(N + 1, N + 1, SEED + 31), 1, 1, N, N);
+        assertSaves(bytes, "MatrixF square", 3L * 4L * N * N, () -> af.mrdivide(bf),
+                () -> bf.transpose().mldivide(af.transpose()).transpose());
+        assertSaves(bytes, "MatrixF non-square", 4L * h * N, () -> af.mrdivide(cf),
+                () -> cf.transpose().mldivide(af.transpose()).transpose());
+        assertSaves(bytes, "MatrixF view", 4L * N * N, () -> vf.mrdivide(bf), () -> vf.copy().mrdivide(bf));
+
+        ComplexMatrixD azd = Matrices.randomUniformComplexD(N, N, SEED + 28);
+        ComplexMatrixD bzd = dominantComplexD(N, SEED + 29);
+        ComplexMatrixD czd = Matrices.randomUniformComplexD(h, N, SEED + 30);
+        ComplexMatrixD vzd = Matrices.view(Matrices.randomUniformComplexD(N + 1, N + 1, SEED + 31), 1, 1, N, N);
+        assertSaves(bytes, "ComplexMatrixD square", 3L * 16L * N * N, () -> azd.mrdivide(bzd),
+                () -> bzd.conjugateTranspose().mldivide(azd.conjugateTranspose()).conjugateTranspose());
+        assertSaves(bytes, "ComplexMatrixD non-square", 16L * h * N, () -> azd.mrdivide(czd),
+                () -> czd.conjugateTranspose().mldivide(azd.conjugateTranspose()).conjugateTranspose());
+        assertSaves(bytes, "ComplexMatrixD view", 16L * N * N, () -> vzd.mrdivide(bzd),
+                () -> vzd.copy().mrdivide(bzd));
+
+        ComplexMatrixF azf = Matrices.randomUniformComplexF(N, N, SEED + 28);
+        ComplexMatrixF bzf = dominantComplexF(N, SEED + 29);
+        ComplexMatrixF czf = Matrices.randomUniformComplexF(h, N, SEED + 30);
+        ComplexMatrixF vzf = Matrices.view(Matrices.randomUniformComplexF(N + 1, N + 1, SEED + 31), 1, 1, N, N);
+        assertSaves(bytes, "ComplexMatrixF square", 3L * 8L * N * N, () -> azf.mrdivide(bzf),
+                () -> bzf.conjugateTranspose().mldivide(azf.conjugateTranspose()).conjugateTranspose());
+        assertSaves(bytes, "ComplexMatrixF non-square", 8L * h * N, () -> azf.mrdivide(czf),
+                () -> czf.conjugateTranspose().mldivide(azf.conjugateTranspose()).conjugateTranspose());
+        assertSaves(bytes, "ComplexMatrixF view", 8L * N * N, () -> vzf.mrdivide(bzf),
+                () -> vzf.copy().mrdivide(bzf));
+    }
+
+    // ---------------------------------------------------------------- pseudoInv
+
+    @Test
+    public void testPseudoInvOnARankDeficientView() {
+        for (int[] s : new int[][] { { 7, 4 }, { 4, 7 } }) {
+            String shape = " " + s[0] + " x " + s[1];
+            MatrixD pd = Matrices.randomUniformD(s[0] + 2, s[1] + 3, SEED + 17);
+            pd.setSubmatrixInplace(1, 2, Matrices.randomUniformD(s[0], 2, SEED + 18)
+                    .times(Matrices.randomUniformD(2, s[1], SEED + 19)), 0, 0, s[0] - 1, s[1] - 1);
+            MatrixD vd = Matrices.view(pd, 1, 2, s[0], s[1] + 1);
+            MatrixD gd = vd.pseudoInv();
+            assertClose("MatrixD" + shape, vd.copy().pseudoInv(), gd);
+            assertClose("MatrixD A P A" + shape, vd.copy(), vd.copy().times(gd).times(vd.copy()), 1e-8);
+
+            MatrixF pf = Matrices.convert(pd);
+            MatrixF vf = Matrices.view(pf, 1, 2, s[0], s[1] + 1);
+            MatrixF gf = vf.pseudoInv();
+            assertClose("MatrixF" + shape, vf.copy().pseudoInv(), gf);
+            assertClose("MatrixF A P A" + shape, vf.copy(), vf.copy().times(gf).times(vf.copy()), 1e-3f);
+
+            ComplexMatrixD pzd = Matrices.randomUniformComplexD(s[0] + 2, s[1] + 3, SEED + 17);
+            pzd.setSubmatrixInplace(1, 2, Matrices.randomUniformComplexD(s[0], 2, SEED + 18)
+                    .times(Matrices.randomUniformComplexD(2, s[1], SEED + 19)), 0, 0, s[0] - 1, s[1] - 1);
+            ComplexMatrixD vzd = Matrices.view(pzd, 1, 2, s[0], s[1] + 1);
+            ComplexMatrixD gzd = vzd.pseudoInv();
+            assertClose("ComplexMatrixD" + shape, vzd.copy().pseudoInv(), gzd);
+            assertClose("ComplexMatrixD A P A" + shape, vzd.copy(), vzd.copy().times(gzd).times(vzd.copy()), 1e-8);
+
+            ComplexMatrixF pzf = Matrices.convert(pzd);
+            ComplexMatrixF vzf = Matrices.view(pzf, 1, 2, s[0], s[1] + 1);
+            ComplexMatrixF gzf = vzf.pseudoInv();
+            assertClose("ComplexMatrixF" + shape, vzf.copy().pseudoInv(), gzf);
+            assertClose("ComplexMatrixF A P A" + shape, vzf.copy(), vzf.copy().times(gzf).times(vzf.copy()), 1e-3f);
+        }
+    }
+
+    @Test
+    public void testPseudoInvOnAViewCopiesTheViewOnce() {
+        Method bytes = allocatedBytes();
+        Assume.assumeTrue("thread allocation counter not available", bytes != null);
+        int m = 200;
+        int n = 150;
+        MatrixD vd = Matrices.view(Matrices.randomUniformD(m + 1, n + 1, SEED + 20), 1, 1, m, n);
+        assertSaves(bytes, "MatrixD pseudoInv", 8L * m * n, () -> vd.pseudoInv(), () -> vd.copy().pseudoInv());
+        MatrixF vf = Matrices.view(Matrices.randomUniformF(m + 1, n + 1, SEED + 20), 1, 1, m, n);
+        assertSaves(bytes, "MatrixF pseudoInv", 4L * m * n, () -> vf.pseudoInv(), () -> vf.copy().pseudoInv());
+        ComplexMatrixD vzd = Matrices.view(Matrices.randomUniformComplexD(m + 1, n + 1, SEED + 20), 1, 1, m, n);
+        assertSaves(bytes, "ComplexMatrixD pseudoInv", 16L * m * n, () -> vzd.pseudoInv(),
+                () -> vzd.copy().pseudoInv());
+        ComplexMatrixF vzf = Matrices.view(Matrices.randomUniformComplexF(m + 1, n + 1, SEED + 20), 1, 1, m, n);
+        assertSaves(bytes, "ComplexMatrixF pseudoInv", 8L * m * n, () -> vzf.pseudoInv(),
+                () -> vzf.copy().pseudoInv());
+    }
+
+    // ---------------------------------------------------------------- transpose
+
+    @Test
+    public void testTransposeIntoItsOwnArray() {
+        MatrixD ad = Matrices.randomUniformD(5, 5, SEED + 13);
+        MatrixD wd = ad.copy().transpose();
+        assertSame(ad, ad.trans(ad));
+        assertBits("MatrixD trans(A)", wd.getArrayUnsafe(), ad.getArrayUnsafe());
+
+        MatrixF af = Matrices.randomUniformF(5, 5, SEED + 13);
+        MatrixF wf = af.copy().transpose();
+        assertSame(af, af.trans(af));
+        assertBits("MatrixF trans(A)", wf.getArrayUnsafe(), af.getArrayUnsafe());
+
+        ComplexMatrixD azd = Matrices.randomUniformComplexD(5, 5, SEED + 13);
+        ComplexMatrixD wzd = azd.copy().transpose();
+        assertSame(azd, azd.trans(azd));
+        assertBits("ComplexMatrixD trans(A)", wzd.getArrayUnsafe(), azd.getArrayUnsafe());
+        azd = Matrices.randomUniformComplexD(5, 5, SEED + 13);
+        wzd = azd.copy().conjugateTranspose();
+        assertSame(azd, azd.conjTrans(azd));
+        assertBits("ComplexMatrixD conjTrans(A)", wzd.getArrayUnsafe(), azd.getArrayUnsafe());
+
+        ComplexMatrixF azf = Matrices.randomUniformComplexF(5, 5, SEED + 13);
+        ComplexMatrixF wzf = azf.copy().transpose();
+        assertSame(azf, azf.trans(azf));
+        assertBits("ComplexMatrixF trans(A)", wzf.getArrayUnsafe(), azf.getArrayUnsafe());
+        azf = Matrices.randomUniformComplexF(5, 5, SEED + 13);
+        wzf = azf.copy().conjugateTranspose();
+        assertSame(azf, azf.conjTrans(azf));
+        assertBits("ComplexMatrixF conjTrans(A)", wzf.getArrayUnsafe(), azf.getArrayUnsafe());
+    }
+
+    @Test
+    public void testTransposeOnAViewReadsTheParent() {
+        MatrixDViewArgumentTest.CountingMatrixD pd = MatrixDViewArgumentTest.counting(9, 8, SEED + 14);
+        MatrixD vd = Matrices.view(pd, 2, 1, 7, 4);
+        MatrixD[] gotd = { vd.transpose(), vd.trans(Matrices.createD(4, 6)) };
+        assertEquals("MatrixD: copies", 0, pd.copies);
+        assertBits("MatrixD transpose", vd.copy().transpose(), gotd[0]);
+        assertBits("MatrixD trans", vd.copy().transpose(), gotd[1]);
+        MatrixD sd = Matrices.randomUniformD(5, 5, SEED + 15);
+        MatrixD swd = sd.copy().transpose();
+        assertSame(sd, Matrices.view(sd, 0, 0, 4, 4).trans(sd));
+        assertBits("MatrixD trans into the parent", swd, sd);
+        MatrixD qd = Matrices.randomUniformD(6, 6, SEED + 16);
+        double[] q0d = qd.getArrayUnsafe().clone();
+        assertRefused("MatrixD trans into a view",
+                () -> Matrices.view(qd, 1, 1, 4, 3).trans(Matrices.view(qd, 0, 0, 2, 3)));
+        assertBits("MatrixD parent", q0d, qd.getArrayUnsafe());
+
+        MatrixFViewArgumentTest.CountingMatrixF pf = MatrixFViewArgumentTest.counting(9, 8, SEED + 14);
+        MatrixF vf = Matrices.view(pf, 2, 1, 7, 4);
+        MatrixF[] gotf = { vf.transpose(), vf.trans(Matrices.createF(4, 6)) };
+        assertEquals("MatrixF: copies", 0, pf.copies);
+        assertBits("MatrixF transpose", vf.copy().transpose(), gotf[0]);
+        assertBits("MatrixF trans", vf.copy().transpose(), gotf[1]);
+        MatrixF sf = Matrices.randomUniformF(5, 5, SEED + 15);
+        MatrixF swf = sf.copy().transpose();
+        assertSame(sf, Matrices.view(sf, 0, 0, 4, 4).trans(sf));
+        assertBits("MatrixF trans into the parent", swf, sf);
+        MatrixF qf = Matrices.randomUniformF(6, 6, SEED + 16);
+        float[] q0f = qf.getArrayUnsafe().clone();
+        assertRefused("MatrixF trans into a view",
+                () -> Matrices.view(qf, 1, 1, 4, 3).trans(Matrices.view(qf, 0, 0, 2, 3)));
+        assertBits("MatrixF parent", q0f, qf.getArrayUnsafe());
+
+        ComplexMatrixDViewArgumentTest.CountingComplexMatrixD pzd = ComplexMatrixDViewArgumentTest.counting(9, 8,
+                SEED + 14);
+        ComplexMatrixD vzd = Matrices.view(pzd, 2, 1, 7, 4);
+        ComplexMatrixD[] gotzd = { vzd.transpose(), vzd.trans(Matrices.createComplexD(4, 6)),
+                vzd.conjugateTranspose(), vzd.conjTrans(Matrices.createComplexD(4, 6)) };
+        assertEquals("ComplexMatrixD: copies", 0, pzd.copies);
+        assertBits("ComplexMatrixD transpose", vzd.copy().transpose(), gotzd[0]);
+        assertBits("ComplexMatrixD trans", vzd.copy().transpose(), gotzd[1]);
+        assertBits("ComplexMatrixD conjugateTranspose", vzd.copy().conjugateTranspose(), gotzd[2]);
+        assertBits("ComplexMatrixD conjTrans", vzd.copy().conjugateTranspose(), gotzd[3]);
+        ComplexMatrixD szd = Matrices.randomUniformComplexD(5, 5, SEED + 15);
+        ComplexMatrixD swzd = szd.copy().transpose();
+        assertSame(szd, Matrices.view(szd, 0, 0, 4, 4).trans(szd));
+        assertBits("ComplexMatrixD trans into the parent", swzd, szd);
+        swzd = szd.copy().conjugateTranspose();
+        assertSame(szd, Matrices.view(szd, 0, 0, 4, 4).conjTrans(szd));
+        assertBits("ComplexMatrixD conjTrans into the parent", swzd, szd);
+        ComplexMatrixD qzd = Matrices.randomUniformComplexD(6, 6, SEED + 16);
+        double[] q0zd = qzd.getArrayUnsafe().clone();
+        assertRefused("ComplexMatrixD trans into a view",
+                () -> Matrices.view(qzd, 1, 1, 4, 3).trans(Matrices.view(qzd, 0, 0, 2, 3)));
+        assertRefused("ComplexMatrixD conjTrans into a view",
+                () -> Matrices.view(qzd, 1, 1, 4, 3).conjTrans(Matrices.view(qzd, 0, 0, 2, 3)));
+        assertBits("ComplexMatrixD parent", q0zd, qzd.getArrayUnsafe());
+
+        ComplexMatrixFViewArgumentTest.CountingComplexMatrixF pzf = ComplexMatrixFViewArgumentTest.counting(9, 8,
+                SEED + 14);
+        ComplexMatrixF vzf = Matrices.view(pzf, 2, 1, 7, 4);
+        ComplexMatrixF[] gotzf = { vzf.transpose(), vzf.trans(Matrices.createComplexF(4, 6)),
+                vzf.conjugateTranspose(), vzf.conjTrans(Matrices.createComplexF(4, 6)) };
+        assertEquals("ComplexMatrixF: copies", 0, pzf.copies);
+        assertBits("ComplexMatrixF transpose", vzf.copy().transpose(), gotzf[0]);
+        assertBits("ComplexMatrixF trans", vzf.copy().transpose(), gotzf[1]);
+        assertBits("ComplexMatrixF conjugateTranspose", vzf.copy().conjugateTranspose(), gotzf[2]);
+        assertBits("ComplexMatrixF conjTrans", vzf.copy().conjugateTranspose(), gotzf[3]);
+        ComplexMatrixF szf = Matrices.randomUniformComplexF(5, 5, SEED + 15);
+        ComplexMatrixF swzf = szf.copy().transpose();
+        assertSame(szf, Matrices.view(szf, 0, 0, 4, 4).trans(szf));
+        assertBits("ComplexMatrixF trans into the parent", swzf, szf);
+        swzf = szf.copy().conjugateTranspose();
+        assertSame(szf, Matrices.view(szf, 0, 0, 4, 4).conjTrans(szf));
+        assertBits("ComplexMatrixF conjTrans into the parent", swzf, szf);
+        ComplexMatrixF qzf = Matrices.randomUniformComplexF(6, 6, SEED + 16);
+        float[] q0zf = qzf.getArrayUnsafe().clone();
+        assertRefused("ComplexMatrixF trans into a view",
+                () -> Matrices.view(qzf, 1, 1, 4, 3).trans(Matrices.view(qzf, 0, 0, 2, 3)));
+        assertRefused("ComplexMatrixF conjTrans into a view",
+                () -> Matrices.view(qzf, 1, 1, 4, 3).conjTrans(Matrices.view(qzf, 0, 0, 2, 3)));
+        assertBits("ComplexMatrixF parent", q0zf, qzf.getArrayUnsafe());
+    }
+
     // ---------------------------------------------------------------- timesMany
 
     @Test
@@ -416,48 +719,97 @@ public final class ViewCopyTest {
     }
 
     static void assertClose(String what, MatrixD want, MatrixD got) {
+        assertClose(what, want, got, 1e-10);
+    }
+
+    static void assertClose(String what, MatrixD want, MatrixD got, double tol) {
         assertEquals(what + ": rows", want.numRows(), got.numRows());
         assertEquals(what + ": cols", want.numColumns(), got.numColumns());
-        assertClose(what, want.getArrayUnsafe(), got.getArrayUnsafe());
+        assertClose(what, want.getArrayUnsafe(), got.getArrayUnsafe(), tol);
     }
 
     static void assertClose(String what, MatrixF want, MatrixF got) {
+        assertClose(what, want, got, 1e-4f);
+    }
+
+    static void assertClose(String what, MatrixF want, MatrixF got, float tol) {
         assertEquals(what + ": rows", want.numRows(), got.numRows());
         assertEquals(what + ": cols", want.numColumns(), got.numColumns());
-        assertClose(what, want.getArrayUnsafe(), got.getArrayUnsafe());
+        assertClose(what, want.getArrayUnsafe(), got.getArrayUnsafe(), tol);
     }
 
     static void assertClose(String what, ComplexMatrixD want, ComplexMatrixD got) {
+        assertClose(what, want, got, 1e-10);
+    }
+
+    static void assertClose(String what, ComplexMatrixD want, ComplexMatrixD got, double tol) {
         assertEquals(what + ": rows", want.numRows(), got.numRows());
         assertEquals(what + ": cols", want.numColumns(), got.numColumns());
-        assertClose(what, want.getArrayUnsafe(), got.getArrayUnsafe());
+        assertClose(what, want.getArrayUnsafe(), got.getArrayUnsafe(), tol);
     }
 
     static void assertClose(String what, ComplexMatrixF want, ComplexMatrixF got) {
+        assertClose(what, want, got, 1e-4f);
+    }
+
+    static void assertClose(String what, ComplexMatrixF want, ComplexMatrixF got, float tol) {
         assertEquals(what + ": rows", want.numRows(), got.numRows());
         assertEquals(what + ": cols", want.numColumns(), got.numColumns());
-        assertClose(what, want.getArrayUnsafe(), got.getArrayUnsafe());
+        assertClose(what, want.getArrayUnsafe(), got.getArrayUnsafe(), tol);
     }
 
     // BLAS and LAPACK may round differently for a different memory alignment
-    static void assertClose(String what, double[] want, double[] got) {
+    static void assertClose(String what, double[] want, double[] got, double tol) {
         assertEquals(what + ": length", want.length, got.length);
         for (int i = 0; i < want.length; ++i) {
             double scale = Math.max(1.0, Math.max(Math.abs(want[i]), Math.abs(got[i])));
-            if (!(Math.abs(want[i] - got[i]) <= 1e-10 * scale)) {
+            if (!(Math.abs(want[i] - got[i]) <= tol * scale)) {
                 fail(what + ": index " + i + " expected " + want[i] + " but was " + got[i]);
             }
         }
     }
 
-    static void assertClose(String what, float[] want, float[] got) {
+    static void assertClose(String what, float[] want, float[] got, float tol) {
         assertEquals(what + ": length", want.length, got.length);
         for (int i = 0; i < want.length; ++i) {
             float scale = Math.max(1.0f, Math.max(Math.abs(want[i]), Math.abs(got[i])));
-            if (!(Math.abs(want[i] - got[i]) <= 1e-4f * scale)) {
+            if (!(Math.abs(want[i] - got[i]) <= tol * scale)) {
                 fail(what + ": index " + i + " expected " + want[i] + " but was " + got[i]);
             }
         }
+    }
+
+    static void assertRefused(String what, Runnable call) {
+        try {
+            call.run();
+            fail(what + ": expected UnsupportedOperationException");
+        } catch (UnsupportedOperationException expected) {
+            // refused
+        }
+    }
+
+    static void assertBits(String what, MatrixD want, MatrixD got) {
+        assertEquals(what + ": rows", want.numRows(), got.numRows());
+        assertEquals(what + ": cols", want.numColumns(), got.numColumns());
+        assertBits(what, want.getArrayUnsafe(), got.getArrayUnsafe());
+    }
+
+    static void assertBits(String what, MatrixF want, MatrixF got) {
+        assertEquals(what + ": rows", want.numRows(), got.numRows());
+        assertEquals(what + ": cols", want.numColumns(), got.numColumns());
+        assertBits(what, want.getArrayUnsafe(), got.getArrayUnsafe());
+    }
+
+    static void assertBits(String what, ComplexMatrixD want, ComplexMatrixD got) {
+        assertEquals(what + ": rows", want.numRows(), got.numRows());
+        assertEquals(what + ": cols", want.numColumns(), got.numColumns());
+        assertBits(what, want.getArrayUnsafe(), got.getArrayUnsafe());
+    }
+
+    static void assertBits(String what, ComplexMatrixF want, ComplexMatrixF got) {
+        assertEquals(what + ": rows", want.numRows(), got.numRows());
+        assertEquals(what + ": cols", want.numColumns(), got.numColumns());
+        assertBits(what, want.getArrayUnsafe(), got.getArrayUnsafe());
     }
 
     static void assertBits(String what, double[] want, double[] got) {

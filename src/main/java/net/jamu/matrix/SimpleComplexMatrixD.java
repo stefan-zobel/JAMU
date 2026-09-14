@@ -231,9 +231,24 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         return new SvdComplexD(this, false).norm2();
     }
 
+    // A / B = (B^H \ A^H)^H; both transposes are fresh, so LAPACK may overwrite them
+    static ComplexMatrixD mrdivide(ComplexMatrixD A, ComplexMatrixD B) {
+        Checks.checkSameCols(A, B);
+        ComplexMatrixD BH = B.conjugateTranspose();
+        ComplexMatrixD AH = A.conjugateTranspose();
+        if (BH.isSquareMatrix()) {
+            return lusolve(BH.getArrayUnsafe(), BH.numRows(), AH, AH).conjugateTranspose();
+        }
+        return qrsolve(BH.getArrayUnsafe(), BH.numRows(), BH.numColumns(),
+                Matrices.createComplexD(BH.numColumns(), AH.numColumns()), AH).conjugateTranspose();
+    }
+
     // work holds a private copy of the n x n matrix and gets overwritten
     static ComplexMatrixD lusolve(double[] work, int n, ComplexMatrixD X, ComplexMatrixD B) {
-        X.setInplace(B);
+        // X may already hold the right-hand sides
+        if (X != B) {
+            X.setInplace(B);
+        }
         PlainLapack.zgesv(Lapack.getInstance(), n, B.numColumns(), work, Math.max(1, n), new int[n],
                 X.getArrayUnsafe(), Math.max(1, n));
         return X;

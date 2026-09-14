@@ -203,9 +203,24 @@ public class SimpleMatrixD extends MatrixDBase implements MatrixD {
         return new SvdD(this, false).norm2();
     }
 
+    // A / B = (B^T \ A^T)^T; both transposes are fresh, so LAPACK may overwrite them
+    static MatrixD mrdivide(MatrixD A, MatrixD B) {
+        Checks.checkSameCols(A, B);
+        MatrixD BT = B.transpose();
+        MatrixD AT = A.transpose();
+        if (BT.isSquareMatrix()) {
+            return lusolve(BT.getArrayUnsafe(), BT.numRows(), AT, AT).transpose();
+        }
+        return qrsolve(BT.getArrayUnsafe(), BT.numRows(), BT.numColumns(),
+                Matrices.createD(BT.numColumns(), AT.numColumns()), AT).transpose();
+    }
+
     // work holds a private copy of the n x n matrix and gets overwritten
     static MatrixD lusolve(double[] work, int n, MatrixD X, MatrixD B) {
-        X.setInplace(B);
+        // X may already hold the right-hand sides
+        if (X != B) {
+            X.setInplace(B);
+        }
         PlainLapack.dgesv(Matrices.getLapack(), n, B.numColumns(), work, Math.max(1, n), new int[n],
                 X.getArrayUnsafe(), Math.max(1, n));
         return X;

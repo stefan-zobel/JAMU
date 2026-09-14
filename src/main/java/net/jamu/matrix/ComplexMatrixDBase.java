@@ -107,8 +107,9 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         Checks.checkTrans(this, AH);
         int cols_ = cols;
         int rows_ = rows;
-        double[] _a = a;
         double[] _ah = AH.getArrayUnsafe();
+        // read from a copy when AH writes into this matrix's array
+        double[] _a = (_ah == a) ? a.clone() : a;
         DimensionsBase B = (DimensionsBase) AH;
         for (int col = 0; col < cols_; ++col) {
             for (int row = 0; row < rows_; ++row) {
@@ -129,8 +130,9 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         Checks.checkTrans(this, AT);
         int cols_ = cols;
         int rows_ = rows;
-        double[] _a = a;
         double[] _at = AT.getArrayUnsafe();
+        // read from a copy when AT writes into this matrix's array
+        double[] _a = (_at == a) ? a.clone() : a;
         DimensionsBase B = (DimensionsBase) AT;
         for (int col = 0; col < cols_; ++col) {
             for (int row = 0; row < rows_; ++row) {
@@ -603,11 +605,15 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixD pseudoInv() {
-        SvdComplexD svd = svd(true);
+        return pseudoInv(svd(true), rows, cols);
+    }
+
+    // the pseudoinverse of a rows x cols matrix from its full SVD
+    static ComplexMatrixD pseudoInv(SvdComplexD svd, int rows, int cols) {
         double tol = MACH_EPS_DBL * Math.max(rows, cols) * svd.norm2();
         double[] sigma = svd.getS();
         // compute Sigma dagger (= SInv)
-        ComplexMatrixD SInv = create(cols, rows);
+        ComplexMatrixD SInv = Matrices.createComplexD(cols, rows);
         for (int i = 0; i < sigma.length; ++i) {
             if (sigma[i] > tol) {
                 SInv.setUnsafe(i, i, 1.0 / sigma[i], 0.0);
@@ -615,11 +621,11 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
         }
         // Vh conjugate-transposed (= Vh*) times Sigma dagger
         ComplexMatrixD Vh = svd.getVh();
-        ComplexMatrixD x = Vh.conjTransAmult(SInv, create(Vh.numRows(), SInv.numColumns()));
+        ComplexMatrixD x = Vh.conjTransAmult(SInv, Matrices.createComplexD(Vh.numRows(), SInv.numColumns()));
         // compute x times U conjugate-transposed (= xU*)
         ComplexMatrixD U = svd.getU();
         // voila, the Moore-Penrose pseudoinverse
-        return x.conjTransBmult(U, create(x.numRows(), U.numRows()));
+        return x.conjTransBmult(U, Matrices.createComplexD(x.numRows(), U.numRows()));
     }
 
     /**
@@ -946,8 +952,7 @@ public abstract class ComplexMatrixDBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixD mrdivide(ComplexMatrixD B) {
-        Checks.checkSameCols(this, B);
-        return B.conjugateTranspose().mldivide(this.conjugateTranspose()).conjugateTranspose();
+        return SimpleComplexMatrixD.mrdivide(this, B);
     }
 
     /**

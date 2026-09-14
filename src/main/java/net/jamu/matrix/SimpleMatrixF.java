@@ -203,9 +203,24 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
         return new SvdF(this, false).norm2();
     }
 
+    // A / B = (B^T \ A^T)^T; both transposes are fresh, so LAPACK may overwrite them
+    static MatrixF mrdivide(MatrixF A, MatrixF B) {
+        Checks.checkSameCols(A, B);
+        MatrixF BT = B.transpose();
+        MatrixF AT = A.transpose();
+        if (BT.isSquareMatrix()) {
+            return lusolve(BT.getArrayUnsafe(), BT.numRows(), AT, AT).transpose();
+        }
+        return qrsolve(BT.getArrayUnsafe(), BT.numRows(), BT.numColumns(),
+                Matrices.createF(BT.numColumns(), AT.numColumns()), AT).transpose();
+    }
+
     // work holds a private copy of the n x n matrix and gets overwritten
     static MatrixF lusolve(float[] work, int n, MatrixF X, MatrixF B) {
-        X.setInplace(B);
+        // X may already hold the right-hand sides
+        if (X != B) {
+            X.setInplace(B);
+        }
         PlainLapack.sgesv(Matrices.getLapack(), n, B.numColumns(), work, Math.max(1, n), new int[n],
                 X.getArrayUnsafe(), Math.max(1, n));
         return X;

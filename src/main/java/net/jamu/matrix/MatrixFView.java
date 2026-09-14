@@ -414,7 +414,21 @@ final class MatrixFView extends DimensionsBase implements MatrixF {
 
     @Override
     public MatrixF trans(MatrixF AT) {
-        return copy().trans(AT);
+        Checks.checkTrans(this, AT);
+        float[] p = parent.getArrayUnsafe();
+        float[] o = AT.getArrayUnsafe();
+        // writing into the parent would overwrite what is still to be read
+        if (o == p) {
+            return copy().trans(AT);
+        }
+        int ld = parent.numRows();
+        for (int col = 0; col < cols; ++col) {
+            int off = (c0 + col) * ld + r0;
+            for (int row = 0; row < rows; ++row) {
+                o[row * cols + col] = p[off + row];
+            }
+        }
+        return AT;
     }
 
     @Override
@@ -449,7 +463,7 @@ final class MatrixFView extends DimensionsBase implements MatrixF {
 
     @Override
     public MatrixF pseudoInv() {
-        return copy().pseudoInv();
+        return MatrixFBase.pseudoInv(svd(true), rows, cols);
     }
 
     @Override
@@ -525,7 +539,7 @@ final class MatrixFView extends DimensionsBase implements MatrixF {
 
     @Override
     public MatrixF mrdivide(MatrixF B) {
-        return copy().mrdivide(B);
+        return SimpleMatrixF.mrdivide(this, B);
     }
 
     @Override
@@ -567,7 +581,7 @@ final class MatrixFView extends DimensionsBase implements MatrixF {
 
     @Override
     public MatrixF transpose() {
-        return copy().transpose();
+        return trans(Matrices.createF(cols, rows));
     }
 
     @Override

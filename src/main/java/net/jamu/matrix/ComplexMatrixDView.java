@@ -343,12 +343,46 @@ final class ComplexMatrixDView extends DimensionsBase implements ComplexMatrixD 
 
     @Override
     public ComplexMatrixD conjTrans(ComplexMatrixD AH) {
-        return copy().conjTrans(AH);
+        Checks.checkTrans(this, AH);
+        double[] p = parent.getArrayUnsafe();
+        double[] o = AH.getArrayUnsafe();
+        // writing into the parent would overwrite what is still to be read
+        if (o == p) {
+            return copy().conjTrans(AH);
+        }
+        int ld = parent.numRows();
+        for (int col = 0; col < cols; ++col) {
+            int off = (c0 + col) * ld + r0;
+            for (int row = 0; row < rows; ++row) {
+                int pidx = 2 * (off + row);
+                int oidx = 2 * (row * cols + col);
+                o[oidx] = p[pidx];
+                o[oidx + 1] = -p[pidx + 1];
+            }
+        }
+        return AH;
     }
 
     @Override
     public ComplexMatrixD trans(ComplexMatrixD AT) {
-        return copy().trans(AT);
+        Checks.checkTrans(this, AT);
+        double[] p = parent.getArrayUnsafe();
+        double[] o = AT.getArrayUnsafe();
+        // writing into the parent would overwrite what is still to be read
+        if (o == p) {
+            return copy().trans(AT);
+        }
+        int ld = parent.numRows();
+        for (int col = 0; col < cols; ++col) {
+            int off = (c0 + col) * ld + r0;
+            for (int row = 0; row < rows; ++row) {
+                int pidx = 2 * (off + row);
+                int oidx = 2 * (row * cols + col);
+                o[oidx] = p[pidx];
+                o[oidx + 1] = p[pidx + 1];
+            }
+        }
+        return AT;
     }
 
     @Override
@@ -383,7 +417,7 @@ final class ComplexMatrixDView extends DimensionsBase implements ComplexMatrixD 
 
     @Override
     public ComplexMatrixD pseudoInv() {
-        return copy().pseudoInv();
+        return ComplexMatrixDBase.pseudoInv(svd(true), rows, cols);
     }
 
     @Override
@@ -459,7 +493,7 @@ final class ComplexMatrixDView extends DimensionsBase implements ComplexMatrixD 
 
     @Override
     public ComplexMatrixD mrdivide(ComplexMatrixD B) {
-        return copy().mrdivide(B);
+        return SimpleComplexMatrixD.mrdivide(this, B);
     }
 
     @Override
@@ -496,12 +530,12 @@ final class ComplexMatrixDView extends DimensionsBase implements ComplexMatrixD 
 
     @Override
     public ComplexMatrixD conjugateTranspose() {
-        return copy().conjugateTranspose();
+        return conjTrans(Matrices.createComplexD(cols, rows));
     }
 
     @Override
     public ComplexMatrixD transpose() {
-        return copy().transpose();
+        return trans(Matrices.createComplexD(cols, rows));
     }
 
     @Override

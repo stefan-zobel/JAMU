@@ -414,7 +414,21 @@ final class MatrixDView extends DimensionsBase implements MatrixD {
 
     @Override
     public MatrixD trans(MatrixD AT) {
-        return copy().trans(AT);
+        Checks.checkTrans(this, AT);
+        double[] p = parent.getArrayUnsafe();
+        double[] o = AT.getArrayUnsafe();
+        // writing into the parent would overwrite what is still to be read
+        if (o == p) {
+            return copy().trans(AT);
+        }
+        int ld = parent.numRows();
+        for (int col = 0; col < cols; ++col) {
+            int off = (c0 + col) * ld + r0;
+            for (int row = 0; row < rows; ++row) {
+                o[row * cols + col] = p[off + row];
+            }
+        }
+        return AT;
     }
 
     @Override
@@ -449,7 +463,7 @@ final class MatrixDView extends DimensionsBase implements MatrixD {
 
     @Override
     public MatrixD pseudoInv() {
-        return copy().pseudoInv();
+        return MatrixDBase.pseudoInv(svd(true), rows, cols);
     }
 
     @Override
@@ -525,7 +539,7 @@ final class MatrixDView extends DimensionsBase implements MatrixD {
 
     @Override
     public MatrixD mrdivide(MatrixD B) {
-        return copy().mrdivide(B);
+        return SimpleMatrixD.mrdivide(this, B);
     }
 
     @Override
@@ -567,7 +581,7 @@ final class MatrixDView extends DimensionsBase implements MatrixD {
 
     @Override
     public MatrixD transpose() {
-        return copy().transpose();
+        return trans(Matrices.createD(cols, rows));
     }
 
     @Override

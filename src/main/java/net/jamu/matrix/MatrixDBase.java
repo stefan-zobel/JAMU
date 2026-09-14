@@ -113,9 +113,11 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         Checks.checkTrans(this, AT);
         int cols_ = cols;
         int rows_ = rows;
+        // read from a copy when AT writes into this matrix's array
+        double[] _a = (AT.getArrayUnsafe() == a) ? a.clone() : a;
         for (int col = 0; col < cols_; ++col) {
             for (int row = 0; row < rows_; ++row) {
-                AT.setUnsafe(col, row, getUnsafe(row, col));
+                AT.setUnsafe(col, row, _a[idx(row, col)]);
             }
         }
         return AT;
@@ -716,11 +718,15 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      */
     @Override
     public MatrixD pseudoInv() {
-        SvdD svd = svd(true);
+        return pseudoInv(svd(true), rows, cols);
+    }
+
+    // the pseudoinverse of a rows x cols matrix from its full SVD
+    static MatrixD pseudoInv(SvdD svd, int rows, int cols) {
         double[] sigma = svd.getS();
         double tol = MACH_EPS_DBL * Math.max(rows, cols) * sigma[0];
         // Sigma dagger
-        MatrixD SInv = create(cols, rows);
+        MatrixD SInv = Matrices.createD(cols, rows);
         for (int i = 0; i < sigma.length; ++i) {
             if (sigma[i] > tol) {
                 SInv.setUnsafe(i, i, 1.0 / sigma[i]);
@@ -728,10 +734,10 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         }
         // Vt transposed times SInv
         MatrixD Vt = svd.getVt();
-        MatrixD x = Vt.transAmult(SInv, create(Vt.numRows(), SInv.numColumns()));
+        MatrixD x = Vt.transAmult(SInv, Matrices.createD(Vt.numRows(), SInv.numColumns()));
         // x times U transposed (the Moore-Penrose pseudoinverse)
         MatrixD U = svd.getU();
-        return x.transBmult(U, create(x.numRows(), U.numRows()));
+        return x.transBmult(U, Matrices.createD(x.numRows(), U.numRows()));
     }
 
     /**
@@ -1051,8 +1057,7 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      */
     @Override
     public MatrixD mrdivide(MatrixD B) {
-        Checks.checkSameCols(this, B);
-        return B.transpose().mldivide(this.transpose()).transpose();
+        return SimpleMatrixD.mrdivide(this, B);
     }
 
     /**

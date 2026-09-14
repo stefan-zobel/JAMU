@@ -343,12 +343,46 @@ final class ComplexMatrixFView extends DimensionsBase implements ComplexMatrixF 
 
     @Override
     public ComplexMatrixF conjTrans(ComplexMatrixF AH) {
-        return copy().conjTrans(AH);
+        Checks.checkTrans(this, AH);
+        float[] p = parent.getArrayUnsafe();
+        float[] o = AH.getArrayUnsafe();
+        // writing into the parent would overwrite what is still to be read
+        if (o == p) {
+            return copy().conjTrans(AH);
+        }
+        int ld = parent.numRows();
+        for (int col = 0; col < cols; ++col) {
+            int off = (c0 + col) * ld + r0;
+            for (int row = 0; row < rows; ++row) {
+                int pidx = 2 * (off + row);
+                int oidx = 2 * (row * cols + col);
+                o[oidx] = p[pidx];
+                o[oidx + 1] = -p[pidx + 1];
+            }
+        }
+        return AH;
     }
 
     @Override
     public ComplexMatrixF trans(ComplexMatrixF AT) {
-        return copy().trans(AT);
+        Checks.checkTrans(this, AT);
+        float[] p = parent.getArrayUnsafe();
+        float[] o = AT.getArrayUnsafe();
+        // writing into the parent would overwrite what is still to be read
+        if (o == p) {
+            return copy().trans(AT);
+        }
+        int ld = parent.numRows();
+        for (int col = 0; col < cols; ++col) {
+            int off = (c0 + col) * ld + r0;
+            for (int row = 0; row < rows; ++row) {
+                int pidx = 2 * (off + row);
+                int oidx = 2 * (row * cols + col);
+                o[oidx] = p[pidx];
+                o[oidx + 1] = p[pidx + 1];
+            }
+        }
+        return AT;
     }
 
     @Override
@@ -383,7 +417,7 @@ final class ComplexMatrixFView extends DimensionsBase implements ComplexMatrixF 
 
     @Override
     public ComplexMatrixF pseudoInv() {
-        return copy().pseudoInv();
+        return ComplexMatrixFBase.pseudoInv(svd(true), rows, cols);
     }
 
     @Override
@@ -459,7 +493,7 @@ final class ComplexMatrixFView extends DimensionsBase implements ComplexMatrixF 
 
     @Override
     public ComplexMatrixF mrdivide(ComplexMatrixF B) {
-        return copy().mrdivide(B);
+        return SimpleComplexMatrixF.mrdivide(this, B);
     }
 
     @Override
@@ -496,12 +530,12 @@ final class ComplexMatrixFView extends DimensionsBase implements ComplexMatrixF 
 
     @Override
     public ComplexMatrixF conjugateTranspose() {
-        return copy().conjugateTranspose();
+        return conjTrans(Matrices.createComplexF(cols, rows));
     }
 
     @Override
     public ComplexMatrixF transpose() {
-        return copy().transpose();
+        return trans(Matrices.createComplexF(cols, rows));
     }
 
     @Override
