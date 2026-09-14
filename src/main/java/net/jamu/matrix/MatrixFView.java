@@ -429,12 +429,22 @@ final class MatrixFView extends DimensionsBase implements MatrixF {
 
     @Override
     public MatrixF solve(MatrixF B, MatrixF X) {
-        return copy().solve(B, X);
+        Checks.checkSolve(this, B, X);
+        // the copy is the LAPACK work array, so the solver must not copy again
+        float[] work = copy().getArrayUnsafe();
+        if (isSquareMatrix()) {
+            return SimpleMatrixF.lusolve(work, rows, X, B);
+        }
+        return SimpleMatrixF.qrsolve(work, rows, cols, X, B);
     }
 
     @Override
     public MatrixF inv(MatrixF inverse) {
-        return copy().inv(inverse);
+        if (!isSquareMatrix()) {
+            throw new IllegalArgumentException("The inverse is only defined for square matrices");
+        }
+        Checks.checkEqualDimension(this, inverse);
+        return solve(Matrices.identityF(rows), inverse);
     }
 
     @Override
@@ -509,7 +519,8 @@ final class MatrixFView extends DimensionsBase implements MatrixF {
 
     @Override
     public MatrixF mldivide(MatrixF B) {
-        return copy().mldivide(B);
+        Checks.checkSameRows(this, B);
+        return solve(B, Matrices.createF(cols, B.numColumns()));
     }
 
     @Override
@@ -519,6 +530,13 @@ final class MatrixFView extends DimensionsBase implements MatrixF {
 
     @Override
     public MatrixF timesMany(MatrixF m, MatrixF... matrices) {
+        // two and three factors need no chain and so no copy
+        if (matrices.length == 0) {
+            return times(m);
+        }
+        if (matrices.length == 1) {
+            return timesTimes(m, matrices[0]);
+        }
         return copy().timesMany(m, matrices);
     }
 
@@ -554,7 +572,10 @@ final class MatrixFView extends DimensionsBase implements MatrixF {
 
     @Override
     public MatrixF inverse() {
-        return copy().inverse();
+        if (!isSquareMatrix()) {
+            throw new IllegalArgumentException("The inverse is only defined for square matrices");
+        }
+        return inv(Matrices.createF(rows, cols));
     }
 
     @Override

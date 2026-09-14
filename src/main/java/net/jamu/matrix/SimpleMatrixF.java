@@ -145,10 +145,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     @Override
     public MatrixF solve(MatrixF B, MatrixF X) {
         Checks.checkSolve(this, B, X);
+        // clone before X gets written, X may be this matrix
         if (this.isSquareMatrix()) {
-            return lusolve(this, X, B);
+            return lusolve(a.clone(), rows, X, B);
         }
-        return qrsolve(this, X, B);
+        return qrsolve(a.clone(), rows, cols, X, B);
     }
 
     /**
@@ -202,23 +203,23 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
         return new SvdF(this, false).norm2();
     }
 
-    private static MatrixF lusolve(MatrixF A, MatrixF X, MatrixF B) {
+    // work holds a private copy of the n x n matrix and gets overwritten
+    static MatrixF lusolve(float[] work, int n, MatrixF X, MatrixF B) {
         X.setInplace(B);
-        PlainLapack.sgesv(Matrices.getLapack(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
-                Math.max(1, A.numRows()), new int[A.numRows()], X.getArrayUnsafe(), Math.max(1, A.numRows()));
+        PlainLapack.sgesv(Matrices.getLapack(), n, B.numColumns(), work, Math.max(1, n), new int[n],
+                X.getArrayUnsafe(), Math.max(1, n));
         return X;
     }
 
-    private static MatrixF qrsolve(MatrixF A, MatrixF X, MatrixF B) {
+    // work holds a private copy of the mm x nn matrix and gets overwritten
+    static MatrixF qrsolve(float[] work, int mm, int nn, MatrixF X, MatrixF B) {
         int rhsCount = B.numColumns();
-        int mm = A.numRows();
-        int nn = A.numColumns();
 
         SimpleMatrixF tmp = new SimpleMatrixF(Math.max(mm, nn), rhsCount);
         B.submatrix(0, 0, mm - 1, rhsCount - 1, tmp, 0, 0);
 
-        PlainLapack.sgels(Matrices.getLapack(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
-                Math.max(1, mm), tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
+        PlainLapack.sgels(Matrices.getLapack(), TTrans.NO_TRANS, mm, nn, rhsCount, work, Math.max(1, mm),
+                tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
 
         return tmp.submatrix(0, 0, nn - 1, rhsCount - 1, X, 0, 0);
     }

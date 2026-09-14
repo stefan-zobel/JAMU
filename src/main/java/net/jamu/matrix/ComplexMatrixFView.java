@@ -363,12 +363,22 @@ final class ComplexMatrixFView extends DimensionsBase implements ComplexMatrixF 
 
     @Override
     public ComplexMatrixF solve(ComplexMatrixF B, ComplexMatrixF X) {
-        return copy().solve(B, X);
+        Checks.checkSolve(this, B, X);
+        // the copy is the LAPACK work array, so the solver must not copy again
+        float[] work = copy().getArrayUnsafe();
+        if (isSquareMatrix()) {
+            return SimpleComplexMatrixF.lusolve(work, rows, X, B);
+        }
+        return SimpleComplexMatrixF.qrsolve(work, rows, cols, X, B);
     }
 
     @Override
     public ComplexMatrixF inv(ComplexMatrixF inverse) {
-        return copy().inv(inverse);
+        if (!isSquareMatrix()) {
+            throw new IllegalArgumentException("The inverse is only defined for square matrices");
+        }
+        Checks.checkEqualDimension(this, inverse);
+        return solve(Matrices.identityComplexF(rows), inverse);
     }
 
     @Override
@@ -443,7 +453,8 @@ final class ComplexMatrixFView extends DimensionsBase implements ComplexMatrixF 
 
     @Override
     public ComplexMatrixF mldivide(ComplexMatrixF B) {
-        return copy().mldivide(B);
+        Checks.checkSameRows(this, B);
+        return solve(B, Matrices.createComplexF(cols, B.numColumns()));
     }
 
     @Override
@@ -453,6 +464,13 @@ final class ComplexMatrixFView extends DimensionsBase implements ComplexMatrixF 
 
     @Override
     public ComplexMatrixF timesMany(ComplexMatrixF m, ComplexMatrixF... matrices) {
+        // two and three factors need no chain and so no copy
+        if (matrices.length == 0) {
+            return times(m);
+        }
+        if (matrices.length == 1) {
+            return timesTimes(m, matrices[0]);
+        }
         return copy().timesMany(m, matrices);
     }
 
@@ -488,7 +506,10 @@ final class ComplexMatrixFView extends DimensionsBase implements ComplexMatrixF 
 
     @Override
     public ComplexMatrixF inverse() {
-        return copy().inverse();
+        if (!isSquareMatrix()) {
+            throw new IllegalArgumentException("The inverse is only defined for square matrices");
+        }
+        return inv(Matrices.createComplexF(rows, cols));
     }
 
     @Override

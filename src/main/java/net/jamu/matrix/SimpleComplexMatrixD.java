@@ -173,10 +173,11 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
     @Override
     public ComplexMatrixD solve(ComplexMatrixD B, ComplexMatrixD X) {
         Checks.checkSolve(this, B, X);
+        // clone before X gets written, X may be this matrix
         if (this.isSquareMatrix()) {
-            return lusolve(this, X, B);
+            return lusolve(a.clone(), rows, X, B);
         }
-        return qrsolve(this, X, B);
+        return qrsolve(a.clone(), rows, cols, X, B);
     }
 
     /**
@@ -230,23 +231,23 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
         return new SvdComplexD(this, false).norm2();
     }
 
-    private static ComplexMatrixD lusolve(ComplexMatrixD A, ComplexMatrixD X, ComplexMatrixD B) {
+    // work holds a private copy of the n x n matrix and gets overwritten
+    static ComplexMatrixD lusolve(double[] work, int n, ComplexMatrixD X, ComplexMatrixD B) {
         X.setInplace(B);
-        PlainLapack.zgesv(Lapack.getInstance(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
-                Math.max(1, A.numRows()), new int[A.numRows()], X.getArrayUnsafe(), Math.max(1, A.numRows()));
+        PlainLapack.zgesv(Lapack.getInstance(), n, B.numColumns(), work, Math.max(1, n), new int[n],
+                X.getArrayUnsafe(), Math.max(1, n));
         return X;
     }
 
-    private static ComplexMatrixD qrsolve(ComplexMatrixD A, ComplexMatrixD X, ComplexMatrixD B) {
+    // work holds a private copy of the mm x nn matrix and gets overwritten
+    static ComplexMatrixD qrsolve(double[] work, int mm, int nn, ComplexMatrixD X, ComplexMatrixD B) {
         int rhsCount = B.numColumns();
-        int mm = A.numRows();
-        int nn = A.numColumns();
 
         SimpleComplexMatrixD tmp = new SimpleComplexMatrixD(Math.max(mm, nn), rhsCount);
         B.submatrix(0, 0, mm - 1, rhsCount - 1, tmp, 0, 0);
 
-        PlainLapack.zgels(Lapack.getInstance(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
-                Math.max(1, mm), tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
+        PlainLapack.zgels(Lapack.getInstance(), TTrans.NO_TRANS, mm, nn, rhsCount, work, Math.max(1, mm),
+                tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
 
         return tmp.submatrix(0, 0, nn - 1, rhsCount - 1, X, 0, 0);
     }
