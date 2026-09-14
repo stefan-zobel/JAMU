@@ -161,7 +161,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
             return this;
         }
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         for (int i = 0; i < _b.length; i += 2) {
             float bi = _b[i];
             float bip1 = _b[i + 1];
@@ -189,7 +189,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
             System.arraycopy(a, 0, C.getArrayUnsafe(), 0, a.length);
         } else {
             float[] _a = a;
-            float[] _b = B.getArrayUnsafe();
+            float[] _b = ReadAccess.array(B);
             float[] _c = C.getArrayUnsafe();
             for (int i = 0; i < _a.length; i += 2) {
                 float bi = _b[i];
@@ -214,7 +214,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixF mult(float alphar, float alphai, ComplexMatrixF B, ComplexMatrixF C) {
-        return multAdd(alphar, alphai, B, C.zeroInplace());
+        return multAdd(alphar, alphai, ReadAccess.detach(B, C), C.zeroInplace());
     }
 
     /**
@@ -244,7 +244,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixF conjTransABmult(float alphar, float alphai, ComplexMatrixF B, ComplexMatrixF C) {
-        return conjTransABmultAdd(alphar, alphai, B, C.zeroInplace());
+        return conjTransABmultAdd(alphar, alphai, ReadAccess.detach(B, C), C.zeroInplace());
     }
 
     /**
@@ -260,7 +260,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixF conjTransAmult(float alphar, float alphai, ComplexMatrixF B, ComplexMatrixF C) {
-        return conjTransAmultAdd(alphar, alphai, B, C.zeroInplace());
+        return conjTransAmultAdd(alphar, alphai, ReadAccess.detach(B, C), C.zeroInplace());
     }
 
     /**
@@ -276,7 +276,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
      */
     @Override
     public ComplexMatrixF conjTransBmult(float alphar, float alphai, ComplexMatrixF B, ComplexMatrixF C) {
-        return conjTransBmultAdd(alphar, alphai, B, C.zeroInplace());
+        return conjTransBmultAdd(alphar, alphai, ReadAccess.detach(B, C), C.zeroInplace());
     }
 
     /**
@@ -337,7 +337,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     public ComplexMatrixF setInplace(ComplexMatrixF other) {
         Checks.checkEqualDimension(this, other);
         float[] _a = a;
-        float[] _b = other.getArrayUnsafe();
+        float[] _b = ReadAccess.array(other);
         System.arraycopy(_b, 0, _a, 0, _a.length);
         return this;
     }
@@ -355,7 +355,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
             return scaleInplace(alphar, alphai);
         }
         float[] _a = a;
-        float[] _b = other.getArrayUnsafe();
+        float[] _b = ReadAccess.array(other);
         for (int i = 0; i < _b.length; i += 2) {
             float bi = _b[i];
             float bip1 = _b[i + 1];
@@ -469,7 +469,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         checkIndex(r0, c0);
         checkIndex(r0 + rb1 - rb0, c0 + cb1 - cb0);
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         int len = rb1 - rb0 + 1;
         if (len < MIN_ARRAYCOPY_LEN) {
             int r0Start = r0;
@@ -641,7 +641,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         Checks.checkEqualDimension(this, B);
         Checks.checkEqualDimension(this, out);
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         float[] _c = out.getArrayUnsafe();
         ZfImpl a = new ZfImpl(0.0f);
         ZfImpl b = new ZfImpl(0.0f);
@@ -909,7 +909,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
     public ComplexMatrixF appendColumn(ComplexMatrixF colVector) {
         Checks.checkCommensurateColVector(this, colVector);
         float[] _a = a;
-        float[] _b = colVector.getArrayUnsafe();
+        float[] _b = ReadAccess.array(colVector);
         float[] _ab = new float[2 * (rows * (cols + 1))];
         System.arraycopy(_a, 0, _ab, 0, _a.length);
         System.arraycopy(_b, 0, _ab, _a.length, _b.length);
@@ -924,7 +924,7 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         Checks.checkSameRows(this, matrix);
         int colsNew = cols + matrix.numColumns();
         float[] _a = a;
-        float[] _b = matrix.getArrayUnsafe();
+        float[] _b = ReadAccess.array(matrix);
         float[] _ab = new float[2 * (rows * colsNew)];
         System.arraycopy(_a, 0, _ab, 0, _a.length);
         System.arraycopy(_b, 0, _ab, _a.length, _b.length);

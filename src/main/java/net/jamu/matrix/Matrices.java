@@ -180,6 +180,64 @@ public final class Matrices {
     }
 
     /**
+     * Returns a read-only, live view of the region {@code (r0, c0)} to
+     * {@code (r1, c1)} of {@code A}; its mutators throw.
+     * <p>
+     * A view can be passed wherever a matrix argument is only read; as an output
+     * or as an argument modified in place it throws
+     * {@code UnsupportedOperationException}.
+     *
+     * @param A
+     *            the matrix to view
+     * @param r0
+     *            initial row index (upper left corner)
+     * @param c0
+     *            initial column index (upper left corner)
+     * @param r1
+     *            last row index (lower right corner)
+     * @param c1
+     *            last column index (lower right corner)
+     * @return a read-only view of the region
+     * @throws NullPointerException
+     *             if {@code A} is null
+     * @throws IllegalArgumentException
+     *             if the region is not within {@code A}
+     * @since 1.4.9
+     */
+    public static ComplexMatrixD view(ComplexMatrixD A, int r0, int c0, int r1, int c1) {
+        return ComplexMatrixDView.create(A, r0, c0, r1, c1);
+    }
+
+    /**
+     * Returns a read-only, live view of the region {@code (r0, c0)} to
+     * {@code (r1, c1)} of {@code A}; its mutators throw.
+     * <p>
+     * A view can be passed wherever a matrix argument is only read; as an output
+     * or as an argument modified in place it throws
+     * {@code UnsupportedOperationException}.
+     *
+     * @param A
+     *            the matrix to view
+     * @param r0
+     *            initial row index (upper left corner)
+     * @param c0
+     *            initial column index (upper left corner)
+     * @param r1
+     *            last row index (lower right corner)
+     * @param c1
+     *            last column index (lower right corner)
+     * @return a read-only view of the region
+     * @throws NullPointerException
+     *             if {@code A} is null
+     * @throws IllegalArgumentException
+     *             if the region is not within {@code A}
+     * @since 1.4.9
+     */
+    public static ComplexMatrixF view(ComplexMatrixF A, int r0, int c0, int r1, int c1) {
+        return ComplexMatrixFView.create(A, r0, c0, r1, c1);
+    }
+
+    /**
      * Create a new {@link MatrixF} {@code B} of dimension {@code (rows, cols)}
      * that has its values set from matrix {@code A} beginning in its upper left
      * corner, i.e., {@code B[0,0] = A[0,0]} extending up to
@@ -1903,7 +1961,7 @@ public final class Matrices {
     public static long serializeComplexF(ComplexMatrixF cmf, OutputStream os) throws IOException {
         byte[] buf = new byte[4];
         long sz = IO.writeMatrixHeaderB(cmf.numRows(), cmf.numColumns(), -Float.SIZE, buf, os);
-        float[] data = cmf.getArrayUnsafe();
+        float[] data = ReadAccess.array(cmf);
         for (int i = 0; i < data.length; ++i) {
             sz += IO.putFloatB(data[i], buf, os);
         }
@@ -2001,7 +2059,7 @@ public final class Matrices {
     public static long serializeComplexD(ComplexMatrixD cmd, OutputStream os) throws IOException {
         byte[] buf = new byte[8];
         long sz = IO.writeMatrixHeaderB(cmd.numRows(), cmd.numColumns(), -Double.SIZE, buf, os);
-        double[] data = cmd.getArrayUnsafe();
+        double[] data = ReadAccess.array(cmd);
         for (int i = 0; i < data.length; ++i) {
             sz += IO.putDoubleB(data[i], buf, os);
         }
@@ -2263,7 +2321,7 @@ public final class Matrices {
     public static ComplexMatrixD convert(ComplexMatrixF cmf) {
         ComplexMatrixD cmd = createComplexD(cmf.numRows(), cmf.numColumns());
         double[] ad = cmd.getArrayUnsafe();
-        float[] fd = cmf.getArrayUnsafe();
+        float[] fd = ReadAccess.array(cmf);
         for (int i = 0; i < ad.length; ++i) {
             ad[i] = fd[i];
         }
@@ -2281,7 +2339,7 @@ public final class Matrices {
     public static ComplexMatrixF convert(ComplexMatrixD cmd) {
         ComplexMatrixF cmf = createComplexF(cmd.numRows(), cmd.numColumns());
         float[] fd = cmf.getArrayUnsafe();
-        double[] ad = cmd.getArrayUnsafe();
+        double[] ad = ReadAccess.array(cmd);
         for (int i = 0; i < fd.length; ++i) {
             fd[i] = (float) ad[i];
         }
@@ -2340,7 +2398,7 @@ public final class Matrices {
     public static MatrixF convertToReal(ComplexMatrixF cmf) {
         MatrixF mf = createF(cmf.numRows(), cmf.numColumns());
         float[] to = mf.getArrayUnsafe();
-        float[] from = cmf.getArrayUnsafe();
+        float[] from = ReadAccess.array(cmf);
         for (int i = 0; i < to.length; ++i) {
             to[i] = from[2 * i];
         }
@@ -2359,7 +2417,7 @@ public final class Matrices {
     public static MatrixD convertToReal(ComplexMatrixD cmd) {
         MatrixD md = createD(cmd.numRows(), cmd.numColumns());
         double[] to = md.getArrayUnsafe();
-        double[] from = cmd.getArrayUnsafe();
+        double[] from = ReadAccess.array(cmd);
         for (int i = 0; i < to.length; ++i) {
             to[i] = from[2 * i];
         }
@@ -2618,8 +2676,8 @@ public final class Matrices {
             return 0.0;
         }
         Checks.checkEqualDimension(A, B);
-        double[] _a = A.getArrayUnsafe();
-        double[] _b = B.getArrayUnsafe();
+        double[] _a = ReadAccess.array(A);
+        double[] _b = ReadAccess.array(B);
         double d1 = 0.0;
         for (int i = 0; i < _a.length; i += 2) {
             double rea = _a[i];
@@ -2659,8 +2717,8 @@ public final class Matrices {
             return 0.0f;
         }
         Checks.checkEqualDimension(A, B);
-        float[] _a = A.getArrayUnsafe();
-        float[] _b = B.getArrayUnsafe();
+        float[] _a = ReadAccess.array(A);
+        float[] _b = ReadAccess.array(B);
         double d1 = 0.0;
         for (int i = 0; i < _a.length; i += 2) {
             // use higher precision internally
@@ -3044,8 +3102,8 @@ public final class Matrices {
         if (A == B) {
             return true;
         }
-        double[] _a = A.getArrayUnsafe();
-        double[] _b = B.getArrayUnsafe();
+        double[] _a = ReadAccess.array(A);
+        double[] _b = ReadAccess.array(B);
         for (int i = 0; i < _a.length; i += 2) {
             double a_re = _a[i];
             double a_im = _a[i + 1];
@@ -3175,8 +3233,8 @@ public final class Matrices {
         if (A == B) {
             return true;
         }
-        float[] _a = A.getArrayUnsafe();
-        float[] _b = B.getArrayUnsafe();
+        float[] _a = ReadAccess.array(A);
+        float[] _b = ReadAccess.array(B);
         for (int i = 0; i < _a.length; i += 2) {
             float a_re = _a[i];
             float a_im = _a[i + 1];
@@ -3473,7 +3531,7 @@ public final class Matrices {
      * @since 1.3
      */
     public static ComplexMatrixD round(ComplexMatrixD A, int scale) {
-        double[] _a = A.getArrayUnsafe();
+        double[] _a = ReadAccess.array(A);
         double[] _b = new double[_a.length];
         for (int idx = 0; idx < _a.length; ++idx) {
             double d = _a[idx];
@@ -3503,7 +3561,7 @@ public final class Matrices {
      * @since 1.3
      */
     public static ComplexMatrixF round(ComplexMatrixF A, int scale) {
-        float[] _a = A.getArrayUnsafe();
+        float[] _a = ReadAccess.array(A);
         float[] _b = new float[_a.length];
         for (int idx = 0; idx < _a.length; ++idx) {
             float f = _a[idx];
@@ -3586,7 +3644,7 @@ public final class Matrices {
             return A.copy();
         }
         ComplexMatrixD s = createComplexD(1, A.numColumns());
-        double[] _a = A.getArrayUnsafe();
+        double[] _a = ReadAccess.array(A);
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
         for (int col = 0; col < cols_; ++col) {
@@ -3617,7 +3675,7 @@ public final class Matrices {
             return A.copy();
         }
         ComplexMatrixF s = createComplexF(1, A.numColumns());
-        float[] _a = A.getArrayUnsafe();
+        float[] _a = ReadAccess.array(A);
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
         for (int col = 0; col < cols_; ++col) {
@@ -3737,7 +3795,7 @@ public final class Matrices {
             return A.copy();
         }
         ComplexMatrixD s = createComplexD(A.numRows(), 1);
-        double[] _a = A.getArrayUnsafe();
+        double[] _a = ReadAccess.array(A);
         double[] _s = s.getArrayUnsafe();
         int cols_ = A.numColumns();
         int idx = 0;
@@ -3766,7 +3824,7 @@ public final class Matrices {
             return A.copy();
         }
         ComplexMatrixF s = createComplexF(A.numRows(), 1);
-        float[] _a = A.getArrayUnsafe();
+        float[] _a = ReadAccess.array(A);
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
         // accumulate in double, as before, so that the result stays unchanged

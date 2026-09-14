@@ -37,6 +37,22 @@ final class ReadAccess {
     }
 
     /**
+     * Returns the array to read {@code m} from, a fresh copy if {@code m} is a
+     * view.
+     */
+    static double[] array(ComplexMatrixD m) {
+        return (m instanceof ComplexMatrixDView) ? m.copy().getArrayUnsafe() : m.getArrayUnsafe();
+    }
+
+    /**
+     * Returns the array to read {@code m} from, a fresh copy if {@code m} is a
+     * view.
+     */
+    static float[] array(ComplexMatrixF m) {
+        return (m instanceof ComplexMatrixFView) ? m.copy().getArrayUnsafe() : m.getArrayUnsafe();
+    }
+
+    /**
      * Returns {@code m}, or a copy if {@code m} is a view on {@code out}.
      */
     static MatrixD detach(MatrixD m, MatrixD out) {
@@ -48,6 +64,22 @@ final class ReadAccess {
      */
     static MatrixF detach(MatrixF m, MatrixF out) {
         return (m instanceof MatrixFView && ((MatrixFView) m).shares(out.getArrayUnsafe())) ? m.copy() : m;
+    }
+
+    /**
+     * Returns {@code m}, or a copy if {@code m} is a view on {@code out}.
+     */
+    static ComplexMatrixD detach(ComplexMatrixD m, ComplexMatrixD out) {
+        return (m instanceof ComplexMatrixDView && ((ComplexMatrixDView) m).shares(out.getArrayUnsafe())) ? m.copy()
+                : m;
+    }
+
+    /**
+     * Returns {@code m}, or a copy if {@code m} is a view on {@code out}.
+     */
+    static ComplexMatrixF detach(ComplexMatrixF m, ComplexMatrixF out) {
+        return (m instanceof ComplexMatrixFView && ((ComplexMatrixFView) m).shares(out.getArrayUnsafe())) ? m.copy()
+                : m;
     }
 
     /**
@@ -98,6 +130,28 @@ final class ReadAccess {
     static OperandF operand(MatrixF m, float[] out) {
         if (m instanceof MatrixFView) {
             return ((MatrixFView) m).operand(out);
+        }
+        return new OperandF(m.getArrayUnsafe(), 0, Math.max(1, m.numRows()));
+    }
+
+    /**
+     * Returns {@code m} as a zgemm operand at offset 0, read from a copy if it
+     * is a view on {@code out} or not anchored at {@code (0, 0)}.
+     */
+    static OperandD operand(ComplexMatrixD m, double[] out) {
+        if (m instanceof ComplexMatrixDView) {
+            return ((ComplexMatrixDView) m).operand(out);
+        }
+        return new OperandD(m.getArrayUnsafe(), 0, Math.max(1, m.numRows()));
+    }
+
+    /**
+     * Returns {@code m} as a cgemm operand at offset 0, read from a copy if it
+     * is a view on {@code out} or not anchored at {@code (0, 0)}.
+     */
+    static OperandF operand(ComplexMatrixF m, float[] out) {
+        if (m instanceof ComplexMatrixFView) {
+            return ((ComplexMatrixFView) m).operand(out);
         }
         return new OperandF(m.getArrayUnsafe(), 0, Math.max(1, m.numRows()));
     }

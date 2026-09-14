@@ -111,11 +111,12 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
     @Override
     public ComplexMatrixD multAdd(double alphar, double alphai, ComplexMatrixD B, ComplexMatrixD C) {
         Checks.checkMultAdd(this, B, C);
+        double[] c = C.getArrayUnsafe();
+        ReadAccess.OperandD b = ReadAccess.operand(B, c);
 
         BlasExt blas = BlasExt.getInstance();
         blas.zgemm3m(Trans.N, Trans.N, C.numRows(), C.numColumns(), cols, alphar, alphai, a, Math.max(1, rows),
-                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                b.array, b.ld, BETA_R, BETA_I, c, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -126,11 +127,12 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
     @Override
     public ComplexMatrixD conjTransABmultAdd(double alphar, double alphai, ComplexMatrixD B, ComplexMatrixD C) {
         Checks.checkTransABmultAdd(this, B, C);
+        double[] c = C.getArrayUnsafe();
+        ReadAccess.OperandD b = ReadAccess.operand(B, c);
 
         BlasExt blas = BlasExt.getInstance();
         blas.zgemm3m(Trans.C, Trans.C, C.numRows(), C.numColumns(), rows, alphar, alphai, a, Math.max(1, rows),
-                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                b.array, b.ld, BETA_R, BETA_I, c, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -141,11 +143,12 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
     @Override
     public ComplexMatrixD conjTransAmultAdd(double alphar, double alphai, ComplexMatrixD B, ComplexMatrixD C) {
         Checks.checkTransAmultAdd(this, B, C);
+        double[] c = C.getArrayUnsafe();
+        ReadAccess.OperandD b = ReadAccess.operand(B, c);
 
         BlasExt blas = BlasExt.getInstance();
         blas.zgemm3m(Trans.C, Trans.N, C.numRows(), C.numColumns(), rows, alphar, alphai, a, Math.max(1, rows),
-                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                b.array, b.ld, BETA_R, BETA_I, c, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -156,11 +159,12 @@ public class SimpleComplexMatrixD extends ComplexMatrixDBase implements ComplexM
     @Override
     public ComplexMatrixD conjTransBmultAdd(double alphar, double alphai, ComplexMatrixD B, ComplexMatrixD C) {
         Checks.checkTransBmultAdd(this, B, C);
+        double[] c = C.getArrayUnsafe();
+        ReadAccess.OperandD b = ReadAccess.operand(B, c);
 
         BlasExt blas = BlasExt.getInstance();
         blas.zgemm3m(Trans.N, Trans.C, C.numRows(), C.numColumns(), cols, alphar, alphai, a, Math.max(1, rows),
-                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                b.array, b.ld, BETA_R, BETA_I, c, Math.max(1, C.numRows()));
 
         return C;
     }
