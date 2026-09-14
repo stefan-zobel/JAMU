@@ -215,21 +215,12 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
         int nn = A.numColumns();
 
         SimpleMatrixF tmp = new SimpleMatrixF(Math.max(mm, nn), rhsCount);
-        for (int j = 0; j < rhsCount; ++j) {
-            for (int i = 0; i < mm; ++i) {
-                tmp.setUnsafe(i, j, B.getUnsafe(i, j));
-            }
-        }
+        B.submatrix(0, 0, mm - 1, rhsCount - 1, tmp, 0, 0);
 
         PlainLapack.sgels(Matrices.getLapack(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
                 Math.max(1, mm), tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
 
-        for (int j = 0; j < rhsCount; ++j) {
-            for (int i = 0; i < nn; ++i) {
-                X.setUnsafe(i, j, tmp.getUnsafe(i, j));
-            }
-        }
-        return X;
+        return tmp.submatrix(0, 0, nn - 1, rhsCount - 1, X, 0, 0);
     }
 
     /**
