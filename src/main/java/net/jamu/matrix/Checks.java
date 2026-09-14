@@ -173,8 +173,7 @@ final class Checks {
 
     static void checkSameRows(Dimensions A, Dimensions B) {
         if (A.numRows() != B.numRows()) {
-            throw new IndexOutOfBoundsException(
-                    "A.numRows() != B.numRows() (" + A.numRows() + " != " + B.numRows() + ")");
+            throw getSameRowsException(A, B);
         }
     }
 
@@ -336,6 +335,11 @@ final class Checks {
             throw getNullRowException(idx);
         }
         return row.length;
+    }
+
+    static IndexOutOfBoundsException getSameRowsException(Dimensions A, Dimensions B) {
+        return new IndexOutOfBoundsException(
+                "A.numRows() != B.numRows() (" + A.numRows() + " != " + B.numRows() + ")");
     }
 
     static IndexOutOfBoundsException getSameColsException(Dimensions A, Dimensions B) {

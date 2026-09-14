@@ -15,6 +15,8 @@
  */
 package net.jamu.matrix;
 
+import java.util.Arrays;
+
 /**
  * Some static utility methods for matrices that may be useful in statistical
  * applications.
@@ -600,44 +602,58 @@ public final class Statistics {
             }
         }
         double[] _a = A.getArrayUnsafe();
-        for (int row = 0; row < rows_; ++row) {
-            // overflow resistant implementation, shifted by the first entry
-            // so that nothing large is ever squared
-            double k = _a[row];
-            int count = 0;
-            double shiftMean = 0.0;
-            double scale = 0.0;
-            double sumsquared = 1.0;
-            // determine mean and sum squared
-            for (int i = row; i < row + rows_ * cols_; i += rows_) {
-                ++count;
-                double xi = _a[i] - k;
-                shiftMean = (((count - 1) * shiftMean) + xi) / count;
+        // overflow resistant implementation, shifted by the first entry of
+        // each row so that nothing large is ever squared. The array is
+        // traversed column by column with one set of accumulators per row;
+        // every row still sees its entries in column order, so the result is
+        // the same as accumulating one row at a time.
+        double[] k = new double[rows_];
+        System.arraycopy(_a, 0, k, 0, rows_);
+        double[] shiftMean = new double[rows_];
+        double[] scale = new double[rows_];
+        double[] sumsquared = new double[rows_];
+        Arrays.fill(sumsquared, 1.0);
+        // determine mean and sum squared
+        int idx = 0;
+        for (int col = 0; col < cols_; ++col) {
+            int count = col + 1;
+            for (int row = 0; row < rows_; ++row) {
+                double xi = _a[idx++] - k[row];
+                shiftMean[row] = (((count - 1) * shiftMean[row]) + xi) / count;
                 if (xi != 0.0) {
                     double absxi = Math.abs(xi);
-                    if (scale < absxi) {
-                        double unsquared = scale / absxi;
-                        sumsquared = 1.0 + sumsquared * (unsquared * unsquared);
-                        scale = absxi;
+                    if (scale[row] < absxi) {
+                        double unsquared = scale[row] / absxi;
+                        sumsquared[row] = 1.0 + sumsquared[row] * (unsquared * unsquared);
+                        scale[row] = absxi;
                     } else {
-                        double unsquared = absxi / scale;
-                        sumsquared = sumsquared + (unsquared * unsquared);
+                        double unsquared = absxi / scale[row];
+                        sumsquared[row] = sumsquared[row] + (unsquared * unsquared);
                     }
                 }
             }
-            double mean = k + shiftMean;
-            double y = computeScaledMean(scale, shiftMean);
-            double sd = scale * Math.sqrt(sumsquared / cols_ - y * y);
-            double stddev = patchDev(sd);
-            for (int i = row; i < row + rows_ * cols_; i += rows_) {
-                // subtract mean and divide by standard deviation
-                double xi = _a[i];
-                xi = (xi - mean) / stddev;
-                _a[i] = xi;
-            }
+        }
+        // from here on k holds the mean and shiftMean the patched stddev
+        for (int row = 0; row < rows_; ++row) {
+            double mean = k[row] + shiftMean[row];
+            double y = computeScaledMean(scale[row], shiftMean[row]);
+            double sd = scale[row] * Math.sqrt(sumsquared[row] / cols_ - y * y);
+            k[row] = mean;
+            shiftMean[row] = patchDev(sd);
             if (moments != null) {
                 moments.means.setUnsafe(row, 0, mean);
                 moments.variances.setUnsafe(row, 0, sd * sd);
+            }
+        }
+        double[] means = k;
+        double[] stddevs = shiftMean;
+        idx = 0;
+        for (int col = 0; col < cols_; ++col) {
+            for (int row = 0; row < rows_; ++row) {
+                // subtract mean and divide by standard deviation
+                double xi = _a[idx];
+                xi = (xi - means[row]) / stddevs[row];
+                _a[idx++] = xi;
             }
         }
         return A;
@@ -692,44 +708,58 @@ public final class Statistics {
             }
         }
         float[] _a = A.getArrayUnsafe();
-        for (int row = 0; row < rows_; ++row) {
-            // overflow resistant implementation, shifted by the first entry
-            // so that nothing large is ever squared
-            float k = _a[row];
-            int count = 0;
-            float shiftMean = 0.0f;
-            float scale = 0.0f;
-            float sumsquared = 1.0f;
-            // determine mean and sum squared
-            for (int i = row; i < row + rows_ * cols_; i += rows_) {
-                ++count;
-                float xi = _a[i] - k;
-                shiftMean = (((count - 1) * shiftMean) + xi) / count;
+        // overflow resistant implementation, shifted by the first entry of
+        // each row so that nothing large is ever squared. The array is
+        // traversed column by column with one set of accumulators per row;
+        // every row still sees its entries in column order, so the result is
+        // the same as accumulating one row at a time.
+        float[] k = new float[rows_];
+        System.arraycopy(_a, 0, k, 0, rows_);
+        float[] shiftMean = new float[rows_];
+        float[] scale = new float[rows_];
+        float[] sumsquared = new float[rows_];
+        Arrays.fill(sumsquared, 1.0f);
+        // determine mean and sum squared
+        int idx = 0;
+        for (int col = 0; col < cols_; ++col) {
+            int count = col + 1;
+            for (int row = 0; row < rows_; ++row) {
+                float xi = _a[idx++] - k[row];
+                shiftMean[row] = (((count - 1) * shiftMean[row]) + xi) / count;
                 if (xi != 0.0f) {
                     float absxi = Math.abs(xi);
-                    if (scale < absxi) {
-                        float unsquared = scale / absxi;
-                        sumsquared = 1.0f + sumsquared * (unsquared * unsquared);
-                        scale = absxi;
+                    if (scale[row] < absxi) {
+                        float unsquared = scale[row] / absxi;
+                        sumsquared[row] = 1.0f + sumsquared[row] * (unsquared * unsquared);
+                        scale[row] = absxi;
                     } else {
-                        float unsquared = absxi / scale;
-                        sumsquared = sumsquared + (unsquared * unsquared);
+                        float unsquared = absxi / scale[row];
+                        sumsquared[row] = sumsquared[row] + (unsquared * unsquared);
                     }
                 }
             }
-            float mean = k + shiftMean;
-            float y = computeScaledMean(scale, shiftMean);
-            float sd = scale * (float) Math.sqrt(sumsquared / cols_ - y * y);
-            float stddev = patchDev(sd);
-            for (int i = row; i < row + rows_ * cols_; i += rows_) {
-                // subtract mean and divide by standard deviation
-                float xi = _a[i];
-                xi = (xi - mean) / stddev;
-                _a[i] = xi;
-            }
+        }
+        // from here on k holds the mean and shiftMean the patched stddev
+        for (int row = 0; row < rows_; ++row) {
+            float mean = k[row] + shiftMean[row];
+            float y = computeScaledMean(scale[row], shiftMean[row]);
+            float sd = scale[row] * (float) Math.sqrt(sumsquared[row] / cols_ - y * y);
+            k[row] = mean;
+            shiftMean[row] = patchDev(sd);
             if (moments != null) {
                 moments.means.setUnsafe(row, 0, mean);
                 moments.variances.setUnsafe(row, 0, sd * sd);
+            }
+        }
+        float[] means = k;
+        float[] stddevs = shiftMean;
+        idx = 0;
+        for (int col = 0; col < cols_; ++col) {
+            for (int row = 0; row < rows_; ++row) {
+                // subtract mean and divide by standard deviation
+                float xi = _a[idx];
+                xi = (xi - means[row]) / stddevs[row];
+                _a[idx++] = xi;
             }
         }
         return A;
@@ -1026,6 +1056,40 @@ public final class Statistics {
     }
 
     /**
+     * Randomly permutes the columns in a copy of matrix {@code A} using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability. Matrix
+     * {@code A} doesn't get mutated.
+     *
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return a copy of matrix {@code A} with columns randomly permuted
+     * @since 1.4.9
+     */
+    public static MatrixD shuffleColumns(MatrixD A, long seed) {
+        return shuffleColumnsInplace(A.copy(), new XoShiRo256StarStar(seed));
+    }
+
+    /**
+     * Randomly permutes the columns in a copy of matrix {@code A} using a
+     * default source of randomness seeded by the given {@code seed}. All
+     * permutations occur with approximately equal probability. Matrix
+     * {@code A} doesn't get mutated.
+     *
+     * @param A
+     *            the matrix whose columns will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return a copy of matrix {@code A} with columns randomly permuted
+     * @since 1.4.9
+     */
+    public static MatrixF shuffleColumns(MatrixF A, long seed) {
+        return shuffleColumnsInplace(A.copy(), new XoShiRo256StarStar(seed));
+    }
+
+    /**
      * Randomly permutes the columns in matrix {@code A} in place using a
      * default source of randomness. All permutations occur with approximately
      * equal probability.
@@ -1146,6 +1210,40 @@ public final class Statistics {
     }
 
     /**
+     * Randomly permutes the rows in a copy of matrix {@code A} using a default
+     * source of randomness seeded by the given {@code seed}. All permutations
+     * occur with approximately equal probability. Matrix {@code A} doesn't get
+     * mutated.
+     *
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return a copy of matrix {@code A} with rows randomly permuted
+     * @since 1.4.9
+     */
+    public static MatrixD shuffleRows(MatrixD A, long seed) {
+        return shuffleRowsInplace(A.copy(), new XoShiRo256StarStar(seed));
+    }
+
+    /**
+     * Randomly permutes the rows in a copy of matrix {@code A} using a default
+     * source of randomness seeded by the given {@code seed}. All permutations
+     * occur with approximately equal probability. Matrix {@code A} doesn't get
+     * mutated.
+     *
+     * @param A
+     *            the matrix whose rows will be permuted at random
+     * @param seed
+     *            the initial seed to use for the PRNG
+     * @return a copy of matrix {@code A} with rows randomly permuted
+     * @since 1.4.9
+     */
+    public static MatrixF shuffleRows(MatrixF A, long seed) {
+        return shuffleRowsInplace(A.copy(), new XoShiRo256StarStar(seed));
+    }
+
+    /**
      * Randomly permutes the rows in matrix {@code A} in place using a
      * default source of randomness. All permutations occur with approximately
      * equal probability.
@@ -1207,54 +1305,67 @@ public final class Statistics {
 
     private static MatrixD shuffleRowsInplace(MatrixD A, XoShiRo256StarStar rng) {
         int rows = A.numRows();
-        int cols = A.numColumns();
+        int[] perm = rowPermutation(rows, rng);
+        if (perm == null) {
+            return A;
+        }
+        // gather column by column, so that the array is traversed sequentially
         double[] a = A.getArrayUnsafe();
-        double[] tmp = new double[cols];
-        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
-        for (int i = rows; i > 1; --i) {
-            int sourceRow = rnd.nextInt(i);
-            int targetRow = i - 1;
-            if (sourceRow != targetRow) {
-                swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+        double[] tmp = new double[rows];
+        for (int off = 0; off < a.length; off += rows) {
+            for (int row = 0; row < rows; ++row) {
+                tmp[row] = a[off + perm[row]];
             }
+            System.arraycopy(tmp, 0, a, off, rows);
         }
         return A;
     }
 
     private static MatrixF shuffleRowsInplace(MatrixF A, XoShiRo256StarStar rng) {
         int rows = A.numRows();
-        int cols = A.numColumns();
+        int[] perm = rowPermutation(rows, rng);
+        if (perm == null) {
+            return A;
+        }
+        // gather column by column, so that the array is traversed sequentially
         float[] a = A.getArrayUnsafe();
-        float[] tmp = new float[cols];
-        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
-        for (int i = rows; i > 1; --i) {
-            int sourceRow = rnd.nextInt(i);
-            int targetRow = i - 1;
-            if (sourceRow != targetRow) {
-                swapRows(targetRow, a, tmp, cols, rows, sourceRow);
+        float[] tmp = new float[rows];
+        for (int off = 0; off < a.length; off += rows) {
+            for (int row = 0; row < rows; ++row) {
+                tmp[row] = a[off + perm[row]];
             }
+            System.arraycopy(tmp, 0, a, off, rows);
         }
         return A;
     }
 
-    private static void swapRows(int aoff1, double[] a, double[] tmp, int len, int skip, int aoff2) {
-        int j = 0;
-        for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
-            tmp[j] = a[i];
-            a[i] = a[aoff2];
-            a[aoff2] = tmp[j];
-            ++j;
+    /**
+     * Fisher-Yates over the row indices: {@code perm[row]} is the original row
+     * that ends up at {@code row}. Draws exactly the same random numbers as
+     * swapping the rows themselves would, so a seed keeps its permutation.
+     * Returns {@code null} if no row moves.
+     */
+    private static int[] rowPermutation(int rows, XoShiRo256StarStar rng) {
+        if (rows < 2) {
+            return null;
         }
-    }
-
-    private static void swapRows(int aoff1, float[] a, float[] tmp, int len, int skip, int aoff2) {
-        int j = 0;
-        for (int i = aoff1; i < aoff1 + skip * len; aoff2 += skip, i += skip) {
-            tmp[j] = a[i];
-            a[i] = a[aoff2];
-            a[aoff2] = tmp[j];
-            ++j;
+        int[] perm = new int[rows];
+        for (int row = 0; row < rows; ++row) {
+            perm[row] = row;
         }
+        XoShiRo256StarStar rnd = (rng == null) ? new XoShiRo256StarStar() : rng;
+        boolean swapped = false;
+        for (int i = rows; i > 1; --i) {
+            int sourceRow = rnd.nextInt(i);
+            int targetRow = i - 1;
+            if (sourceRow != targetRow) {
+                int t = perm[targetRow];
+                perm[targetRow] = perm[sourceRow];
+                perm[sourceRow] = t;
+                swapped = true;
+            }
+        }
+        return swapped ? perm : null;
     }
 
     private static int checkNotRowVector(MatrixDimensions A) {

@@ -513,6 +513,9 @@ public interface ComplexMatrixF extends MatrixDimensions, ComplexMatrixFConduct 
 
     /**
      * Copy a submatrix of this matrix into {@code B}.
+     * <p>
+     * If {@code B} is this matrix and the two regions overlap the result is
+     * undefined.
      * 
      * @param r0
      *            initial row index (left upper corner) in this matrix
@@ -538,6 +541,9 @@ public interface ComplexMatrixF extends MatrixDimensions, ComplexMatrixFConduct 
      * {@code (rb0, cb0)} to {@code (rb1, cb1)} (the upper left and lower right
      * corner in {@code B} respectively) at position {@code (r0, c0)} in this
      * matrix.
+     * <p>
+     * If {@code B} is this matrix and the two regions overlap the result is
+     * undefined.
      * 
      * @param r0
      *            initial row index (left upper corner) in this matrix

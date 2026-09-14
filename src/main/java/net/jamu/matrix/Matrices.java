@@ -3619,14 +3619,14 @@ public final class Matrices {
         }
         MatrixD s = createD(A.numRows(), 1);
         double[] _a = A.getArrayUnsafe();
+        double[] _s = s.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
-        for (int row = 0; row < rows_; ++row) {
-            double sum = 0.0;
-            for (int col = 0; col < cols_; ++col) {
-                sum += _a[col * rows_ + row];
+        int idx = 0;
+        for (int col = 0; col < cols_; ++col) {
+            for (int row = 0; row < rows_; ++row) {
+                _s[row] += _a[idx++];
             }
-            s.setUnsafe(row, 0, sum);
         }
         return s;
     }
@@ -3649,12 +3649,17 @@ public final class Matrices {
         float[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
-        for (int row = 0; row < rows_; ++row) {
-            double sum = 0.0;
-            for (int col = 0; col < cols_; ++col) {
-                sum += _a[col * rows_ + row];
+        // accumulate in double, as before, so that the result stays unchanged
+        double[] sums = new double[rows_];
+        int idx = 0;
+        for (int col = 0; col < cols_; ++col) {
+            for (int row = 0; row < rows_; ++row) {
+                sums[row] += _a[idx++];
             }
-            s.setUnsafe(row, 0, (float) sum);
+        }
+        float[] _s = s.getArrayUnsafe();
+        for (int row = 0; row < rows_; ++row) {
+            _s[row] = (float) sums[row];
         }
         return s;
     }
@@ -3675,17 +3680,15 @@ public final class Matrices {
         }
         ComplexMatrixD s = createComplexD(A.numRows(), 1);
         double[] _a = A.getArrayUnsafe();
-        int rows_ = A.numRows();
+        double[] _s = s.getArrayUnsafe();
         int cols_ = A.numColumns();
-        for (int row = 0; row < rows_; ++row) {
-            double sum_r = 0.0;
-            double sum_i = 0.0;
-            for (int col = 0; col < cols_; ++col) {
-                int idx = 2 * (col * rows_ + row);
-                sum_r += _a[idx];
-                sum_i += _a[idx + 1];
+        int idx = 0;
+        for (int col = 0; col < cols_; ++col) {
+            for (int i = 0; i < _s.length; i += 2) {
+                _s[i] += _a[idx];
+                _s[i + 1] += _a[idx + 1];
+                idx += 2;
             }
-            s.setUnsafe(row, 0, sum_r, sum_i);
         }
         return s;
     }
@@ -3708,15 +3711,19 @@ public final class Matrices {
         float[] _a = A.getArrayUnsafe();
         int rows_ = A.numRows();
         int cols_ = A.numColumns();
-        for (int row = 0; row < rows_; ++row) {
-            double sum_r = 0.0;
-            double sum_i = 0.0;
-            for (int col = 0; col < cols_; ++col) {
-                int idx = 2 * (col * rows_ + row);
-                sum_r += _a[idx];
-                sum_i += _a[idx + 1];
+        // accumulate in double, as before, so that the result stays unchanged
+        double[] sums = new double[2 * rows_];
+        int idx = 0;
+        for (int col = 0; col < cols_; ++col) {
+            for (int i = 0; i < sums.length; i += 2) {
+                sums[i] += _a[idx];
+                sums[i + 1] += _a[idx + 1];
+                idx += 2;
             }
-            s.setUnsafe(row, 0, (float) sum_r, (float) sum_i);
+        }
+        float[] _s = s.getArrayUnsafe();
+        for (int i = 0; i < sums.length; ++i) {
+            _s[i] = (float) sums[i];
         }
         return s;
     }

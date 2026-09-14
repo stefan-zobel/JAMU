@@ -201,6 +201,149 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
      * {@inheritDoc}
      */
     @Override
+    public MatrixD mulBroadcastedVectorInplace(MatrixD B) {
+        Checks.checkSameRows(this, B);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        if (this.numColumns() == B.numColumns()) {
+            for (int i = 0; i < _a.length; ++i) {
+                _a[i] *= _b[i];
+            }
+            return this;
+        }
+        if (B.numColumns() == 1) {
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                for (int row = 0; row < rows_; ++row) {
+                    _a[idx(row, col)] *= _b[row];
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameColsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD divBroadcastedVectorInplace(MatrixD B) {
+        Checks.checkSameRows(this, B);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        if (this.numColumns() == B.numColumns()) {
+            for (int i = 0; i < _a.length; ++i) {
+                _a[i] /= _b[i];
+            }
+            return this;
+        }
+        if (B.numColumns() == 1) {
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                for (int row = 0; row < rows_; ++row) {
+                    _a[idx(row, col)] /= _b[row];
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameColsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD addBroadcastedRowVectorInplace(MatrixD B) {
+        Checks.checkSameCols(this, B);
+        if (this.numRows() == B.numRows()) {
+            return addInplace(B);
+        }
+        if (B.numRows() == 1) {
+            double[] _a = a;
+            double[] _b = B.getArrayUnsafe();
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                double bc = _b[col];
+                int end = (col + 1) * rows_;
+                for (int i = col * rows_; i < end; ++i) {
+                    _a[i] += bc;
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameRowsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD mulBroadcastedRowVectorInplace(MatrixD B) {
+        Checks.checkSameCols(this, B);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        if (this.numRows() == B.numRows()) {
+            for (int i = 0; i < _a.length; ++i) {
+                _a[i] *= _b[i];
+            }
+            return this;
+        }
+        if (B.numRows() == 1) {
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                double bc = _b[col];
+                int end = (col + 1) * rows_;
+                for (int i = col * rows_; i < end; ++i) {
+                    _a[i] *= bc;
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameRowsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD divBroadcastedRowVectorInplace(MatrixD B) {
+        Checks.checkSameCols(this, B);
+        double[] _a = a;
+        double[] _b = B.getArrayUnsafe();
+        if (this.numRows() == B.numRows()) {
+            for (int i = 0; i < _a.length; ++i) {
+                _a[i] /= _b[i];
+            }
+            return this;
+        }
+        if (B.numRows() == 1) {
+            int cols_ = cols;
+            int rows_ = rows;
+            for (int col = 0; col < cols_; ++col) {
+                double bc = _b[col];
+                int end = (col + 1) * rows_;
+                for (int i = col * rows_; i < end; ++i) {
+                    _a[i] /= bc;
+                }
+            }
+            return this;
+        }
+        // incompatible dimensions
+        throw Checks.getSameRowsException(this, B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MatrixD mult(MatrixD B, MatrixD C) {
         return mult(1.0, B, C);
     }
@@ -408,13 +551,27 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         checkSubmatrixIndexes(r0, c0, r1, c1);
         B.checkIndex(rb, cb);
         B.checkIndex(rb + r1 - r0, cb + c1 - c0);
-        int rbStart = rb;
-        for (int col = c0; col <= c1; ++col) {
-            for (int row = r0; row <= r1; ++row) {
-                B.setUnsafe(rb++, cb, this.getUnsafe(row, col));
+        int len = r1 - r0 + 1;
+        if (len < MIN_ARRAYCOPY_LEN) {
+            int rbStart = rb;
+            for (int col = c0; col <= c1; ++col) {
+                for (int row = r0; row <= r1; ++row) {
+                    B.setUnsafe(rb++, cb, this.getUnsafe(row, col));
+                }
+                rb = rbStart;
+                cb++;
             }
-            rb = rbStart;
-            cb++;
+            return B;
+        }
+        double[] dst = B.getArrayUnsafe();
+        int dstStride = B.numRows();
+        int srcPos = c0 * rows + r0;
+        int dstPos = cb * dstStride + rb;
+        // a row block is contiguous within a column, so one block move per column
+        for (int col = c0; col <= c1; ++col) {
+            System.arraycopy(a, srcPos, dst, dstPos, len);
+            srcPos += rows;
+            dstPos += dstStride;
         }
         return B;
     }
@@ -437,13 +594,27 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
         B.checkSubmatrixIndexes(rb0, cb0, rb1, cb1);
         checkIndex(r0, c0);
         checkIndex(r0 + rb1 - rb0, c0 + cb1 - cb0);
-        int r0Start = r0;
-        for (int col = cb0; col <= cb1; ++col) {
-            for (int row = rb0; row <= rb1; ++row) {
-                this.setUnsafe(r0++, c0, B.getUnsafe(row, col));
+        int len = rb1 - rb0 + 1;
+        if (len < MIN_ARRAYCOPY_LEN) {
+            int r0Start = r0;
+            for (int col = cb0; col <= cb1; ++col) {
+                for (int row = rb0; row <= rb1; ++row) {
+                    this.setUnsafe(r0++, c0, B.getUnsafe(row, col));
+                }
+                r0 = r0Start;
+                c0++;
             }
-            r0 = r0Start;
-            c0++;
+            return this;
+        }
+        double[] src = B.getArrayUnsafe();
+        int srcStride = B.numRows();
+        int srcPos = cb0 * srcStride + rb0;
+        int dstPos = c0 * rows + r0;
+        // a row block is contiguous within a column, so one block move per column
+        for (int col = cb0; col <= cb1; ++col) {
+            System.arraycopy(src, srcPos, a, dstPos, len);
+            srcPos += srcStride;
+            dstPos += rows;
         }
         return this;
     }
@@ -1116,6 +1287,46 @@ public abstract class MatrixDBase extends DimensionsBase implements MatrixD {
     @Override
     public MatrixD plusBroadcastedVector(MatrixD B) {
         return copy().addBroadcastedVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD mulBroadcastedVector(MatrixD B) {
+        return copy().mulBroadcastedVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD divBroadcastedVector(MatrixD B) {
+        return copy().divBroadcastedVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD plusBroadcastedRowVector(MatrixD B) {
+        return copy().addBroadcastedRowVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD mulBroadcastedRowVector(MatrixD B) {
+        return copy().mulBroadcastedRowVectorInplace(B);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatrixD divBroadcastedRowVector(MatrixD B) {
+        return copy().divBroadcastedRowVectorInplace(B);
     }
 
     /**

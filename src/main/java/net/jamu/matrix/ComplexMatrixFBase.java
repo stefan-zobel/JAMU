@@ -421,17 +421,31 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         B.checkIndex(rb + r1 - r0, cb + c1 - c0);
         float[] _a = a;
         float[] _b = B.getArrayUnsafe();
-        int rbStart = rb;
-        DimensionsBase BB = (DimensionsBase) B;
-        for (int col = c0; col <= c1; ++col) {
-            for (int row = r0; row <= r1; ++row) {
-                int bidx = 2 * BB.idx(rb++, cb);
-                int aidx = 2 * idx(row, col);
-                _b[bidx] = _a[aidx];
-                _b[bidx + 1] = _a[aidx + 1];
+        int len = r1 - r0 + 1;
+        if (len < MIN_ARRAYCOPY_LEN) {
+            int rbStart = rb;
+            DimensionsBase BB = (DimensionsBase) B;
+            for (int col = c0; col <= c1; ++col) {
+                for (int row = r0; row <= r1; ++row) {
+                    int bidx = 2 * BB.idx(rb++, cb);
+                    int aidx = 2 * idx(row, col);
+                    _b[bidx] = _a[aidx];
+                    _b[bidx + 1] = _a[aidx + 1];
+                }
+                rb = rbStart;
+                cb++;
             }
-            rb = rbStart;
-            cb++;
+            return B;
+        }
+        int dstStride = B.numRows();
+        int srcPos = 2 * (c0 * rows + r0);
+        int dstPos = 2 * (cb * dstStride + rb);
+        // a row block is contiguous within a column, and real and imaginary part
+        // are adjacent, so one block move of 2 * len slots per column
+        for (int col = c0; col <= c1; ++col) {
+            System.arraycopy(_a, srcPos, _b, dstPos, 2 * len);
+            srcPos += 2 * rows;
+            dstPos += 2 * dstStride;
         }
         return B;
     }
@@ -456,17 +470,31 @@ public abstract class ComplexMatrixFBase extends DimensionsBase implements Compl
         checkIndex(r0 + rb1 - rb0, c0 + cb1 - cb0);
         float[] _a = a;
         float[] _b = B.getArrayUnsafe();
-        int r0Start = r0;
-        DimensionsBase BB = (DimensionsBase) B;
-        for (int col = cb0; col <= cb1; ++col) {
-            for (int row = rb0; row <= rb1; ++row) {
-                int bidx = 2 * BB.idx(row, col);
-                int aidx = 2 * idx(r0++, c0);
-                _a[aidx] = _b[bidx];
-                _a[aidx + 1] = _b[bidx + 1];
+        int len = rb1 - rb0 + 1;
+        if (len < MIN_ARRAYCOPY_LEN) {
+            int r0Start = r0;
+            DimensionsBase BB = (DimensionsBase) B;
+            for (int col = cb0; col <= cb1; ++col) {
+                for (int row = rb0; row <= rb1; ++row) {
+                    int bidx = 2 * BB.idx(row, col);
+                    int aidx = 2 * idx(r0++, c0);
+                    _a[aidx] = _b[bidx];
+                    _a[aidx + 1] = _b[bidx + 1];
+                }
+                r0 = r0Start;
+                c0++;
             }
-            r0 = r0Start;
-            c0++;
+            return this;
+        }
+        int srcStride = B.numRows();
+        int srcPos = 2 * (cb0 * srcStride + rb0);
+        int dstPos = 2 * (c0 * rows + r0);
+        // a row block is contiguous within a column, and real and imaginary part
+        // are adjacent, so one block move of 2 * len slots per column
+        for (int col = cb0; col <= cb1; ++col) {
+            System.arraycopy(_b, srcPos, _a, dstPos, 2 * len);
+            srcPos += 2 * srcStride;
+            dstPos += 2 * rows;
         }
         return this;
     }
