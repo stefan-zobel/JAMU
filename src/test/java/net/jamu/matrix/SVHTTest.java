@@ -106,6 +106,20 @@ public final class SVHTTest {
     }
 
     @Test
+    public void testANaNAnywhereIsRejected() {
+        // a NaN behind index 0 turned the median or the sum into NaN, and the
+        // answer came out as 1
+        for (int i : new int[] { 1, 50, 99 }) {
+            double[] s = referenceSpectrum();
+            s[i] = Double.NaN;
+            assertEquals("NaN at " + i, 0, SVHT.threshold(100, 100, s));
+            float[] f = toFloat(referenceSpectrum());
+            f[i] = Float.NaN;
+            assertEquals("float NaN at " + i, 0, SVHT.threshold(100, 100, f));
+        }
+    }
+
+    @Test
     public void testASpectrumWithNoBulkToMeasureAgainst() {
         // the median form needs a noise bulk to take its statistic from. Where
         // there is none the cutoff lands above every value and nothing

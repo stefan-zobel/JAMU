@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, 2024 Stefan Zobel
+ * Copyright 2020, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,6 +80,77 @@ public interface MatrixFConduct {
      * @since 1.2
      */
     MatrixF selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo);
+
+    /**
+     * Returns a read-only, live view of the region {@code (r0, c0)} to
+     * {@code (r1, c1)} of this matrix; unlike {@link #selectSubmatrix} it does
+     * not copy.
+     * <p>
+     * The view can be passed wherever a matrix argument is only read; its
+     * mutators, and its use as an output, throw
+     * {@code UnsupportedOperationException}.
+     *
+     * @param r0
+     *            initial row index (upper left corner)
+     * @param c0
+     *            initial column index (upper left corner)
+     * @param r1
+     *            last row index (lower right corner)
+     * @param c1
+     *            last column index (lower right corner)
+     * @return a read-only view of the region
+     * @throws IllegalArgumentException
+     *             if the region is not within this matrix
+     * @since 1.4.9
+     */
+    default MatrixF view(int r0, int c0, int r1, int c1) {
+        // every MatrixFConduct is a MatrixF
+        return Matrices.view((MatrixF) this, r0, c0, r1, c1);
+    }
+
+    /**
+     * Returns a read-only, live view of the rows {@code r0} to {@code r1} of
+     * this matrix; unlike {@link #selectSubmatrix} it does not copy.
+     * <p>
+     * The view can be passed wherever a matrix argument is only read; its
+     * mutators, and its use as an output, throw
+     * {@code UnsupportedOperationException}.
+     *
+     * @param r0
+     *            index of the first row
+     * @param r1
+     *            index of the last row
+     * @return a read-only view of the rows
+     * @throws IllegalArgumentException
+     *             if the rows are not within this matrix
+     * @since 1.4.9
+     */
+    default MatrixF viewRows(int r0, int r1) {
+        MatrixF A = (MatrixF) this;
+        return Matrices.view(A, r0, 0, r1, A.numColumns() - 1);
+    }
+
+    /**
+     * Returns a read-only, live view of the columns {@code c0} to {@code c1} of
+     * this matrix; unlike {@link #selectConsecutiveColumns} it does not copy.
+     * <p>
+     * The view can be passed wherever a matrix argument is only read; its
+     * mutators, and its use as an output, throw
+     * {@code UnsupportedOperationException}.
+     *
+     * @param c0
+     *            index of the first column
+     * @param c1
+     *            index of the last column
+     * @return a read-only view of the columns
+     * @throws IllegalArgumentException
+     *             if the columns are not within this matrix
+     * @since 1.4.9
+     */
+    default MatrixF viewColumns(int c0, int c1) {
+        MatrixF A = (MatrixF) this;
+        return Matrices.view(A, 0, c0, A.numRows() - 1, c1);
+    }
 
     /**
      * Appends a column vector which must have dimension

@@ -82,6 +82,77 @@ public interface ComplexMatrixDConduct {
     ComplexMatrixD selectSubmatrix(int rowFrom, int colFrom, int rowTo, int colTo);
 
     /**
+     * Returns a read-only, live view of the region {@code (r0, c0)} to
+     * {@code (r1, c1)} of this matrix; unlike {@link #selectSubmatrix} it does
+     * not copy.
+     * <p>
+     * The view can be passed wherever a matrix argument is only read; its
+     * mutators, and its use as an output, throw
+     * {@code UnsupportedOperationException}.
+     *
+     * @param r0
+     *            initial row index (upper left corner)
+     * @param c0
+     *            initial column index (upper left corner)
+     * @param r1
+     *            last row index (lower right corner)
+     * @param c1
+     *            last column index (lower right corner)
+     * @return a read-only view of the region
+     * @throws IllegalArgumentException
+     *             if the region is not within this matrix
+     * @since 1.4.9
+     */
+    default ComplexMatrixD view(int r0, int c0, int r1, int c1) {
+        // every ComplexMatrixDConduct is a ComplexMatrixD
+        return Matrices.view((ComplexMatrixD) this, r0, c0, r1, c1);
+    }
+
+    /**
+     * Returns a read-only, live view of the rows {@code r0} to {@code r1} of
+     * this matrix; unlike {@link #selectSubmatrix} it does not copy.
+     * <p>
+     * The view can be passed wherever a matrix argument is only read; its
+     * mutators, and its use as an output, throw
+     * {@code UnsupportedOperationException}.
+     *
+     * @param r0
+     *            index of the first row
+     * @param r1
+     *            index of the last row
+     * @return a read-only view of the rows
+     * @throws IllegalArgumentException
+     *             if the rows are not within this matrix
+     * @since 1.4.9
+     */
+    default ComplexMatrixD viewRows(int r0, int r1) {
+        ComplexMatrixD A = (ComplexMatrixD) this;
+        return Matrices.view(A, r0, 0, r1, A.numColumns() - 1);
+    }
+
+    /**
+     * Returns a read-only, live view of the columns {@code c0} to {@code c1} of
+     * this matrix; unlike {@link #selectConsecutiveColumns} it does not copy.
+     * <p>
+     * The view can be passed wherever a matrix argument is only read; its
+     * mutators, and its use as an output, throw
+     * {@code UnsupportedOperationException}.
+     *
+     * @param c0
+     *            index of the first column
+     * @param c1
+     *            index of the last column
+     * @return a read-only view of the columns
+     * @throws IllegalArgumentException
+     *             if the columns are not within this matrix
+     * @since 1.4.9
+     */
+    default ComplexMatrixD viewColumns(int c0, int c1) {
+        ComplexMatrixD A = (ComplexMatrixD) this;
+        return Matrices.view(A, 0, c0, A.numRows() - 1, c1);
+    }
+
+    /**
      * Appends a column vector which must have dimension
      * {@code this.numRows() x 1} to the right of this matrix returning a new
      * matrix of dimension {@code this.numRows() x (this.numColumns() + 1)}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2020 Stefan Zobel
+ * Copyright 2019, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,10 +82,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF multAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkMultAdd(this, B, C);
 
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
         Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.NO_TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
-                Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                0, Math.max(1, rows), b.array, b.offset, b.ld, BETA, c, 0, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -97,10 +98,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF transABmultAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkTransABmultAdd(this, B, C);
 
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
         Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.TRANS.val(), TTrans.TRANS.val(), C.numRows(), C.numColumns(), rows, alpha, a,
-                Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                0, Math.max(1, rows), b.array, b.offset, b.ld, BETA, c, 0, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -112,10 +114,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF transAmultAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkTransAmultAdd(this, B, C);
 
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
         Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), rows, alpha, a,
-                Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                0, Math.max(1, rows), b.array, b.offset, b.ld, BETA, c, 0, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -127,10 +130,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF transBmultAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkTransBmultAdd(this, B, C);
 
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
         Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.NO_TRANS.val(), TTrans.TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
-                Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                0, Math.max(1, rows), b.array, b.offset, b.ld, BETA, c, 0, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -141,10 +145,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     @Override
     public MatrixF solve(MatrixF B, MatrixF X) {
         Checks.checkSolve(this, B, X);
+        // clone before X gets written, X may be this matrix
         if (this.isSquareMatrix()) {
-            return lusolve(this, X, B);
+            return lusolve(a.clone(), rows, X, B);
         }
-        return qrsolve(this, X, B);
+        return qrsolve(a.clone(), rows, cols, X, B);
     }
 
     /**
@@ -198,34 +203,40 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
         return new SvdF(this, false).norm2();
     }
 
-    private static MatrixF lusolve(MatrixF A, MatrixF X, MatrixF B) {
-        X.setInplace(B);
-        PlainLapack.sgesv(Matrices.getLapack(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
-                Math.max(1, A.numRows()), new int[A.numRows()], X.getArrayUnsafe(), Math.max(1, A.numRows()));
+    // A / B = (B^T \ A^T)^T; both transposes are fresh, so LAPACK may overwrite them
+    static MatrixF mrdivide(MatrixF A, MatrixF B) {
+        Checks.checkSameCols(A, B);
+        MatrixF BT = B.transpose();
+        MatrixF AT = A.transpose();
+        if (BT.isSquareMatrix()) {
+            return lusolve(BT.getArrayUnsafe(), BT.numRows(), AT, AT).transpose();
+        }
+        return qrsolve(BT.getArrayUnsafe(), BT.numRows(), BT.numColumns(),
+                Matrices.createF(BT.numColumns(), AT.numColumns()), AT).transpose();
+    }
+
+    // work holds a private copy of the n x n matrix and gets overwritten
+    static MatrixF lusolve(float[] work, int n, MatrixF X, MatrixF B) {
+        // X may already hold the right-hand sides
+        if (X != B) {
+            X.setInplace(B);
+        }
+        PlainLapack.sgesv(Matrices.getLapack(), n, B.numColumns(), work, Math.max(1, n), new int[n],
+                X.getArrayUnsafe(), Math.max(1, n));
         return X;
     }
 
-    private static MatrixF qrsolve(MatrixF A, MatrixF X, MatrixF B) {
+    // work holds a private copy of the mm x nn matrix and gets overwritten
+    static MatrixF qrsolve(float[] work, int mm, int nn, MatrixF X, MatrixF B) {
         int rhsCount = B.numColumns();
-        int mm = A.numRows();
-        int nn = A.numColumns();
 
         SimpleMatrixF tmp = new SimpleMatrixF(Math.max(mm, nn), rhsCount);
-        for (int j = 0; j < rhsCount; ++j) {
-            for (int i = 0; i < mm; ++i) {
-                tmp.setUnsafe(i, j, B.getUnsafe(i, j));
-            }
-        }
+        B.submatrix(0, 0, mm - 1, rhsCount - 1, tmp, 0, 0);
 
-        PlainLapack.sgels(Matrices.getLapack(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
-                Math.max(1, mm), tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
+        PlainLapack.sgels(Matrices.getLapack(), TTrans.NO_TRANS, mm, nn, rhsCount, work, Math.max(1, mm),
+                tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
 
-        for (int j = 0; j < rhsCount; ++j) {
-            for (int i = 0; i < nn; ++i) {
-                X.setUnsafe(i, j, tmp.getUnsafe(i, j));
-            }
-        }
-        return X;
+        return tmp.submatrix(0, 0, nn - 1, rhsCount - 1, X, 0, 0);
     }
 
     /**

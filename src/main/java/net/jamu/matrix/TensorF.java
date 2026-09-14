@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, 2024 Stefan Zobel
+ * Copyright 2023, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,8 @@ public class TensorF extends TensorBase {
      */
     public TensorF(MatrixF A) {
         super(A.numRows(), A.numColumns(), 1);
-        a = Arrays.copyOf(A.getArrayUnsafe(), A.getArrayUnsafe().length);
+        float[] _a = ReadAccess.array(A);
+        a = Arrays.copyOf(_a, _a.length);
     }
 
     /**
@@ -174,7 +175,7 @@ public class TensorF extends TensorBase {
     public TensorF set(MatrixF B, int layer) {
         Checks.checkEqualDimension(this, B);
         int start = startIdx(layer);
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         System.arraycopy(_b, 0, a, start, _b.length);
         return this;
     }
@@ -209,7 +210,7 @@ public class TensorF extends TensorBase {
     public TensorF append(MatrixF B) {
         Checks.checkEqualDimension(this, B);
         float[] tmp = growAndCopyForAppend(B);
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         System.arraycopy(_b, 0, tmp, length, _b.length);
         a = tmp;
         length = tmp.length;

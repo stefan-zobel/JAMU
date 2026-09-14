@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, 2021 Stefan Zobel
+ * Copyright 2020, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,10 +45,15 @@ class SVHT {
         if (!(singularValues[0] > 0.0)) {
             return 0;
         }
+        double total = sum(singularValues);
+        // a NaN anywhere turns the median or the sum into NaN
+        if (Double.isNaN(total)) {
+            return 0;
+        }
         double omega = computeOmega(rows, cols);
         double median = median(singularValues);
         double cutoff = omega * median;
-        return threshold_(singularValues, cutoff);
+        return threshold_(singularValues, cutoff, total);
     }
 
     static int threshold(int rows, int cols, float[] singularValues) {
@@ -59,10 +64,15 @@ class SVHT {
         if (!(singularValues[0] > 0.0f)) {
             return 0;
         }
+        float total = sum(singularValues);
+        // a NaN anywhere turns the median or the sum into NaN
+        if (Float.isNaN(total)) {
+            return 0;
+        }
         float omega = (float) computeOmega(rows, cols);
         float median = median(singularValues);
         float cutoff = omega * median;
-        return threshold_(singularValues, cutoff);
+        return threshold_(singularValues, cutoff, total);
     }
 
     static double getSigmaMin(double[] singularValues) {
@@ -114,7 +124,7 @@ class SVHT {
         return 0.56 * betaCub - 0.95 * betaSqr + 1.82 * beta + 1.43;
     }
 
-    private static int threshold_(double[] singularValues, double cutoff) {
+    private static int threshold_(double[] singularValues, double cutoff, double total) {
         if (singularValues[0] < cutoff) {
             return 0;
         }
@@ -127,7 +137,7 @@ class SVHT {
             }
         }
         if (idx > 0) {
-            double cap = BROAD_SHARE_DBL * sum(singularValues);
+            double cap = BROAD_SHARE_DBL * total;
             double sum = 0.0;
             int lastIdx = 0;
             for (int i = 0; i <= idx && sum < cap; ++i) {
@@ -141,7 +151,7 @@ class SVHT {
         return idx + 1;
     }
 
-    private static int threshold_(float[] singularValues, float cutoff) {
+    private static int threshold_(float[] singularValues, float cutoff, float total) {
         if (singularValues[0] < cutoff) {
             return 0;
         }
@@ -154,7 +164,7 @@ class SVHT {
             }
         }
         if (idx > 0) {
-            float cap = BROAD_SHARE_FLT * sum(singularValues);
+            float cap = BROAD_SHARE_FLT * total;
             float sum = 0.0f;
             int lastIdx = 0;
             for (int i = 0; i <= idx && sum < cap; ++i) {

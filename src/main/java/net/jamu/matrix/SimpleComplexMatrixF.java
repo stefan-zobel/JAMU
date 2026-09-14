@@ -22,8 +22,6 @@ import net.dedekind.blas.Trans;
 import net.dedekind.lapack.Lapack;
 import net.frobenius.TTrans;
 import net.frobenius.lapack.PlainLapack;
-import net.jamu.complex.Zf;
-import net.jamu.complex.ZfImpl;
 
 /**
  * A simple dense matrix implementation of a column-major layout single
@@ -111,11 +109,12 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
     @Override
     public ComplexMatrixF multAdd(float alphar, float alphai, ComplexMatrixF B, ComplexMatrixF C) {
         Checks.checkMultAdd(this, B, C);
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
 
         BlasExt blas = BlasExt.getInstance();
         blas.cgemm3m(Trans.N, Trans.N, C.numRows(), C.numColumns(), cols, alphar, alphai, a, Math.max(1, rows),
-                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                b.array, b.ld, BETA_R, BETA_I, c, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -126,11 +125,12 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
     @Override
     public ComplexMatrixF conjTransABmultAdd(float alphar, float alphai, ComplexMatrixF B, ComplexMatrixF C) {
         Checks.checkTransABmultAdd(this, B, C);
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
 
         BlasExt blas = BlasExt.getInstance();
         blas.cgemm3m(Trans.C, Trans.C, C.numRows(), C.numColumns(), rows, alphar, alphai, a, Math.max(1, rows),
-                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                b.array, b.ld, BETA_R, BETA_I, c, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -141,11 +141,12 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
     @Override
     public ComplexMatrixF conjTransAmultAdd(float alphar, float alphai, ComplexMatrixF B, ComplexMatrixF C) {
         Checks.checkTransAmultAdd(this, B, C);
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
 
         BlasExt blas = BlasExt.getInstance();
         blas.cgemm3m(Trans.C, Trans.N, C.numRows(), C.numColumns(), rows, alphar, alphai, a, Math.max(1, rows),
-                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                b.array, b.ld, BETA_R, BETA_I, c, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -156,11 +157,12 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
     @Override
     public ComplexMatrixF conjTransBmultAdd(float alphar, float alphai, ComplexMatrixF B, ComplexMatrixF C) {
         Checks.checkTransBmultAdd(this, B, C);
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
 
         BlasExt blas = BlasExt.getInstance();
         blas.cgemm3m(Trans.N, Trans.C, C.numRows(), C.numColumns(), cols, alphar, alphai, a, Math.max(1, rows),
-                B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA_R, BETA_I, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                b.array, b.ld, BETA_R, BETA_I, c, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -171,10 +173,11 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
     @Override
     public ComplexMatrixF solve(ComplexMatrixF B, ComplexMatrixF X) {
         Checks.checkSolve(this, B, X);
+        // clone before X gets written, X may be this matrix
         if (this.isSquareMatrix()) {
-            return lusolve(this, X, B);
+            return lusolve(a.clone(), rows, X, B);
         }
-        return qrsolve(this, X, B);
+        return qrsolve(a.clone(), rows, cols, X, B);
     }
 
     /**
@@ -228,37 +231,40 @@ public class SimpleComplexMatrixF extends ComplexMatrixFBase implements ComplexM
         return new SvdComplexF(this, false).norm2();
     }
 
-    private static ComplexMatrixF lusolve(ComplexMatrixF A, ComplexMatrixF X, ComplexMatrixF B) {
-        X.setInplace(B);
-        PlainLapack.cgesv(Lapack.getInstance(), A.numRows(), B.numColumns(), A.getArrayUnsafe().clone(),
-                Math.max(1, A.numRows()), new int[A.numRows()], X.getArrayUnsafe(), Math.max(1, A.numRows()));
+    // A / B = (B^H \ A^H)^H; both transposes are fresh, so LAPACK may overwrite them
+    static ComplexMatrixF mrdivide(ComplexMatrixF A, ComplexMatrixF B) {
+        Checks.checkSameCols(A, B);
+        ComplexMatrixF BH = B.conjugateTranspose();
+        ComplexMatrixF AH = A.conjugateTranspose();
+        if (BH.isSquareMatrix()) {
+            return lusolve(BH.getArrayUnsafe(), BH.numRows(), AH, AH).conjugateTranspose();
+        }
+        return qrsolve(BH.getArrayUnsafe(), BH.numRows(), BH.numColumns(),
+                Matrices.createComplexF(BH.numColumns(), AH.numColumns()), AH).conjugateTranspose();
+    }
+
+    // work holds a private copy of the n x n matrix and gets overwritten
+    static ComplexMatrixF lusolve(float[] work, int n, ComplexMatrixF X, ComplexMatrixF B) {
+        // X may already hold the right-hand sides
+        if (X != B) {
+            X.setInplace(B);
+        }
+        PlainLapack.cgesv(Lapack.getInstance(), n, B.numColumns(), work, Math.max(1, n), new int[n],
+                X.getArrayUnsafe(), Math.max(1, n));
         return X;
     }
 
-    private static ComplexMatrixF qrsolve(ComplexMatrixF A, ComplexMatrixF X, ComplexMatrixF B) {
+    // work holds a private copy of the mm x nn matrix and gets overwritten
+    static ComplexMatrixF qrsolve(float[] work, int mm, int nn, ComplexMatrixF X, ComplexMatrixF B) {
         int rhsCount = B.numColumns();
-        int mm = A.numRows();
-        int nn = A.numColumns();
 
         SimpleComplexMatrixF tmp = new SimpleComplexMatrixF(Math.max(mm, nn), rhsCount);
-        Zf zVal = new ZfImpl(0.0f);
-        for (int j = 0; j < rhsCount; ++j) {
-            for (int i = 0; i < mm; ++i) {
-                B.getUnsafe(i, j, zVal);
-                tmp.setUnsafe(i, j, zVal.re(), zVal.im());
-            }
-        }
+        B.submatrix(0, 0, mm - 1, rhsCount - 1, tmp, 0, 0);
 
-        PlainLapack.cgels(Lapack.getInstance(), TTrans.NO_TRANS, mm, nn, rhsCount, A.getArrayUnsafe().clone(),
-                Math.max(1, mm), tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
+        PlainLapack.cgels(Lapack.getInstance(), TTrans.NO_TRANS, mm, nn, rhsCount, work, Math.max(1, mm),
+                tmp.getArrayUnsafe(), Math.max(1, Math.max(mm, nn)));
 
-        for (int j = 0; j < rhsCount; ++j) {
-            for (int i = 0; i < nn; ++i) {
-                tmp.getUnsafe(i, j, zVal);
-                X.setUnsafe(i, j, zVal.re(), zVal.im());
-            }
-        }
-        return X;
+        return tmp.submatrix(0, 0, nn - 1, rhsCount - 1, X, 0, 0);
     }
 
     /**
