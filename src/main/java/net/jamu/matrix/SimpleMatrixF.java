@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2020 Stefan Zobel
+ * Copyright 2019, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,10 +82,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF multAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkMultAdd(this, B, C);
 
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
         Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.NO_TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
-                Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                0, Math.max(1, rows), b.array, b.offset, b.ld, BETA, c, 0, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -97,10 +98,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF transABmultAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkTransABmultAdd(this, B, C);
 
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
         Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.TRANS.val(), TTrans.TRANS.val(), C.numRows(), C.numColumns(), rows, alpha, a,
-                Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                0, Math.max(1, rows), b.array, b.offset, b.ld, BETA, c, 0, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -112,10 +114,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF transAmultAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkTransAmultAdd(this, B, C);
 
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
         Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.TRANS.val(), TTrans.NO_TRANS.val(), C.numRows(), C.numColumns(), rows, alpha, a,
-                Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                0, Math.max(1, rows), b.array, b.offset, b.ld, BETA, c, 0, Math.max(1, C.numRows()));
 
         return C;
     }
@@ -127,10 +130,11 @@ public class SimpleMatrixF extends MatrixFBase implements MatrixF {
     public MatrixF transBmultAdd(float alpha, MatrixF B, MatrixF C) {
         Checks.checkTransBmultAdd(this, B, C);
 
+        float[] c = C.getArrayUnsafe();
+        ReadAccess.OperandF b = ReadAccess.operand(B, c);
         Blas blas = Matrices.getBlas();
         blas.sgemm(TTrans.NO_TRANS.val(), TTrans.TRANS.val(), C.numRows(), C.numColumns(), cols, alpha, a,
-                Math.max(1, rows), B.getArrayUnsafe(), Math.max(1, B.numRows()), BETA, C.getArrayUnsafe(),
-                Math.max(1, C.numRows()));
+                0, Math.max(1, rows), b.array, b.offset, b.ld, BETA, c, 0, Math.max(1, C.numRows()));
 
         return C;
     }

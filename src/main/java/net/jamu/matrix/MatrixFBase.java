@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, 2024 Stefan Zobel
+ * Copyright 2019, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,7 +137,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         Checks.checkEqualDimension(this, B);
         if (alpha != 0.0f) {
             float[] _a = a;
-            float[] _b = B.getArrayUnsafe();
+            float[] _b = ReadAccess.array(B);
             for (int i = 0; i < _b.length; ++i) {
                 _a[i] += alpha * _b[i];
             }
@@ -163,7 +163,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
             System.arraycopy(a, 0, C.getArrayUnsafe(), 0, a.length);
         } else {
             float[] _a = a;
-            float[] _b = B.getArrayUnsafe();
+            float[] _b = ReadAccess.array(B);
             float[] _c = C.getArrayUnsafe();
             for (int i = 0; i < _a.length; ++i) {
                 _c[i] = _a[i] + alpha * _b[i];
@@ -183,7 +183,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         }
         if (B.numColumns() == 1) {
             float[] _a = a;
-            float[] _b = B.getArrayUnsafe();
+            float[] _b = ReadAccess.array(B);
             int cols_ = cols;
             int rows_ = rows;
             for (int col = 0; col < cols_; ++col) {
@@ -204,7 +204,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     public MatrixF mulBroadcastedVectorInplace(MatrixF B) {
         Checks.checkSameRows(this, B);
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         if (this.numColumns() == B.numColumns()) {
             for (int i = 0; i < _a.length; ++i) {
                 _a[i] *= _b[i];
@@ -232,7 +232,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     public MatrixF divBroadcastedVectorInplace(MatrixF B) {
         Checks.checkSameRows(this, B);
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         if (this.numColumns() == B.numColumns()) {
             for (int i = 0; i < _a.length; ++i) {
                 _a[i] /= _b[i];
@@ -264,7 +264,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         }
         if (B.numRows() == 1) {
             float[] _a = a;
-            float[] _b = B.getArrayUnsafe();
+            float[] _b = ReadAccess.array(B);
             int cols_ = cols;
             int rows_ = rows;
             for (int col = 0; col < cols_; ++col) {
@@ -287,7 +287,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     public MatrixF mulBroadcastedRowVectorInplace(MatrixF B) {
         Checks.checkSameCols(this, B);
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         if (this.numRows() == B.numRows()) {
             for (int i = 0; i < _a.length; ++i) {
                 _a[i] *= _b[i];
@@ -317,7 +317,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     public MatrixF divBroadcastedRowVectorInplace(MatrixF B) {
         Checks.checkSameCols(this, B);
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         if (this.numRows() == B.numRows()) {
             for (int i = 0; i < _a.length; ++i) {
                 _a[i] /= _b[i];
@@ -353,7 +353,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      */
     @Override
     public MatrixF mult(float alpha, MatrixF B, MatrixF C) {
-        return multAdd(alpha, B, C.zeroInplace());
+        return multAdd(alpha, ReadAccess.detach(B, C), C.zeroInplace());
     }
 
     /**
@@ -383,7 +383,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      */
     @Override
     public MatrixF transABmult(float alpha, MatrixF B, MatrixF C) {
-        return transABmultAdd(alpha, B, C.zeroInplace());
+        return transABmultAdd(alpha, ReadAccess.detach(B, C), C.zeroInplace());
     }
 
     /**
@@ -399,7 +399,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      */
     @Override
     public MatrixF transAmult(float alpha, MatrixF B, MatrixF C) {
-        return transAmultAdd(alpha, B, C.zeroInplace());
+        return transAmultAdd(alpha, ReadAccess.detach(B, C), C.zeroInplace());
     }
 
     /**
@@ -415,7 +415,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
      */
     @Override
     public MatrixF transBmult(float alpha, MatrixF B, MatrixF C) {
-        return transBmultAdd(alpha, B, C.zeroInplace());
+        return transBmultAdd(alpha, ReadAccess.detach(B, C), C.zeroInplace());
     }
 
     /**
@@ -476,7 +476,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     public MatrixF setInplace(MatrixF other) {
         Checks.checkEqualDimension(this, other);
         float[] _a = a;
-        float[] _b = other.getArrayUnsafe();
+        float[] _b = ReadAccess.array(other);
         System.arraycopy(_b, 0, _a, 0, _a.length);
         return this;
     }
@@ -494,7 +494,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
             return scaleInplace(alpha);
         }
         float[] _a = a;
-        float[] _b = other.getArrayUnsafe();
+        float[] _b = ReadAccess.array(other);
         for (int i = 0; i < _b.length; ++i) {
             _a[i] = alpha * _b[i];
         }
@@ -594,6 +594,11 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         B.checkSubmatrixIndexes(rb0, cb0, rb1, cb1);
         checkIndex(r0, c0);
         checkIndex(r0 + rb1 - rb0, c0 + cb1 - cb0);
+        if (B instanceof MatrixFView) {
+            // a view may overlap this matrix, so copy its region first
+            MatrixF region = B.submatrix(rb0, cb0, rb1, cb1, Matrices.createF(rb1 - rb0 + 1, cb1 - cb0 + 1), 0, 0);
+            return setSubmatrixInplace(r0, c0, region, 0, 0, rb1 - rb0, cb1 - cb0);
+        }
         int len = rb1 - rb0 + 1;
         if (len < MIN_ARRAYCOPY_LEN) {
             int r0Start = r0;
@@ -606,7 +611,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
             }
             return this;
         }
-        float[] src = B.getArrayUnsafe();
+        float[] src = ReadAccess.array(B);
         int srcStride = B.numRows();
         int srcPos = cb0 * srcStride + rb0;
         int dstPos = c0 * rows + r0;
@@ -748,7 +753,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         Checks.checkEqualDimension(this, B);
         Checks.checkEqualDimension(this, out);
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         float[] _c = out.getArrayUnsafe();
         for (int i = 0; i < _a.length; ++i) {
             _c[i] = _a[i] * _b[i];
@@ -1010,7 +1015,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
     public MatrixF appendColumn(MatrixF colVector) {
         Checks.checkCommensurateColVector(this, colVector);
         float[] _a = a;
-        float[] _b = colVector.getArrayUnsafe();
+        float[] _b = ReadAccess.array(colVector);
         float[] _ab = new float[rows * (cols + 1)];
         System.arraycopy(_a, 0, _ab, 0, _a.length);
         System.arraycopy(_b, 0, _ab, _a.length, _b.length);
@@ -1025,7 +1030,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         Checks.checkSameRows(this, matrix);
         int colsNew = cols + matrix.numColumns();
         float[] _a = a;
-        float[] _b = matrix.getArrayUnsafe();
+        float[] _b = ReadAccess.array(matrix);
         float[] _ab = new float[rows * colsNew];
         System.arraycopy(_a, 0, _ab, 0, _a.length);
         System.arraycopy(_b, 0, _ab, _a.length, _b.length);
@@ -1154,7 +1159,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         int _cols = cols;
         MatrixF C = create(_rows, _cols);
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         float[] _c = C.getArrayUnsafe();
         DimensionsBase bdb = (DimensionsBase) B;
         for (int col = 0; col < _cols; ++col) {
@@ -1176,7 +1181,7 @@ public abstract class MatrixFBase extends DimensionsBase implements MatrixF {
         int _cols = B.numColumns();
         MatrixF C = create(_rows, _cols);
         float[] _a = a;
-        float[] _b = B.getArrayUnsafe();
+        float[] _b = ReadAccess.array(B);
         float[] _c = C.getArrayUnsafe();
         DimensionsBase bdb = (DimensionsBase) B;
         for (int col = 0; col < _cols; ++col) {

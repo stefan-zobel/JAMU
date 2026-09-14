@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, 2024 Stefan Zobel
+ * Copyright 2021, 2026 Stefan Zobel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -364,12 +364,17 @@ public final class Statistics {
      *            column, may be {@code null}. The variance is the population
      *            variance, i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
+     * @throws UnsupportedOperationException
+     *             if {@code A} is a matrix view or {@code moments} holds one
      * @since 1.4.6
      */
     public static MatrixD zscoreColumnsInplace(MatrixD A, MomentsD moments) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
+        MatrixDView.refuse(A);
         if (moments != null) {
+            MatrixDView.refuse(moments.means);
+            MatrixDView.refuse(moments.variances);
             if (moments.means == null || !(moments.means.isRowVector() && moments.means.numColumns() == cols_)) {
                 moments.means = Matrices.createD(1, cols_);
             }
@@ -457,12 +462,17 @@ public final class Statistics {
      *            column, may be {@code null}. The variance is the population
      *            variance, i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
+     * @throws UnsupportedOperationException
+     *             if {@code A} is a matrix view or {@code moments} holds one
      * @since 1.4.6
      */
     public static MatrixF zscoreColumnsInplace(MatrixF A, MomentsF moments) {
         int rows_ = checkNotRowVector(A);
         int cols_ = A.numColumns();
+        MatrixFView.refuse(A);
         if (moments != null) {
+            MatrixFView.refuse(moments.means);
+            MatrixFView.refuse(moments.variances);
             if (moments.means == null || !(moments.means.isRowVector() && moments.means.numColumns() == cols_)) {
                 moments.means = Matrices.createF(1, cols_);
             }
@@ -587,12 +597,17 @@ public final class Statistics {
      *            may be {@code null}. The variance is the population variance,
      *            i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
+     * @throws UnsupportedOperationException
+     *             if {@code A} is a matrix view or {@code moments} holds one
      * @since 1.4.6
      */
     public static MatrixD zscoreRowsInplace(MatrixD A, MomentsD moments) {
         int cols_ = checkNotColumnVector(A);
         int rows_ = A.numRows();
+        MatrixDView.refuse(A);
         if (moments != null) {
+            MatrixDView.refuse(moments.means);
+            MatrixDView.refuse(moments.variances);
             if (moments.means == null || !(moments.means.isColumnVector() && moments.means.numRows() == rows_)) {
                 moments.means = Matrices.createD(rows_, 1);
             }
@@ -693,12 +708,17 @@ public final class Statistics {
      *            may be {@code null}. The variance is the population variance,
      *            i.e. divided by {@code n}
      * @return the matrix {@code A} z-scored inplace
+     * @throws UnsupportedOperationException
+     *             if {@code A} is a matrix view or {@code moments} holds one
      * @since 1.4.6
      */
     public static MatrixF zscoreRowsInplace(MatrixF A, MomentsF moments) {
         int cols_ = checkNotColumnVector(A);
         int rows_ = A.numRows();
+        MatrixFView.refuse(A);
         if (moments != null) {
+            MatrixFView.refuse(moments.means);
+            MatrixFView.refuse(moments.variances);
             if (moments.means == null || !(moments.means.isColumnVector() && moments.means.numRows() == rows_)) {
                 moments.means = Matrices.createF(rows_, 1);
             }
