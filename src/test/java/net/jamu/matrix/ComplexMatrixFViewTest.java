@@ -56,7 +56,7 @@ public final class ComplexMatrixFViewTest {
             "zeroizeSubEpsilonRelativeInplace(int)", "sanitizeNonFiniteInplace(float,float,float)",
             "sanitizeNaNInplace(float)", "setUnsafe(int,int,float,float)", "getArrayUnsafe()");
 
-    /** interface methods a view answers on a copy */
+    /** interface methods whose result on a view is checked against a copy */
     private static final Set<String> COPY_READS = sigs("scale(float,float,ComplexMatrixF)",
             "conjTrans(ComplexMatrixF)", "trans(ComplexMatrixF)", "add(ComplexMatrixF,ComplexMatrixF)",
             "add(float,float,ComplexMatrixF,ComplexMatrixF)", "solve(ComplexMatrixF,ComplexMatrixF)",

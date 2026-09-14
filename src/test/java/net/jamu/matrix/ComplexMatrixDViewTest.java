@@ -56,7 +56,7 @@ public final class ComplexMatrixDViewTest {
             "zeroizeSubEpsilonRelativeInplace(int)", "sanitizeNonFiniteInplace(double,double,double)",
             "sanitizeNaNInplace(double)", "setUnsafe(int,int,double,double)", "getArrayUnsafe()");
 
-    /** interface methods a view answers on a copy */
+    /** interface methods whose result on a view is checked against a copy */
     private static final Set<String> COPY_READS = sigs("scale(double,double,ComplexMatrixD)",
             "conjTrans(ComplexMatrixD)", "trans(ComplexMatrixD)", "add(ComplexMatrixD,ComplexMatrixD)",
             "add(double,double,ComplexMatrixD,ComplexMatrixD)", "solve(ComplexMatrixD,ComplexMatrixD)",

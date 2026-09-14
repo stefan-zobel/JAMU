@@ -56,7 +56,7 @@ public final class MatrixDViewTest {
             "sanitizeNonFiniteInplace(double,double,double)", "sanitizeNaNInplace(double)", "setUnsafe(int,int,double)",
             "getArrayUnsafe()");
 
-    /** interface methods a view answers on a copy */
+    /** interface methods whose result on a view is checked against a copy */
     private static final Set<String> COPY_READS = sigs("scale(double,MatrixD)", "trans(MatrixD)",
             "add(MatrixD,MatrixD)", "add(double,MatrixD,MatrixD)", "solve(MatrixD,MatrixD)",
             "inv(MatrixD)", "pseudoInv()", "expm()", "hadamard(MatrixD,MatrixD)", "toJaggedArray()", "normF()",

@@ -56,7 +56,7 @@ public final class MatrixFViewTest {
             "sanitizeNonFiniteInplace(float,float,float)", "sanitizeNaNInplace(float)", "setUnsafe(int,int,float)",
             "getArrayUnsafe()");
 
-    /** interface methods a view answers on a copy */
+    /** interface methods whose result on a view is checked against a copy */
     private static final Set<String> COPY_READS = sigs("scale(float,MatrixF)", "trans(MatrixF)",
             "add(MatrixF,MatrixF)", "add(float,MatrixF,MatrixF)", "solve(MatrixF,MatrixF)",
             "inv(MatrixF)", "pseudoInv()", "expm()", "hadamard(MatrixF,MatrixF)", "toJaggedArray()", "normF()",
